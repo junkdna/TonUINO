@@ -1,9 +1,28 @@
+// vim: ts=2 sw=2 et cindent
 #include <DFMiniMp3.h>
 #include <EEPROM.h>
+#include <FastLED.h>
 #include <JC_Button.h>
 #include <MFRC522.h>
 #include <SPI.h>
 #include <SoftwareSerial.h>
+
+// FastLED for WS8212 on D5
+#define NUM_LEDS 14
+#define LED_PIN  5
+
+// This is an array of leds.  One item for each led in your strip.
+CRGB leds[NUM_LEDS];
+
+#define MODE_NO_MODE  -1
+#define MODE_NO_CARD   0
+#define MODE_CARD_FAIL 1
+#define MODE_CARD_NEW  2
+#define MODE_CARD_PROG 3
+#define MODE_PLAYING   4
+#define MODE_PAUSE     5
+
+static int8_t led_mode = MODE_NO_MODE;
 
 // DFPlayer Mini
 SoftwareSerial mySoftwareSerial(2, 3); // RX, TX
@@ -23,7 +42,7 @@ nfcTagObject myCard;
 
 static void nextTrack(uint16_t track);
 int voiceMenu(int numberOfOptions, int startMessage, int messageOffset,
-              bool preview = false, int previewFromFolder = 0);
+    bool preview = false, int previewFromFolder = 0);
 
 bool knownCard = false;
 
@@ -31,37 +50,37 @@ bool knownCard = false;
 // its member methods will get called
 //
 class Mp3Notify {
-public:
-  static void OnError(uint16_t errorCode) {
-    // see DfMp3_Error for code meaning
-    Serial.println();
-    Serial.print("Com Error ");
-    Serial.println(errorCode);
-  }
-  static void OnPlayFinished(uint16_t track) {
-    Serial.print("Track beendet");
-    Serial.println(track);
-    delay(100);
-    nextTrack(track);
-  }
-  static void OnCardOnline(uint16_t code) {
-    Serial.println(F("SD Karte online "));
-  }
-  static void OnCardInserted(uint16_t code) {
-    Serial.println(F("SD Karte bereit "));
-  }
-  static void OnCardRemoved(uint16_t code) {
-    Serial.println(F("SD Karte entfernt "));
-  }
-  static void OnUsbOnline(uint16_t code) {
+  public:
+    static void OnError(uint16_t errorCode) {
+      // see DfMp3_Error for code meaning
+      Serial.println();
+      Serial.print("Com Error ");
+      Serial.println(errorCode);
+    }
+    static void OnPlayFinished(uint16_t track) {
+      Serial.print("Track beendet");
+      Serial.println(track);
+      delay(100);
+      nextTrack(track);
+    }
+    static void OnCardOnline(uint16_t code) {
+      Serial.println(F("SD Karte online "));
+    }
+    static void OnCardInserted(uint16_t code) {
+      Serial.println(F("SD Karte bereit "));
+    }
+    static void OnCardRemoved(uint16_t code) {
+      Serial.println(F("SD Karte entfernt "));
+    }
+    static void OnUsbOnline(uint16_t code) {
       Serial.println(F("USB online "));
-  }
-  static void OnUsbInserted(uint16_t code) {
+    }
+    static void OnUsbInserted(uint16_t code) {
       Serial.println(F("USB bereit "));
-  }
-  static void OnUsbRemoved(uint16_t code) {
-    Serial.println(F("USB entfernt "));
-  }
+    }
+    static void OnUsbRemoved(uint16_t code) {
+      Serial.println(F("USB entfernt "));
+    }
 };
 
 static DFMiniMp3<SoftwareSerial, Mp3Notify> mp3(mySoftwareSerial);
@@ -69,19 +88,24 @@ static DFMiniMp3<SoftwareSerial, Mp3Notify> mp3(mySoftwareSerial);
 // Leider kann das Modul keine Queue abspielen.
 static uint16_t _lastTrackFinished;
 static void nextTrack(uint16_t track) {
+  led_mode = MODE_PLAYING;
+
   if (track == _lastTrackFinished) {
+    led_mode = MODE_NO_MODE;
     return;
-   }
-   _lastTrackFinished = track;
-   
-   if (knownCard == false)
+  }
+  _lastTrackFinished = track;
+
+  if (knownCard == false) {
+    led_mode = MODE_NO_CARD;
     // Wenn eine neue Karte angelernt wird soll das Ende eines Tracks nicht
     // verarbeitet werden
     return;
+  }
 
   if (myCard.mode == 1) {
     Serial.println(F("Hörspielmodus ist aktiv -> keinen neuen Track spielen"));
-//    mp3.sleep(); // Je nach Modul kommt es nicht mehr zurück aus dem Sleep!
+    //    mp3.sleep(); // Je nach Modul kommt es nicht mehr zurück aus dem Sleep!
   }
   if (myCard.mode == 2) {
     if (currentTrack != numTracksInFolder) {
@@ -90,7 +114,7 @@ static void nextTrack(uint16_t track) {
       Serial.print(F("Albummodus ist aktiv -> nächster Track: "));
       Serial.print(currentTrack);
     } else 
-//      mp3.sleep();   // Je nach Modul kommt es nicht mehr zurück aus dem Sleep!
+      //      mp3.sleep();   // Je nach Modul kommt es nicht mehr zurück aus dem Sleep!
     { }
   }
   if (myCard.mode == 3) {
@@ -104,19 +128,19 @@ static void nextTrack(uint16_t track) {
   }
   if (myCard.mode == 4) {
     Serial.println(F("Einzel Modus aktiv -> Strom sparen"));
-//    mp3.sleep();      // Je nach Modul kommt es nicht mehr zurück aus dem Sleep!
+    //    mp3.sleep();      // Je nach Modul kommt es nicht mehr zurück aus dem Sleep!
   }
   if (myCard.mode == 5) {
     if (currentTrack != numTracksInFolder) {
       currentTrack = currentTrack + 1;
       Serial.print(F("Hörbuch Modus ist aktiv -> nächster Track und "
-                     "Fortschritt speichern"));
+            "Fortschritt speichern"));
       Serial.println(currentTrack);
       mp3.playFolderTrack(myCard.folder, currentTrack);
       // Fortschritt im EEPROM abspeichern
       EEPROM.write(myCard.folder, currentTrack);
     } else {
-//      mp3.sleep();  // Je nach Modul kommt es nicht mehr zurück aus dem Sleep!
+      //      mp3.sleep();  // Je nach Modul kommt es nicht mehr zurück aus dem Sleep!
       // Fortschritt zurück setzen
       EEPROM.write(myCard.folder, 1);
     }
@@ -145,7 +169,7 @@ static void previousTrack() {
   }
   if (myCard.mode == 5) {
     Serial.println(F("Hörbuch Modus ist aktiv -> vorheriger Track und "
-                     "Fortschritt speichern"));
+          "Fortschritt speichern"));
     if (currentTrack != 1) {
       currentTrack = currentTrack - 1;
     }
@@ -187,29 +211,32 @@ bool isPlaying() { return !digitalRead(busyPin); }
 void setup() {
 
   Serial.begin(115200); // Es gibt ein paar Debug Ausgaben über die serielle
-                        // Schnittstelle
+  // Schnittstelle
   randomSeed(analogRead(A0)); // Zufallsgenerator initialisieren
 
   Serial.println(F("TonUINO Version 2.0"));
   Serial.println(F("(c) Thorsten Voß"));
+  Serial.println(F("modified by Tilllmann Heidsieck"));
 
   // Knöpfe mit PullUp
-  pinMode(buttonPause, INPUT_PULLUP);
-  pinMode(buttonUp, INPUT_PULLUP);
-  pinMode(buttonDown, INPUT_PULLUP);
+  pinMode(buttonPause, INPUT);
+  pinMode(buttonUp, INPUT);
+  pinMode(buttonDown, INPUT);
 
   // Busy Pin
   pinMode(busyPin, INPUT);
 
   // DFPlayer Mini initialisieren
   mp3.begin();
+  uint16_t volume = mp3.getVolume();
+  Serial.print("volume was ");
+  Serial.println(volume);
   mp3.setVolume(15);
 
   // NFC Leser initialisieren
   SPI.begin();        // Init SPI bus
   mfrc522.PCD_Init(); // Init MFRC522
-  mfrc522
-      .PCD_DumpVersionToSerial(); // Show details of PCD - MFRC522 Card Reader
+  mfrc522.PCD_DumpVersionToSerial(); // Show details of PCD - MFRC522 Card Reader
   for (byte i = 0; i < 6; i++) {
     key.keyByte[i] = 0xFF;
   }
@@ -224,10 +251,76 @@ void setup() {
     }
   }
 
+  FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
+}
+
+void update_led(uint8_t mode)
+{
+  static int8_t cur_led = 0;
+  int8_t i;
+
+  switch (mode) {
+    case MODE_CARD_FAIL:
+      cur_led = 0;
+      for (i = 0; i < NUM_LEDS; i++)
+        leds[i] = CRGB::Red;
+      FastLED.show();
+      for (i = 0; i < NUM_LEDS; i++)
+        leds[i] = CRGB::Black;
+      break;
+    case MODE_CARD_NEW:
+      for (cur_led = 0; cur_led < NUM_LEDS; cur_led++) {
+        cur_led = (cur_led + 1) % NUM_LEDS;
+        leds[cur_led] = CRGB::Blue;
+        FastLED.show();
+        delay(72);
+        leds[cur_led] = CRGB::Black;
+      }
+      break;
+    case MODE_CARD_PROG:
+      for (i = 0; i < NUM_LEDS; i++)
+        leds[i] = CRGB::Yellow;
+      FastLED.show();
+      for (i = 0; i < NUM_LEDS; i++)
+        leds[i] = CRGB::Black;
+      break;
+    case MODE_PAUSE:
+      cur_led = (cur_led + 1) % NUM_LEDS;
+      leds[cur_led] = CRGB::Green;
+      FastLED.show();
+      leds[cur_led] = CRGB::Black;
+      break;
+    case MODE_PLAYING:
+      leds[0]  = CRGB::Green;
+      leds[3]  = CRGB::Green;
+      //leds[4]  = CRGB::Green;
+      //leds[6]  = CRGB::Green;
+      leds[7]  = CRGB::Green;
+      leds[10] = CRGB::Green;
+      //leds[11] = CRGB::Green;
+      //leds[13] = CRGB::Green;
+      FastLED.show();
+      for (i = 0; i < NUM_LEDS; i++)
+        leds[i] = CRGB::Black;
+      break;
+    case MODE_NO_MODE:
+      /* Fallthrough */
+    case MODE_NO_CARD:
+      /* Fallthrough */
+    default:
+      cur_led = 0;
+      for (i = 0; i < NUM_LEDS; i++)
+        leds[i] = CRGB::Blue;
+      FastLED.show();
+      for (i = 0; i < NUM_LEDS; i++)
+        leds[i] = CRGB::Black;
+      break;
+  }
 }
 
 void loop() {
   do {
+    update_led(led_mode);
     mp3.loop();
     // Buttons werden nun über JS_Button gehandelt, dadurch kann jede Taste
     // doppelt belegt werden
@@ -237,17 +330,21 @@ void loop() {
 
     if (pauseButton.wasReleased()) {
       if (ignorePauseButton == false) {
-        if (isPlaying())
+        if (isPlaying()) {
+          led_mode = MODE_PAUSE;
           mp3.pause();
-        else
+        } else {
+          led_mode = MODE_PLAYING;
           mp3.start();
+        }
       }
       ignorePauseButton = false;
     } else if (pauseButton.pressedFor(LONG_PRESS) &&
-               ignorePauseButton == false) {
+        ignorePauseButton == false) {
       if (isPlaying())
         mp3.playAdvertisement(currentTrack);
       else {
+        led_mode = MODE_NO_CARD;
         knownCard = false;
         mp3.playMp3FolderTrack(800);
         Serial.println(F("Karte resetten..."));
@@ -288,6 +385,7 @@ void loop() {
     return;
 
   if (readCard(&myCard) == true) {
+    update_led(MODE_CARD_NEW);
     if (myCard.cookie == 322417479 && myCard.folder != 0 && myCard.mode != 0) {
 
       knownCard = true;
@@ -327,28 +425,34 @@ void loop() {
       // Hörbuch Modus: kompletten Ordner spielen und Fortschritt merken
       if (myCard.mode == 5) {
         Serial.println(F("Hörbuch Modus -> kompletten Ordner spielen und "
-                         "Fortschritt merken"));
+              "Fortschritt merken"));
         currentTrack = EEPROM.read(myCard.folder);
         mp3.playFolderTrack(myCard.folder, currentTrack);
       }
+
+      led_mode = MODE_PLAYING;
     }
 
     // Neue Karte konfigurieren
     else {
+      led_mode = MODE_CARD_PROG;
       knownCard = false;
       setupCard();
     }
+
   }
   mfrc522.PICC_HaltA();
   mfrc522.PCD_StopCrypto1();
 }
 
 int voiceMenu(int numberOfOptions, int startMessage, int messageOffset,
-              bool preview = false, int previewFromFolder = 0) {
+    bool preview = false, int previewFromFolder = 0) {
   int returnValue = 0;
+  led_mode = MODE_CARD_PROG;
   if (startMessage != 0)
     mp3.playMp3FolderTrack(startMessage);
   do {
+    update_led(led_mode);
     pauseButton.read();
     upButton.read();
     downButton.read();
@@ -366,6 +470,7 @@ int voiceMenu(int numberOfOptions, int startMessage, int messageOffset,
       if (preview) {
         do {
           delay(10);
+          update_led(led_mode);
         } while (isPlaying());
         if (previewFromFolder == 0)
           mp3.playFolderTrack(returnValue, 1);
@@ -381,6 +486,7 @@ int voiceMenu(int numberOfOptions, int startMessage, int messageOffset,
         if (preview) {
           do {
             delay(10);
+            update_led(led_mode);
           } while (isPlaying());
           if (previewFromFolder == 0)
             mp3.playFolderTrack(returnValue, 1);
@@ -390,7 +496,7 @@ int voiceMenu(int numberOfOptions, int startMessage, int messageOffset,
       } else
         ignoreUpButton = false;
     }
-    
+
     if (downButton.pressedFor(LONG_PRESS)) {
       returnValue = max(returnValue - 10, 1);
       mp3.playMp3FolderTrack(messageOffset + returnValue);
@@ -398,6 +504,7 @@ int voiceMenu(int numberOfOptions, int startMessage, int messageOffset,
       if (preview) {
         do {
           delay(10);
+          update_led(led_mode);
         } while (isPlaying());
         if (previewFromFolder == 0)
           mp3.playFolderTrack(returnValue, 1);
@@ -413,6 +520,7 @@ int voiceMenu(int numberOfOptions, int startMessage, int messageOffset,
         if (preview) {
           do {
             delay(10);
+            update_led(led_mode);
           } while (isPlaying());
           if (previewFromFolder == 0)
             mp3.playFolderTrack(returnValue, 1);
@@ -446,6 +554,8 @@ void resetCard() {
 }
 
 void setupCard() {
+  led_mode = MODE_CARD_PROG;
+  update_led(led_mode);
   mp3.pause();
   Serial.print(F("Neue Karte konfigurieren"));
 
@@ -461,7 +571,7 @@ void setupCard() {
   // Einzelmodus -> Datei abfragen
   if (myCard.mode == 4)
     myCard.special = voiceMenu(mp3.getFolderTrackCount(myCard.folder), 320, 0,
-                               true, myCard.folder);
+        true, myCard.folder);
 
   // Admin Funktionen
   if (myCard.mode == 6)
@@ -493,7 +603,7 @@ bool readCard(nfcTagObject *nfcTag) {
     returnValue = false;
     Serial.print(F("PCD_Authenticate() failed: "));
     Serial.println(mfrc522.GetStatusCodeName(status));
-    return;
+    return returnValue;
   }
 
   // Show the whole sector as it currently is
@@ -536,12 +646,12 @@ bool readCard(nfcTagObject *nfcTag) {
 void writeCard(nfcTagObject nfcTag) {
   MFRC522::PICC_Type mifareType;
   byte buffer[16] = {0x13, 0x37, 0xb3, 0x47, // 0x1337 0xb347 magic cookie to
-                                             // identify our nfc tags
-                     0x01,                   // version 1
-                     nfcTag.folder,          // the folder picked by the user
-                     nfcTag.mode,    // the playback mode picked by the user
-                     nfcTag.special, // track or function for admin cards
-                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+    // identify our nfc tags
+    0x01,                   // version 1
+    nfcTag.folder,          // the folder picked by the user
+    nfcTag.mode,    // the playback mode picked by the user
+    nfcTag.special, // track or function for admin cards
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
   byte size = sizeof(buffer);
 
@@ -568,7 +678,7 @@ void writeCard(nfcTagObject nfcTag) {
   if (status != MFRC522::STATUS_OK) {
     Serial.print(F("MIFARE_Write() failed: "));
     Serial.println(mfrc522.GetStatusCodeName(status));
-      mp3.playMp3FolderTrack(401);
+    mp3.playMp3FolderTrack(401);
   }
   else
     mp3.playMp3FolderTrack(400);
