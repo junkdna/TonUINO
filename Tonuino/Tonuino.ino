@@ -1,90 +1,112 @@
-// vim: ts=4 sw=4 et cindent
-#include <DFMiniMp3.h>
-#include <EEPROM.h>
-#include <FastLED.h>
-#include <JC_Button.h>
-#include <MFRC522.h>
-#include <SPI.h>
-#include <SoftwareSerial.h>
+/*
+ * SPDX-License-Identifier: GPL-3.0-only
+ * Copyright TODO Thorsten Voß
+ * Copyright 2019 Tillmann Heidsieck <theidsieck@leenox.de>
+ */
 
-// FastLED for WS8212 on D5
-#define NUM_LEDS 14
-#define LED_PIN  5
+#include "buttons.h"
+#include "rfid.h"
+#include "tonuino.h"
+#include "tstate.h"
 
-// This is an array of leds.  One item for each led in your strip.
-CRGB leds[NUM_LEDS];
 
-#define MODE_NO_MODE  -1
-#define MODE_NO_CARD   0
-#define MODE_CARD_FAIL 1
-#define MODE_CARD_NEW  2
-#define MODE_CARD_PROG 3
-#define MODE_PLAYING   4
-#define MODE_PAUSE     5
+DFMiniMp3<SoftwareSerial, Mp3Notify>* TonUINO::get_dfplayer()
+{
+    return this->dfplay;
+}
 
-static int8_t led_mode = MODE_NO_MODE;
+void TonUINO::notify_mp3(mp3_notify_event event, uint16_t code) {
+    (void)code;
+    switch(event) {
+        case MP3_NOTIFY_ERROR:
+            /* Fallthrough */
+        case MP3_PLAY_FINISHED:
+            /* Fallthrough */
+        case MP3_CARD_ONLINE:
+            /* Fallthrough */
+        case MP3_CARD_INSERTED:
+            /* Fallthrough */
+        case MP3_CARD_REMOVED:
+            state = state->handle_dfplay_event(event, code);
+            break;
+        case MP3_USB_ONLINE:
+            /* ignore for now */
+            break;
+        case MP3_USB_INSERTED:
+            /* ignore for now */
+            break;
+        case MP3_USB_REMOVED:
+            /* ignore for now */
+            break;
+    }
+}
 
-// DFPlayer Mini
-SoftwareSerial mySoftwareSerial(2, 3); // RX, TX
-uint16_t numTracksInFolder;
-uint16_t currentTrack;
+void TonUINO::setup(DFMiniMp3<SoftwareSerial, Mp3Notify>* dfp) {
+    /* PIN A3 is open, the ADC should produce noise */
+    randomSeed(analogRead(A3));
 
-// this object stores nfc tag data
-struct nfcTagObject {
-    uint32_t cookie;
-    uint8_t version;
-    uint8_t folder;
-    uint8_t mode;
-    uint8_t special;
-};
+    pinMode(BUSY_PIN, INPUT);
+    dfplay = dfp;
+    dfplay->begin();
+    dfplay->loop();
 
-nfcTagObject myCard;
+    dfplay->reset();
+    dfplay->loop();
 
-static void nextTrack(uint16_t track);
-int voiceMenu(int numberOfOptions, int startMessage, int messageOffset,
-        bool preview = false, int previewFromFolder = 0);
+    state = new TState_Idle(this);
+    state->volume_set(INITIAL_VOLUME);
 
-bool knownCard = false;
+    if (buttons_pressed == 0x7) {
+        /* reset */
+        buttons_pressed = 0;
+    }
+}
 
-// implement a notification class,
-// its member methods will get called
-//
-class Mp3Notify {
-    public:
-        static void OnError(uint16_t errorCode) {
-            // see DfMp3_Error for code meaning
-            Serial.println();
-            Serial.print("Com Error ");
-            Serial.println(errorCode);
-        }
-        static void OnPlayFinished(uint16_t track) {
-            Serial.print("Track beendet");
-            Serial.println(track);
-            delay(100);
-            nextTrack(track);
-        }
-        static void OnCardOnline(uint16_t code) {
-            Serial.println(F("SD Karte online "));
-        }
-        static void OnCardInserted(uint16_t code) {
-            Serial.println(F("SD Karte bereit "));
-        }
-        static void OnCardRemoved(uint16_t code) {
-            Serial.println(F("SD Karte entfernt "));
-        }
-        static void OnUsbOnline(uint16_t code) {
-            Serial.println(F("USB online "));
-        }
-        static void OnUsbInserted(uint16_t code) {
-            Serial.println(F("USB bereit "));
-        }
-        static void OnUsbRemoved(uint16_t code) {
-            Serial.println(F("USB entfernt "));
-        }
-};
+void TonUINO::loop() {
+    dfplay->loop();
+    state = state->handle_card(&rfid_card);
+    state = state->handle_buttons(buttons_pressed, buttons_released, buttons_long_press);
+}
 
-static DFMiniMp3<SoftwareSerial, Mp3Notify> mp3(mySoftwareSerial);
+void TonUINO::notify_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed)
+{
+    buttons_pressed = pressed;
+    buttons_released = released;
+    buttons_long_press = long_pressed;
+}
 
+TonUINO tonuino;
+
+static SoftwareSerial g_soft_uart(SOFT_UART_RX_PIN, SOFT_UART_TX_PIN);
+static DFMiniMp3<SoftwareSerial, Mp3Notify> g_dfplay(g_soft_uart);
+
+MFRC522 mfrc522(MFRC522_SS_PIN, MFRC522_RST_PIN);
+RFIDReader rfid(&mfrc522);
+
+static Button button_down(DOWN_BUTTON_PIN, 25, false, true);
+static Button button_pause(PAUSE_BUTTON_PIN, 25, false, true);
+static Button button_up(UP_BUTTON_PIN, 25, false, true);
+static Buttons buttons(&button_down, &button_pause, &button_up);
+
+void setup() {
+    Serial.begin(115200);
+
+    Serial.println(F("TonUINO NG Version 0.1"));
+    Serial.println(F("(c) Tilllmann Heidsieck"));
+    Serial.println(F("based on work by Thorsten Voß"));
+
+    tonuino.setup(&g_dfplay);
+    buttons.setup(&tonuino);
+    rfid.setup(&tonuino);
+}
+
+void loop() {
+    buttons.loop();
+    rfid.loop();
+    tonuino.loop();
+}
+
+#if 0
 // Leider kann das Modul keine Queue abspielen.
 static uint16_t _lastTrackFinished;
 static void nextTrack(uint16_t track) {
@@ -206,7 +228,6 @@ bool ignoreDownButton = false;
 
 uint8_t numberOfCards = 0;
 
-bool isPlaying() { return !digitalRead(busyPin); }
 
 void setup() {
 
@@ -582,116 +603,5 @@ void setupCard() {
     writeCard(myCard);
 }
 
-bool readCard(nfcTagObject *nfcTag) {
-    bool returnValue = true;
-    // Show some details of the PICC (that is: the tag/card)
-    Serial.print(F("Card UID:"));
-    dump_byte_array(mfrc522.uid.uidByte, mfrc522.uid.size);
-    Serial.println();
-    Serial.print(F("PICC type: "));
-    MFRC522::PICC_Type piccType = mfrc522.PICC_GetType(mfrc522.uid.sak);
-    Serial.println(mfrc522.PICC_GetTypeName(piccType));
-
-    byte buffer[18];
-    byte size = sizeof(buffer);
-
-    // Authenticate using key A
-    Serial.println(F("Authenticating using key A..."));
-    status = (MFRC522::StatusCode)mfrc522.PCD_Authenticate(
-            MFRC522::PICC_CMD_MF_AUTH_KEY_A, trailerBlock, &key, &(mfrc522.uid));
-    if (status != MFRC522::STATUS_OK) {
-        returnValue = false;
-        Serial.print(F("PCD_Authenticate() failed: "));
-        Serial.println(mfrc522.GetStatusCodeName(status));
-        return returnValue;
-    }
-
-    // Show the whole sector as it currently is
-    Serial.println(F("Current data in sector:"));
-    mfrc522.PICC_DumpMifareClassicSectorToSerial(&(mfrc522.uid), &key, sector);
-    Serial.println();
-
-    // Read data from the block
-    Serial.print(F("Reading data from block "));
-    Serial.print(blockAddr);
-    Serial.println(F(" ..."));
-    status = (MFRC522::StatusCode)mfrc522.MIFARE_Read(blockAddr, buffer, &size);
-    if (status != MFRC522::STATUS_OK) {
-        returnValue = false;
-        Serial.print(F("MIFARE_Read() failed: "));
-        Serial.println(mfrc522.GetStatusCodeName(status));
-    }
-    Serial.print(F("Data in block "));
-    Serial.print(blockAddr);
-    Serial.println(F(":"));
-    dump_byte_array(buffer, 16);
-    Serial.println();
-    Serial.println();
-
-    uint32_t tempCookie;
-    tempCookie = (uint32_t)buffer[0] << 24;
-    tempCookie += (uint32_t)buffer[1] << 16;
-    tempCookie += (uint32_t)buffer[2] << 8;
-    tempCookie += (uint32_t)buffer[3];
-
-    nfcTag->cookie = tempCookie;
-    nfcTag->version = buffer[4];
-    nfcTag->folder = buffer[5];
-    nfcTag->mode = buffer[6];
-    nfcTag->special = buffer[7];
-
-    return returnValue;
-}
-
-void writeCard(nfcTagObject nfcTag) {
-    MFRC522::PICC_Type mifareType;
-    byte buffer[16] = {0x13, 0x37, 0xb3, 0x47, // 0x1337 0xb347 magic cookie to
-        // identify our nfc tags
-        0x01,                   // version 1
-        nfcTag.folder,          // the folder picked by the user
-        nfcTag.mode,    // the playback mode picked by the user
-        nfcTag.special, // track or function for admin cards
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-    byte size = sizeof(buffer);
-
-    mifareType = mfrc522.PICC_GetType(mfrc522.uid.sak);
-
-    // Authenticate using key B
-    Serial.println(F("Authenticating again using key B..."));
-    status = (MFRC522::StatusCode)mfrc522.PCD_Authenticate(
-            MFRC522::PICC_CMD_MF_AUTH_KEY_B, trailerBlock, &key, &(mfrc522.uid));
-    if (status != MFRC522::STATUS_OK) {
-        Serial.print(F("PCD_Authenticate() failed: "));
-        Serial.println(mfrc522.GetStatusCodeName(status));
-        mp3.playMp3FolderTrack(401);
-        return;
-    }
-
-    // Write data to the block
-    Serial.print(F("Writing data into block "));
-    Serial.print(blockAddr);
-    Serial.println(F(" ..."));
-    dump_byte_array(buffer, 16);
-    Serial.println();
-    status = (MFRC522::StatusCode)mfrc522.MIFARE_Write(blockAddr, buffer, 16);
-    if (status != MFRC522::STATUS_OK) {
-        Serial.print(F("MIFARE_Write() failed: "));
-        Serial.println(mfrc522.GetStatusCodeName(status));
-        mp3.playMp3FolderTrack(401);
-    }
-    else
-        mp3.playMp3FolderTrack(400);
-    Serial.println();
-    delay(100);
-}
-
-/**
- * Helper routine to dump a byte array as hex values to Serial.
- */
-void dump_byte_array(byte *buffer, byte bufferSize) {
-    for (byte i = 0; i < bufferSize; i++) {
-        Serial.print(buffer[i] < 0x10 ? " 0" : " ");
-        Serial.print(buffer[i], HEX);
-    }
-}
+#endif
+// vim: ts=4 sw=4 et cindent
