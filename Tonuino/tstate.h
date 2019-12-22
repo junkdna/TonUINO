@@ -5,6 +5,15 @@
 
 struct RFIDCard card;
 
+#define STATE_IDLE          0
+#define STATE_MENU          1
+#define STATE_ALBUM         2
+#define STATE_ALBUM_RANDOM  3
+#define STATE_GLOBAL        4
+#define STATE_GLOBAL_RANDOM 5
+#define STATE_AUDIO_BOOK    6
+#define STATE_RADIO_PLAY    7
+
 class TState {
     protected:
         TonUINO *context;
@@ -16,6 +25,7 @@ class TState {
         uint16_t current_folder_track_num;
         uint16_t current_track;
         uint16_t current_volume;
+
 
     public:
         void volume_up();
@@ -35,6 +45,8 @@ class TState {
         virtual ~TState();
 };
 
+TState* new_state_by_name(uint8_t state_name);
+
 class TState_Idle : public TState {
     protected:
 
@@ -53,11 +65,12 @@ class TState_Menu : public TState {
 
     public:
         TState* handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
-        TState* handle_card(RFIDCard& card);
+        TState* handle_card(RFIDCard* card);
         TState* handle_dfplay_event(mp3_notify_event event, uint16_t code);
 
-        TState_Menu(TonUINO *context) {this->context = context;}
-        TState_Menu(TState *last_state) {this->context = last_state->get_context();}
+        TState_Menu(TonUINO *context);
+        TState_Menu(TState *last_state);
+        ~TState_Menu();
 };
 
 class TState_Album : public TState {
@@ -65,19 +78,12 @@ class TState_Album : public TState {
 
     public:
         TState* handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
-        TState* handle_card(RFIDCard& card);
+        TState* handle_card(RFIDCard* card);
         TState* handle_dfplay_event(mp3_notify_event event, uint16_t code);
 
-};
-
-class TState_AudioBook : public TState_Album {
-    protected:
-
-    public:
-        TState* handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
-        TState* handle_card(RFIDCard& card);
-        TState* handle_dfplay_event(mp3_notify_event event, uint16_t code);
-
+        TState_Album(TonUINO *context);
+        TState_Album(TState *last_state);
+        ~TState_Album();
 };
 
 class TState_Album_Random : public TState {
@@ -85,9 +91,38 @@ class TState_Album_Random : public TState {
 
     public:
         TState* handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
-        TState* handle_card(RFIDCard& card);
+        TState* handle_card(RFIDCard* card);
         TState* handle_dfplay_event(mp3_notify_event event, uint16_t code);
 
+        TState_Album_Random(TonUINO *context);
+        TState_Album_Random(TState *last_state);
+        ~TState_Album_Random();
+};
+
+class TState_AudioBook : public TState {
+    protected:
+
+    public:
+        TState* handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
+        TState* handle_card(RFIDCard* card);
+        TState* handle_dfplay_event(mp3_notify_event event, uint16_t code);
+
+        TState_AudioBook(TonUINO *context);
+        TState_AudioBook(TState *last_state);
+        ~TState_AudioBook();
+};
+
+class TState_RadioPlay : public TState {
+    protected:
+
+    public:
+        TState* handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
+        TState* handle_card(RFIDCard* card);
+        TState* handle_dfplay_event(mp3_notify_event event, uint16_t code);
+
+        TState_RadioPlay(TonUINO *context);
+        TState_RadioPlay(TState *last_state);
+        ~TState_RadioPlay();
 };
 
 class TState_Global : public TState {
@@ -95,9 +130,12 @@ class TState_Global : public TState {
 
     public:
         TState* handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
-        TState* handle_card(RFIDCard& card);
+        TState* handle_card(RFIDCard* card);
         TState* handle_dfplay_event(mp3_notify_event event, uint16_t code);
 
+        TState_Global(TonUINO *context);
+        TState_Global(TState *last_state);
+        ~TState_Global();
 };
 
 class TState_Global_Random : public TState {
@@ -105,9 +143,12 @@ class TState_Global_Random : public TState {
 
     public:
         TState* handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
-        TState* handle_card(RFIDCard& card);
+        TState* handle_card(RFIDCard* card);
         TState* handle_dfplay_event(mp3_notify_event event, uint16_t code);
 
+        TState_Global_Random(TonUINO *context);
+        TState_Global_Random(TState *last_state);
+        ~TState_Global_Random();
 };
 
 #endif

@@ -5,7 +5,20 @@
 
 class TonUINO;
 
-struct RFIDCard {
+enum Card_Mode {
+    CARD_MODE_PLAYER,
+#if 0
+    CARD_MODE_MODIFY,
+    CARD_MODE_ADMIN,
+#endif
+};
+
+class RFIDCard {
+public:
+    uint32_t chip_id;
+    uint8_t  version;
+    uint8_t  card_mode;
+    uint8_t  extdata[10];
 };
 
 class RFIDReader {
@@ -19,6 +32,9 @@ class RFIDReader {
         byte trailerBlock = 7;
 
     public:
+        int write(RFIDCard& card);
+        int read(RFIDCard& card);
+
         void setup(TonUINO *tonuino);
         void loop();
 

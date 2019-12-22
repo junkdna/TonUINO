@@ -41,6 +41,19 @@ void TonUINO::notify_mp3(mp3_notify_event event, uint16_t code) {
     }
 }
 
+void TonUINO::notify_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed)
+{
+    buttons_pressed = pressed;
+    buttons_released = released;
+    buttons_long_press = long_pressed;
+}
+
+void TonUINO::notify_rfid(RFIDCard& card)
+{
+    rfid_card = card;
+    state->handle_card(&rfid_card);
+}
+
 void TonUINO::setup(DFMiniMp3<SoftwareSerial, Mp3Notify>* dfp) {
     /* PIN A3 is open, the ADC should produce noise */
     randomSeed(analogRead(A3));
@@ -68,13 +81,6 @@ void TonUINO::loop() {
     state = state->handle_buttons(buttons_pressed, buttons_released, buttons_long_press);
 }
 
-void TonUINO::notify_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed)
-{
-    buttons_pressed = pressed;
-    buttons_released = released;
-    buttons_long_press = long_pressed;
-}
-
 TonUINO tonuino;
 
 static SoftwareSerial g_soft_uart(SOFT_UART_RX_PIN, SOFT_UART_TX_PIN);
@@ -95,9 +101,9 @@ void setup() {
     Serial.println(F("(c) Tilllmann Heidsieck"));
     Serial.println(F("based on work by Thorsten Voß"));
 
-    tonuino.setup(&g_dfplay);
     buttons.setup(&tonuino);
     rfid.setup(&tonuino);
+    tonuino.setup(&g_dfplay);
 }
 
 void loop() {

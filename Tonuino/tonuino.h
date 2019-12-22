@@ -2,11 +2,13 @@
 #define _TONUINO_H_
 
 #include <DFMiniMp3.h>
-//#include <EEPROM.h>
+#include <EEPROM.h>
 #include <MFRC522.h>
 #include <SPI.h>
 #include <SoftwareSerial.h>
 
+#define EEPROM_VERSION  1
+#define EEPROM_CFG_LEN  128
 
 #define MAX_VOLUME       35
 #define MIN_VOLUME       0
@@ -45,6 +47,15 @@ class Mp3Notify;
 class RFIDCard;
 class RFIDReader;
 class TState;
+
+class EEPROM_Config {
+public:
+    uint8_t  version;
+    uint32_t id;
+
+    void write();
+    void read();
+};
 
 class TonUINO {
     protected:
