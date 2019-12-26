@@ -1,0 +1,20 @@
+#ifndef _MESSAGES_H_
+#define _MESSAGES_H_
+
+#define MESSAGE_NEW_CARD        300
+#define MESSAGE_CARD_ASSIGNED   310
+#define MESSAGE_MODE_RADIO_PLAY 311
+#define MESSAGE_MODE_ALBUM      312
+#define MESSAGE_MODE_PARTY      313
+#define MESSAGE_MODE_SINGLE     314
+#define MESSAGE_MODE_AUDIOBOOK  315
+#define MESSAGE_SELECT_FILE     320
+#define MESSAGE_CARD_CONFIGURED 400
+#define MESSAGE_ERROR           401
+#define MESSAGE_RESET_TAG       800
+#define MESSAGE_RESET_TAG_OK    801
+#define MESSAGE_RESET_ABORTED   802
+#define MESSAGE_RESET_OK        999
+
+#endif
+// vim: ts=4 sw=4 et cindent
