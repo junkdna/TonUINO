@@ -124,8 +124,12 @@ void TonUINO::notify_rfid(RFIDCard *card)
 }
 
 void TonUINO::setup(DFMiniMp3<SoftwareSerial, Mp3Notify>* dfp) {
+    uint32_t i, seed = 0;
+
     /* PIN A3 is open, the ADC should produce noise */
-    randomSeed(analogRead(A3));
+    for (i = 0; i < 128; i++)
+        seed ^= (analogRead(A3) & 0x1) << (i % 32);
+    randomSeed(seed);
 
     pinMode(LED_GREEN, OUTPUT);
     pinMode(LED_RED, OUTPUT);
