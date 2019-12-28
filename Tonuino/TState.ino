@@ -91,6 +91,7 @@ TState *TState_Idle::handle_dfplay_event(mp3_notify_event event, uint16_t code) 
         default:
             break;
     }
+
     return this;
 }
 
@@ -233,10 +234,34 @@ TState *TState_NewCard::handle_card(RFIDCard *new_card) {
 }
 
 TState *TState_NewCard::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
-    (void)event;
+    TState *state = this;
+
     (void)code;
 
-    return this;
+    switch (event) {
+        case MP3_NOTIFY_ERROR:
+            /* TODO handle */
+            break;
+        case MP3_PLAY_FINISHED:
+            /* TODO handle */
+            break;
+        case MP3_CARD_ONLINE:
+            /* TODO should not happen */
+            break;
+        case MP3_CARD_INSERTED:
+            /* TODO should not happen */
+            break;
+        case MP3_CARD_REMOVED:
+            state = new_state_by_name(this, STATE_IDLE);
+            break;
+        default:
+            break;
+    }
+
+    if (this != state)
+        delete this;
+
+    return state;
 }
 
 TState *TState_NewCard::loop() {
@@ -362,8 +387,16 @@ TState *TState_Album::handle_dfplay_event(mp3_notify_event event, uint16_t code)
 
     switch (event) {
         case MP3_NOTIFY_ERROR:
+            /* TODO handle */
             break;
         case MP3_PLAY_FINISHED:
+            /* TODO handle */
+            break;
+        case MP3_CARD_ONLINE:
+            /* TODO should not happen */
+            break;
+        case MP3_CARD_INSERTED:
+            /* TODO should not happen */
             break;
         case MP3_CARD_REMOVED:
             state = new_state_by_name(this, STATE_IDLE);
@@ -420,10 +453,34 @@ TState *TState_AudioBook::handle_card(RFIDCard *card) {
 }
 
 TState *TState_AudioBook::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
-    (void)event;
+    TState *state = this;
+
     (void)code;
 
-    return this;
+    switch (event) {
+        case MP3_NOTIFY_ERROR:
+            /* TODO handle */
+            break;
+        case MP3_PLAY_FINISHED:
+            /* TODO handle */
+            break;
+        case MP3_CARD_ONLINE:
+            /* TODO should not happen */
+            break;
+        case MP3_CARD_INSERTED:
+            /* TODO should not happen */
+            break;
+        case MP3_CARD_REMOVED:
+            state = new_state_by_name(this, STATE_IDLE);
+            break;
+        default:
+            break;
+    }
+
+    if (this != state)
+        delete this;
+
+    return state;
 }
 
 TState *TState_AudioBook::loop() {
@@ -468,10 +525,34 @@ TState *TState_RadioPlay::handle_card(RFIDCard *card) {
 }
 
 TState *TState_RadioPlay::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
-    (void)event;
+    TState *state = this;
+
     (void)code;
 
-    return this;
+    switch (event) {
+        case MP3_NOTIFY_ERROR:
+            /* TODO handle */
+            break;
+        case MP3_PLAY_FINISHED:
+            /* TODO handle */
+            break;
+        case MP3_CARD_ONLINE:
+            /* TODO should not happen */
+            break;
+        case MP3_CARD_INSERTED:
+            /* TODO should not happen */
+            break;
+        case MP3_CARD_REMOVED:
+            state = new_state_by_name(this, STATE_IDLE);
+            break;
+        default:
+            break;
+    }
+
+    if (this != state)
+        delete this;
+
+    return state;
 }
 
 TState *TState_RadioPlay::loop() {
@@ -516,10 +597,34 @@ TState *TState_Single::handle_card(RFIDCard *card) {
 }
 
 TState *TState_Single::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
-    (void)event;
+    TState *state = this;
+
     (void)code;
 
-    return this;
+    switch (event) {
+        case MP3_NOTIFY_ERROR:
+            /* TODO handle */
+            break;
+        case MP3_PLAY_FINISHED:
+            /* TODO handle */
+            break;
+        case MP3_CARD_ONLINE:
+            /* TODO should not happen */
+            break;
+        case MP3_CARD_INSERTED:
+            /* TODO should not happen */
+            break;
+        case MP3_CARD_REMOVED:
+            state = new_state_by_name(this, STATE_IDLE);
+            break;
+        default:
+            break;
+    }
+
+    if (this != state)
+        delete this;
+
+    return state;
 }
 
 TState *TState_Single::loop() {
@@ -564,10 +669,34 @@ TState *TState_Album_Random::handle_card(RFIDCard *card) {
 }
 
 TState *TState_Album_Random::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
-    (void)event;
+    TState *state = this;
+
     (void)code;
 
-    return this;
+    switch (event) {
+        case MP3_NOTIFY_ERROR:
+            /* TODO handle */
+            break;
+        case MP3_PLAY_FINISHED:
+            /* TODO handle */
+            break;
+        case MP3_CARD_ONLINE:
+            /* TODO should not happen */
+            break;
+        case MP3_CARD_INSERTED:
+            /* TODO should not happen */
+            break;
+        case MP3_CARD_REMOVED:
+            state = new_state_by_name(this, STATE_IDLE);
+            break;
+        default:
+            break;
+    }
+
+    if (this != state)
+        delete this;
+
+    return state;
 }
 
 TState *TState_Album_Random::loop() {
