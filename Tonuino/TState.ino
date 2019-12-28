@@ -60,7 +60,7 @@ TState *TState_Idle::handle_dfplay_event(mp3_notify_event event, uint16_t code) 
     return this;
 }
 
-TState *TState_Idle::run() {
+TState *TState_Idle::loop() {
     return this;
 }
 
@@ -202,7 +202,7 @@ TState *TState_NewCard::handle_dfplay_event(mp3_notify_event event, uint16_t cod
     return this;
 }
 
-TState *TState_NewCard::run() {
+TState *TState_NewCard::loop() {
     TState *state = this;
 
     if (!card)
@@ -326,7 +326,7 @@ TState *TState_Album::handle_dfplay_event(mp3_notify_event event, uint16_t code)
     return this;
 }
 
-TState *TState_Album::run() {
+TState *TState_Album::loop() {
     return this;
 }
 
@@ -376,7 +376,7 @@ TState *TState_AudioBook::handle_dfplay_event(mp3_notify_event event, uint16_t c
     return this;
 }
 
-TState *TState_AudioBook::run() {
+TState *TState_AudioBook::loop() {
     return this;
 }
 
@@ -426,7 +426,7 @@ TState *TState_RadioPlay::handle_dfplay_event(mp3_notify_event event, uint16_t c
     return this;
 }
 
-TState *TState_RadioPlay::run() {
+TState *TState_RadioPlay::loop() {
     return this;
 }
 
@@ -476,7 +476,7 @@ TState *TState_Single::handle_dfplay_event(mp3_notify_event event, uint16_t code
     return this;
 }
 
-TState *TState_Single::run() {
+TState *TState_Single::loop() {
     return this;
 }
 
@@ -526,7 +526,7 @@ TState *TState_Album_Random::handle_dfplay_event(mp3_notify_event event, uint16_
     return this;
 }
 
-TState *TState_Album_Random::run() {
+TState *TState_Album_Random::loop() {
     return this;
 }
 

@@ -111,6 +111,9 @@ void TonUINO::notify_buttons(uint8_t pressed, uint8_t released, uint8_t long_pre
     buttons_pressed = pressed;
     buttons_released = released;
     buttons_long_press = long_pressed;
+
+    if (state)
+        state = state->handle_buttons(buttons_pressed, buttons_released, buttons_long_press);
 }
 
 void TonUINO::notify_rfid(RFIDCard *card)
@@ -165,11 +168,11 @@ void TonUINO::setup(DFMiniMp3<SoftwareSerial, Mp3Notify>* dfp) {
 
 void TonUINO::loop() {
     dfplay->loop();
-    state = state->handle_buttons(buttons_pressed, buttons_released, buttons_long_press);
+    state = state->loop();
+
     buttons_pressed = 0;
     buttons_released = 0;
     buttons_long_press = 0;
-    state = state->run();
 }
 
 static SoftwareSerial g_soft_uart(SOFT_UART_RX_PIN, SOFT_UART_TX_PIN);
