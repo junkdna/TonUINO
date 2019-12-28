@@ -49,7 +49,15 @@ void TonUINO::notify_mp3(mp3_notify_event event, uint16_t code) {
 
 void TonUINO::notify_buttons(uint32_t _map)
 {
+    uint8_t i;
+
     button_map = _map;
+
+    /* clean activity map, remove long_pressed buttons from released list */
+    for (i = 0; i < BUTTON_MAX; i++) {
+        if ((_map & (1 << (BUTTON_MAX + i))) && (_map & (1 << (2 * BUTTON_MAX + i))))
+            _map &= ~(1 << (BUTTON_MAX + i));
+    }
 
     if (state)
         state = state->handle_buttons(button_map);

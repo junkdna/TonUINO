@@ -9,17 +9,31 @@
 #include "tstate.h"
 #include "rfid.h"
 
+static inline bool button_vol_up(uint32_t _map) {
+    return button_long_pressed(_map, BUTTON_UP);
+}
+
+static inline bool button_vol_down(uint32_t _map) {
+    return button_long_pressed(_map, BUTTON_DOWN);
+}
+
+static inline bool button_next(uint32_t _map) {
+    return button_released(_map, BUTTON_UP);
+}
+
+static inline bool button_prev(uint32_t _map) {
+    return button_released(_map, BUTTON_DOWN);
+}
+
 /*******************************
  * state Idle
  *******************************/
 TState *TState_Idle::handle_buttons(uint32_t _map) {
     TState *state = this;
 
-    if (button_released(_map, BUTTON_UP)) {
-    } else if (button_released(_map, BUTTON_DOWN)) {
-    } else if (button_long_pressed(_map, BUTTON_UP)) {
+    if (button_vol_up(_map)) {
         volume_up();
-    } else if (button_long_pressed(_map, BUTTON_DOWN)) {
+    } else if (button_vol_down(_map)) {
         volume_down();
     } else if (button_released(_map, BUTTON_PAUSE)) {
         if (card && card->card_mode == CARD_MODE_PLAYER) {
@@ -207,6 +221,7 @@ TState *TState_NewCard::handle_card(RFIDCard *new_card) {
             state = new_state_by_name(this, card->extdata[0]);
             break;
         default:
+            /* TODO restart new card at this point? */
             state = new_state_by_name(this, STATE_NEW_CARD);
             break;
     }
@@ -305,13 +320,13 @@ TState_NewCard::~TState_NewCard() {
 TState *TState_Album::handle_buttons(uint32_t _map) {
     TState *state = this;
 
-    if (button_released(_map, BUTTON_UP)) {
+    if (button_next(_map)) {
         next();
-    } else if (button_released(_map, BUTTON_DOWN)) {
+    } else if (button_prev(_map)) {
         prev();
-    } else if (button_long_pressed(_map, BUTTON_UP)) {
+    } else if (button_vol_up(_map)) {
         volume_up();
-    } else if (button_long_pressed(_map, BUTTON_DOWN)) {
+    } else if (button_vol_down(_map)) {
         volume_down();
     } else if (button_released(_map, BUTTON_PAUSE)) {
         state = new_state_by_name(this, STATE_IDLE);
