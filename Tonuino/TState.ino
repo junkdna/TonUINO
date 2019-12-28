@@ -84,9 +84,11 @@ TState *TState_Idle::loop() {
     return this;
 }
 
+/* this function is called in case we have no previous state */
 TState_Idle::TState_Idle(TonUINO *context) {
     this->context = context;
-    current_volume = INITIAL_VOLUME;
+
+    volume_set(INITIAL_VOLUME);
 }
 
 TState_Idle::TState_Idle(TState *last_state) {
