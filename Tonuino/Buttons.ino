@@ -18,14 +18,22 @@ void Buttons::loop() {
     for (int8_t i = 0; i < BUTTON_MAX; i++) {
         buttons[i]->read();
 
-        if (buttons[i]->isPressed())
-            button_map |= 1 << i;
+        if (buttons[i]->isPressed()) {
+            if (!(ignore_map & (1 << (i + 2 * BUTTON_MAX))))
+                button_map |= 1 << i;
+        }
 
-        if (buttons[i]->wasReleased())
-            button_map |= 1 << (i + BUTTON_MAX);
+        if (buttons[i]->wasReleased()) {
+            if (!(ignore_map & (1 << (i + 2 * BUTTON_MAX))))
+                button_map |= 1 << (i + BUTTON_MAX);
+            ignore_map &= ~(1 << (i + 2 * BUTTON_MAX));
+        }
 
-        if (buttons[i]->pressedFor(LONG_PRESS_TIMEOUT))
-            button_map |= 1 << (i + 2 * BUTTON_MAX);
+        if (buttons[i]->pressedFor(LONG_PRESS_TIMEOUT)) {
+            if (!(ignore_map & (1 << (i + 2 * BUTTON_MAX))))
+                button_map |= 1 << (i + 2 * BUTTON_MAX);
+            ignore_map |= 1 << (i + 2 * BUTTON_MAX);
+        }
     }
 
     if (button_map)

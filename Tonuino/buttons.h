@@ -21,12 +21,14 @@ class Buttons {
     protected:
         Button *buttons[BUTTON_MAX] = {nullptr};
         TonUINO *tonuino = nullptr;
+        uint32_t ignore_map;
 
     public:
         void setup(TonUINO *tonuino);
         void loop();
 
-        Buttons(Button *down, Button *pause, Button *up) : buttons{down, pause, up} {}
+        Buttons(Button *down, Button *pause, Button *up) :
+            buttons{down, pause, up}, ignore_map(0) {}
 };
 
 static inline bool button_pressed(uint32_t _map, button_names button) {
