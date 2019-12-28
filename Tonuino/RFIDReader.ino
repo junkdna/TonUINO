@@ -13,12 +13,7 @@
 const uint8_t keyA_default[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 const uint8_t keyB_default[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 
-RFIDReader::RFIDReader(MFRC522 *mfrc522) : mfrc522(mfrc522) {
-}
-
 int RFIDReader::write(RFIDCard *card) {
-    MFRC522::StatusCode status;
-
     byte buffer[16] = {
         card->chip_id[0], card->chip_id[1], card->chip_id[2], card->chip_id[3],
         card->version, card->card_mode,
@@ -26,6 +21,7 @@ int RFIDReader::write(RFIDCard *card) {
         card->extdata[4], card->extdata[5], card->extdata[6], card->extdata[7],
         card->extdata[8], card->extdata[9]
     };
+    MFRC522::StatusCode status;
 
     Serial.print(F("Card UID:"));
     dump_byte_array(mfrc522->uid.uidByte, mfrc522->uid.size);
@@ -35,14 +31,14 @@ int RFIDReader::write(RFIDCard *card) {
     Serial.println(mfrc522->PICC_GetTypeName(piccType));
 
     Serial.println(F("Authenticating again using key B..."));
-    status = mfrc522->PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_B, trailerBlock, &keyB, &(mfrc522->uid));
+    status = mfrc522->PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_B, trailer_block, &keyB, &(mfrc522->uid));
     if (status != MFRC522::STATUS_OK) {
         Serial.print(F("PCD_Authenticate() failed: "));
         Serial.println(mfrc522->GetStatusCodeName(status));
         return -1;
     }
 
-    status = mfrc522->MIFARE_Write(blockAddr, buffer, 16);
+    status = mfrc522->MIFARE_Write(block_addr, buffer, 16);
     if (status != MFRC522::STATUS_OK) {
         Serial.print(F("MIFARE_Write() failed: "));
         return -1;
@@ -64,7 +60,7 @@ int RFIDReader::read(RFIDCard *card) {
     Serial.println(mfrc522->PICC_GetTypeName(piccType));
 
     Serial.println(F("Authenticating using key A..."));
-    status = mfrc522->PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, trailerBlock, &keyA, &(mfrc522->uid));
+    status = mfrc522->PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, trailer_block, &keyA, &(mfrc522->uid));
     if (status != MFRC522::STATUS_OK) {
         Serial.print(F("PCD_Authenticate() failed: "));
         Serial.println(mfrc522->GetStatusCodeName(status));
@@ -75,7 +71,7 @@ int RFIDReader::read(RFIDCard *card) {
     mfrc522->PICC_DumpMifareClassicSectorToSerial(&(mfrc522->uid), &keyA, sector);
     Serial.println();
 
-    status = mfrc522->MIFARE_Read(blockAddr, buffer, &size);
+    status = mfrc522->MIFARE_Read(block_addr, buffer, &size);
     if (status != MFRC522::STATUS_OK) {
         Serial.print(F("MIFARE_Read() failed: "));
         Serial.println(mfrc522->GetStatusCodeName(status));
@@ -129,11 +125,18 @@ void RFIDReader::stop() {
     mfrc522->PCD_StopCrypto1();
 }
 
-void RFIDReader::dump_byte_array(byte *buffer, byte bufferSize) {
-    for (byte i = 0; i < bufferSize; i++) {
+void RFIDReader::dump_byte_array(byte *buffer, byte buffer_size) {
+    for (byte i = 0; i < buffer_size; i++) {
         Serial.print(buffer[i] < 0x10 ? " 0" : " ");
         Serial.print(buffer[i], HEX);
     }
     Serial.println();
 }
+
+RFIDReader::RFIDReader(MFRC522 *mfrc522) : mfrc522(mfrc522) {
+    sector = 1;
+    block_addr = 4;
+    trailer_block = 7;
+}
+
 // vim: ts=4 sw=4 et cindent

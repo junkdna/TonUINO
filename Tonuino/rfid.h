@@ -24,9 +24,10 @@ class RFIDReader {
         MFRC522 *mfrc522;
         MFRC522::MIFARE_Key keyA;
         MFRC522::MIFARE_Key keyB;
-        byte sector = 1;
-        byte blockAddr = 4;
-        byte trailerBlock = 7;
+
+        byte sector;
+        byte block_addr;
+        byte trailer_block;
 
     public:
         int write(RFIDCard *card);
