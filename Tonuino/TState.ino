@@ -610,6 +610,8 @@ void TState::volume_set(uint8_t vol) {
 void TState::playMP3Track(uint16_t track) {
     context->get_dfplayer()->playMp3FolderTrack(track);
     last_command = MP3_CMD_MP3_TRACK;
+    current_folder = 0;
+    current_track = track;
     /* TODO handle COM Errors etc */
     delay(200);
 }
@@ -617,6 +619,8 @@ void TState::playMP3Track(uint16_t track) {
 void TState::playFolderTrack(uint16_t folder, uint16_t track) {
     context->get_dfplayer()->playFolderTrack(folder, track);
     last_command = MP3_CMD_FOLDER_TRACK;
+    current_folder = folder;
+    current_track = track;
     /* TODO handle COM Errors etc */
     delay(200);
 }
@@ -624,6 +628,9 @@ void TState::playFolderTrack(uint16_t folder, uint16_t track) {
 void TState::stop() {
     context->get_dfplayer()->stop();
     last_command = MP3_CMD_STOP;
+    current_folder = 0;
+    current_track = 0;
+    current_folder_track_num = 0;
     /* TODO handle COM Errors etc */
     delay(200);
 }
@@ -643,6 +650,15 @@ void TState::start() {
 }
 
 void TState::next() {
+    ++current_track;
+    /* TODO do we want wrap-around or end of playback here */
+#if 1
+    current_track %= current_folder_track_num;
+#else
+    if (current_track > current_folder_track_num)
+        return;
+#endif
+
     context->get_dfplayer()->nextTrack();
     last_command = MP3_CMD_NEXT;
     /* TODO handle COM Errors etc */
@@ -650,6 +666,8 @@ void TState::next() {
 }
 
 void TState::prev() {
+    --current_track;
+    current_track %= current_folder_track_num;
     context->get_dfplayer()->prevTrack();
     last_command = MP3_CMD_PREV;
     /* TODO handle COM Errors etc */
