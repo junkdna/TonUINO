@@ -29,15 +29,12 @@ enum mp3_command {
     MP3_CMD_PREV,
 };
 
-
 class TState {
     protected:
         TonUINO *context;
         RFIDCard *card;
         mp3_command last_command;
 
-        uint16_t global_track_num;
-        uint16_t global_track;
         uint16_t current_folder;
         uint16_t current_folder_track_num;
         uint16_t current_track;

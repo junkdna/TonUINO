@@ -580,8 +580,6 @@ void TState::from_last_state(TState *last_state) {
         this->current_folder_track_num = last_state->current_folder_track_num;
         this->current_track            = last_state->current_track;
         this->current_volume           = last_state->current_volume;
-        this->global_track             = last_state->global_track;
-        this->global_track_num         = last_state->global_track_num;
         this->last_command             = last_state->last_command;
 }
 
