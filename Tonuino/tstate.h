@@ -5,15 +5,16 @@
 
 class RFIDCard;
 
-#define STATE_IDLE          99
-#define STATE_MENU          98
+#define STATE_IDLE          255
+#define STATE_NEW_CARD      128
+#define STATE_RADIO_PLAY    1
 #define STATE_ALBUM         2
 #define STATE_ALBUM_RANDOM  3
 #define STATE_SINGLE        4
 //#define STATE_GLOBAL
 //#define STATE_GLOBAL_RANDOM
 #define STATE_AUDIO_BOOK    5
-#define STATE_RADIO_PLAY    1
+#define STATE_ADMIN         6
 
 class TState {
     protected:
@@ -28,7 +29,11 @@ class TState {
         uint16_t current_track;
         uint16_t current_volume;
         void from_last_state(TState *last_state);
-        void play(uint16_t track);
+        void playMP3Track(uint16_t track);
+        void playFolderTrack(uint16_t folder, uint16_t track);
+        void pause();
+        void start();
+        void stop();
 
     public:
         void volume_up();
@@ -64,13 +69,9 @@ class TState_Idle : public TState {
         ~TState_Idle();
 };
 
-class TState_Menu : public TState {
+class TState_NewCard : public TState {
     protected:
-        enum SubMenu {
-            NEW_CARD,
-        } sub_menu;
-
-        uint8_t sub_menu_item;
+        uint8_t menu_item;
         uint8_t selected_value;
         uint8_t preview;
 
@@ -80,9 +81,9 @@ class TState_Menu : public TState {
         TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
         TState *run();
 
-        TState_Menu(TonUINO *context);
-        TState_Menu(TState *last_state);
-        ~TState_Menu();
+        TState_NewCard(TonUINO *context);
+        TState_NewCard(TState *last_state);
+        ~TState_NewCard();
 };
 
 class TState_Album : public TState {

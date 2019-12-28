@@ -13,6 +13,7 @@
  *******************************/
 TState *TState_Idle::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
     TState *state = this;
+    (void)pressed;
 
     if (released & (1 << BUTTON_UP)) {
     } else if (released & (1 << BUTTON_DOWN)) {
@@ -23,7 +24,7 @@ TState *TState_Idle::handle_buttons(uint8_t pressed, uint8_t released, uint8_t l
     } else if (released & (1 << BUTTON_PAUSE)) {
         if (card && card->card_mode == CARD_MODE_PLAYER) {
             state = new_state_by_name(this, card->extdata[0]);
-            context->get_dfplayer()->start();
+            start();
         }
     }
 
@@ -42,7 +43,7 @@ TState *TState_Idle::handle_card(RFIDCard *card) {
             state = new_state_by_name(this, card->extdata[0]);
             break;
         default:
-            state = new_state_by_name(this, STATE_MENU);
+            state = new_state_by_name(this, STATE_NEW_CARD);
             break;
     }
 
@@ -67,7 +68,6 @@ TState_Idle::TState_Idle(TonUINO *context) {
 
 TState_Idle::TState_Idle(TState *last_state) {
     from_last_state(last_state);
-    Serial.println(F("idle(last_state)"));
 }
 
 TState_Idle::~TState_Idle() {
@@ -77,101 +77,92 @@ TState_Idle::~TState_Idle() {
 /*******************************
  * state Menu
  *******************************/
-TState *TState_Menu::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
+TState *TState_NewCard::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
     TState *state = this;
+    (void)pressed;
 
-    switch (sub_menu) {
-        case NEW_CARD:
-            switch (sub_menu_item) {
-                case 0:
-                    /* select folder */
-                    if (released & (1 << BUTTON_UP)) {
-                        ++selected_value;
-                        play(selected_value);
-                        preview = 1;
-                    } else if (released & (1 << BUTTON_DOWN)) {
-                        --selected_value;
-                        play(selected_value);
-                        preview = 1;
-                    } else if (long_pressed & (1 << BUTTON_UP)) {
-                        selected_value += 10;
-                        play(selected_value);
-                        preview = 1;
-                    } else if (long_pressed & (1 << BUTTON_DOWN)) {
-                        selected_value -= 10;
-                        play(selected_value);
-                        preview = 1;
-                    } else if (released & (1 << BUTTON_PAUSE)) {
-                        ++sub_menu_item;
-                        card->extdata[1] = selected_value;
-                        selected_value = 0;
-                        context->get_dfplayer()->stop();
-                        delay(200);
-                        play(MESSAGE_CARD_ASSIGNED);
-                    }
-                    break;
-                case 1:
-                    /* select mode */
-                    if (released & (1 << BUTTON_UP)) {
-                        ++selected_value;
-                        play(MESSAGE_MODE_RADIO_PLAY + selected_value);
-                    } else if (released & (1 << BUTTON_DOWN)) {
-                        --selected_value;
-                        play(MESSAGE_MODE_RADIO_PLAY + selected_value);
-                    } else if (long_pressed & (1 << BUTTON_UP)) {
-                        selected_value += 10;
-                        play(MESSAGE_MODE_RADIO_PLAY + selected_value);
-                    } else if (long_pressed & (1 << BUTTON_DOWN)) {
-                        selected_value -= 10;
-                        play(MESSAGE_MODE_RADIO_PLAY + selected_value);
-                    } else if (released & (1 << BUTTON_PAUSE)) {
-                        context->get_dfplayer()->stop();
-                        if (selected_value != STATE_SINGLE) {
-                            sub_menu_item = 254;
-                        } else {
-                            ++sub_menu_item;
-                            delay(200);
-                            play(MESSAGE_SELECT_FILE);
-                        }
-                        card->extdata[0] = selected_value;
-                        selected_value = 0;
-                    }
-                    break;
-                case 2:
-                    /* select track */
-                    if (released & (1 << BUTTON_UP)) {
-                        ++selected_value;
-                        play(MESSAGE_MODE_RADIO_PLAY + selected_value);
-                        preview = 1;
-                    } else if (released & (1 << BUTTON_DOWN)) {
-                        --selected_value;
-                        play(MESSAGE_MODE_RADIO_PLAY + selected_value);
-                        preview = 1;
-                    } else if (long_pressed & (1 << BUTTON_UP)) {
-                        selected_value += 10;
-                        play(MESSAGE_MODE_RADIO_PLAY + selected_value);
-                        preview = 1;
-                    } else if (long_pressed & (1 << BUTTON_DOWN)) {
-                        selected_value -= 10;
-                        play(MESSAGE_MODE_RADIO_PLAY + selected_value);
-                        preview = 1;
-                    } else if (released & (1 << BUTTON_PAUSE)) {
-                        sub_menu_item = 254;
-                        card->extdata[3] = selected_value;
-                        selected_value = 0;
-                        context->get_dfplayer()->stop();
-                    }
-                    break;
-                case 254:
-                    play(MESSAGE_MODE_RADIO_PLAY + selected_value);
-                    sub_menu_item = 255;
-                    card->write();
-                    delay(200);
-                    /* Fallthrough */
-                default:
-                    state = new_state_by_name(this, STATE_IDLE);
-                    break;
+    switch (menu_item) {
+        case 0:
+            /* select folder */
+            if (released & (1 << BUTTON_UP)) {
+                ++selected_value;
+                playMP3Track(selected_value);
+                preview = 1;
+            } else if (released & (1 << BUTTON_DOWN)) {
+                --selected_value;
+                playMP3Track(selected_value);
+                preview = 1;
+            } else if (long_pressed & (1 << BUTTON_UP)) {
+                selected_value += 10;
+                playMP3Track(selected_value);
+                preview = 1;
+            } else if (long_pressed & (1 << BUTTON_DOWN)) {
+                selected_value -= 10;
+                playMP3Track(selected_value);
+                preview = 1;
+            } else if (released & (1 << BUTTON_PAUSE)) {
+                ++menu_item;
+                card->extdata[1] = selected_value;
+                selected_value = 0;
+                stop();
+                playMP3Track(MESSAGE_CARD_ASSIGNED);
             }
+            break;
+        case 1:
+            /* select mode */
+            if (released & (1 << BUTTON_UP)) {
+                ++selected_value;
+                playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
+            } else if (released & (1 << BUTTON_DOWN)) {
+                --selected_value;
+                playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
+            } else if (long_pressed & (1 << BUTTON_UP)) {
+                selected_value += 10;
+                playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
+            } else if (long_pressed & (1 << BUTTON_DOWN)) {
+                selected_value -= 10;
+                playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
+            } else if (released & (1 << BUTTON_PAUSE)) {
+                stop();
+                if (selected_value != STATE_SINGLE) {
+                    menu_item = 250;
+                } else {
+                    ++menu_item;
+                    delay(200);
+                    playMP3Track(MESSAGE_SELECT_FILE);
+                }
+                if (card)
+                    card->extdata[0] = selected_value;
+                selected_value = 0;
+            }
+            break;
+        case 2:
+            /* select track */
+            if (released & (1 << BUTTON_UP)) {
+                ++selected_value;
+                playMP3Track(selected_value);
+                preview = 1;
+            } else if (released & (1 << BUTTON_DOWN)) {
+                --selected_value;
+                playMP3Track(selected_value);
+                preview = 1;
+            } else if (long_pressed & (1 << BUTTON_UP)) {
+                selected_value += 10;
+                playMP3Track(selected_value);
+                preview = 1;
+            } else if (long_pressed & (1 << BUTTON_DOWN)) {
+                selected_value -= 10;
+                playMP3Track(selected_value);
+                preview = 1;
+            } else if (released & (1 << BUTTON_PAUSE)) {
+                menu_item = 250;
+                if (card)
+                    card->extdata[3] = selected_value;
+                selected_value = 0;
+                stop();
+            }
+            break;
+        default:
             break;
     }
 
@@ -181,21 +172,17 @@ TState *TState_Menu::handle_buttons(uint8_t pressed, uint8_t released, uint8_t l
     return state;
 }
 
-TState *TState_Menu::handle_card(RFIDCard *card) {
+TState *TState_NewCard::handle_card(RFIDCard *new_card) {
     TState *state = this;
+    this->card = new_card;
 
-    switch (sub_menu) {
-        case NEW_CARD:
-            break;
-    }
-
-    this->card = card;
+    /* TODO do sane thing here */
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
             state = new_state_by_name(this, card->extdata[0]);
             break;
         default:
-            state = new_state_by_name(this, STATE_MENU);
+            state = new_state_by_name(this, STATE_NEW_CARD);
             break;
     }
 
@@ -205,31 +192,50 @@ TState *TState_Menu::handle_card(RFIDCard *card) {
     return state;
 }
 
-TState *TState_Menu::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
-    switch (sub_menu) {
-        case NEW_CARD:
-            break;
-    }
+TState *TState_NewCard::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
 
     return this;
 }
 
-TState *TState_Menu::run() {
+TState *TState_NewCard::run() {
     TState *state = this;
 
-    switch (sub_menu) {
-        case NEW_CARD:
-            if (!is_playing()) {
-                if (preview) {
-                    if (sub_menu == 2)
-                        context->get_dfplayer()->playFolderTrack(card->extdata[1], selected_value);
-                    else if (sub_menu == 0)
-                        context->get_dfplayer()->playFolderTrack(selected_value, 1);
-                    preview = 0;
-                }
+    if (!card)
+        return;
+
+    switch (menu_item) {
+        case 0:
+            if (preview && !is_playing()) {
+                playFolderTrack(selected_value, 1);
+                preview = 0;
             }
-            if (sub_menu_item == 255)
-                state = new_state_by_name(this, STATE_IDLE);
+            break;
+
+        case 1:
+            break;
+
+        case 2:
+            if (preview) {
+                playFolderTrack(card->extdata[1], selected_value);
+                preview = 0;
+            }
+            break;
+
+        case 250:
+            ++menu_item;
+            playMP3Track(MESSAGE_MODE_RADIO_PLAY + card->extdata[0]);
+            break;
+
+        case 251:
+            menu_item = 255;
+            if (card->write())
+                playMP3Track(MESSAGE_CARD_CONFIGURED);
+            else
+                playMP3Track(MESSAGE_ERROR);
+            break;
+
+        case 255:
+            state = new_state_by_name(this, STATE_IDLE);
             break;
     }
 
@@ -240,34 +246,28 @@ TState *TState_Menu::run() {
 }
 
 
-TState_Menu::TState_Menu(TonUINO *context) {
+TState_NewCard::TState_NewCard(TonUINO *context) {
 }
 
-TState_Menu::TState_Menu(TState *last_state) {
+TState_NewCard::TState_NewCard(TState *last_state) {
     uint32_t chip_id;
-    Serial.println(F("menu(last_state)"));
 
     from_last_state(last_state);
-    sub_menu = NEW_CARD;
-    sub_menu_item = 0;
+    menu_item = 0;
     selected_value = 0;
 
-    switch (sub_menu) {
-        case NEW_CARD:
-            chip_id = context->get_config().id;
-            card->chip_id[0] = (chip_id >>  0) & 0xff;
-            card->chip_id[1] = (chip_id >>  8) & 0xff;
-            card->chip_id[2] = (chip_id >> 16) & 0xff;
-            card->chip_id[3] = (chip_id >> 24) & 0xff;
-            card->version = CARD_VERSION;
-            card->card_mode = CARD_MODE_PLAYER;
-            memset(card->extdata, 0, 10);
-            play(MESSAGE_NEW_CARD);
-            break;
-    }
+    chip_id = context->get_config().id;
+    card->chip_id[0] = (chip_id >>  0) & 0xff;
+    card->chip_id[1] = (chip_id >>  8) & 0xff;
+    card->chip_id[2] = (chip_id >> 16) & 0xff;
+    card->chip_id[3] = (chip_id >> 24) & 0xff;
+    card->version = CARD_VERSION;
+    card->card_mode = CARD_MODE_PLAYER;
+    memset(card->extdata, 0, 10);
+    playMP3Track(MESSAGE_NEW_CARD);
 }
 
-TState_Menu::~TState_Menu() {
+TState_NewCard::~TState_NewCard() {
 }
 
 
@@ -617,8 +617,33 @@ void TState::volume_set(uint8_t vol) {
     last_command = MP3_CMD_SET_VOL;
 }
 
-void TState::play(uint16_t track) {
+void TState::playMP3Track(uint16_t track) {
     context->get_dfplayer()->playMp3FolderTrack(track);
+    /* TODO handle COM Errors etc */
+    delay(200);
+}
+
+void TState::playFolderTrack(uint16_t folder, uint16_t track) {
+    context->get_dfplayer()->playFolderTrack(folder, track);
+    /* TODO handle COM Errors etc */
+    delay(200);
+}
+
+void TState::stop() {
+    context->get_dfplayer()->stop();
+    /* TODO handle COM Errors etc */
+    delay(200);
+}
+
+void TState::pause() {
+    context->get_dfplayer()->pause();
+    /* TODO handle COM Errors etc */
+    delay(200);
+}
+
+void TState::start() {
+    context->get_dfplayer()->pause();
+    /* TODO handle COM Errors etc */
     delay(200);
 }
 
@@ -627,8 +652,8 @@ TState *new_state_by_name(TState *orig, uint8_t state_name) {
     case STATE_IDLE:
         return new TState_Idle(orig);
         break;
-    case STATE_MENU:
-        return new TState_Menu(orig);
+    case STATE_NEW_CARD:
+        return new TState_NewCard(orig);
         break;
     case STATE_ALBUM:
         return new TState_Album(orig);
