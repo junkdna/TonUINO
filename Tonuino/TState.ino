@@ -616,6 +616,15 @@ void TState::playMP3Track(uint16_t track) {
     delay(200);
 }
 
+void TState::playAdvertTrack(uint16_t track) {
+    context->get_dfplayer()->playAdvertisement(track);
+    last_command = MP3_CMD_ADVERT_TRACK;
+    current_folder = 0;
+    current_track = track;
+    /* TODO handle COM Errors etc */
+    delay(200);
+}
+
 void TState::playFolderTrack(uint16_t folder, uint16_t track) {
     context->get_dfplayer()->playFolderTrack(folder, track);
     last_command = MP3_CMD_FOLDER_TRACK;

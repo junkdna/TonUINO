@@ -21,6 +21,7 @@ enum mp3_command {
     MP3_CMD_RESET,
     MP3_CMD_SET_VOL,
     MP3_CMD_MP3_TRACK,
+    MP3_CMD_ADVERT_TRACK,
     MP3_CMD_FOLDER_TRACK,
     MP3_CMD_PAUSE,
     MP3_CMD_START,
@@ -39,7 +40,10 @@ class TState {
         uint16_t current_folder_track_num;
         uint16_t current_track;
         uint16_t current_volume;
+
+    protected:
         void from_last_state(TState *last_state);
+        void playAdvertTrack(uint16_t track);
         void playMP3Track(uint16_t track);
         void playFolderTrack(uint16_t folder, uint16_t track);
         void pause();
