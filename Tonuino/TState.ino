@@ -530,7 +530,7 @@ TState_AudioBook::TState_AudioBook(TState *last_state) {
     current_folder = card->extdata[1];
     current_track = EEPROM.read(EEPROM_CFG_LEN + current_folder);
     current_folder_track_num = context->get_dfplayer()->getFolderTrackCount(current_folder);
-    if (current_track > current_folder_track_num) {
+    if (current_track > current_folder_track_num || current_track < 1) {
         current_track = 1;
         EEPROM.write(EEPROM_CFG_LEN + current_folder, current_track);
     }
