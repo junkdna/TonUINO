@@ -103,38 +103,54 @@ extern TonUINO tonuino;
 class Mp3Notify {
     public:
         static void OnError(uint16_t errorCode) {
+#if 0
             Serial.println();
             Serial.print("Com Error ");
             Serial.println(errorCode);
+#endif
             tonuino.notify_mp3(MP3_NOTIFY_ERROR, errorCode);
         }
         static void OnPlayFinished(uint16_t track) {
+#if 0
             Serial.print("Track beendet");
             Serial.println(track);
+#endif
             tonuino.notify_mp3(MP3_PLAY_FINISHED, track);
         }
         static void OnCardOnline(uint16_t code) {
+#if 0
             Serial.println(F("SD Karte online "));
+#endif
             tonuino.notify_mp3(MP3_CARD_ONLINE, code);
         }
         static void OnCardInserted(uint16_t code) {
+#if 0
             Serial.println(F("SD Karte bereit "));
+#endif
             tonuino.notify_mp3(MP3_CARD_INSERTED, code);
         }
         static void OnCardRemoved(uint16_t code) {
+#if 0
             Serial.println(F("SD Karte entfernt "));
+#endif
             tonuino.notify_mp3(MP3_CARD_REMOVED, code);
         }
         static void OnUsbOnline(uint16_t code) {
+#if 0
             Serial.println(F("USB online "));
+#endif
             tonuino.notify_mp3(MP3_USB_ONLINE, code);
         }
         static void OnUsbInserted(uint16_t code) {
+#if 0
             Serial.println(F("USB bereit "));
+#endif
             tonuino.notify_mp3(MP3_USB_INSERTED, code);
         }
         static void OnUsbRemoved(uint16_t code) {
+#if 0
             Serial.println(F("USB entfernt "));
+#endif
             tonuino.notify_mp3(MP3_USB_REMOVED, code);
         }
 };
