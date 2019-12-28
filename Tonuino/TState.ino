@@ -280,7 +280,7 @@ TState *TState_NewCard::loop() {
             break;
 
         case 2:
-            if (preview) {
+            if (preview && !is_playing()) {
                 playFolderTrack(card->extdata[1], selected_value);
                 preview = 0;
             }
