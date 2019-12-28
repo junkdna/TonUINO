@@ -49,12 +49,15 @@ void EEPROM_Config::read() {
 void EEPROM_Config::init() {
     magic = EEPROM_MAGIC;
     version = EEPROM_VERSION;
-    id = 0xad000000 | random(0x01000000);
+
+    if (!id || !(id & 0x00ffffff) || (id & 0xff000000) != CHIP_ID_MSB) {
+        id = CHIP_ID_MSB | random(0x01000000);
+        Serial.print("New Chip ID ");
+        Serial.println(id);
+    }
+
     max_volume = MAX_VOLUME;
     min_volume = MIN_VOLUME;
-
-    Serial.print("New Chip ID ");
-    Serial.println(id);
 }
 
 bool EEPROM_Config::check() {

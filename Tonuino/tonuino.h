@@ -9,6 +9,7 @@
 
 
 #define EEPROM_MAGIC    0x5a5f5059
+#define CHIP_ID_MSB     0x01000000
 #define EEPROM_VERSION  2
 #define EEPROM_CFG_SIZE 9
 #define EEPROM_CFG_LEN  128
