@@ -2,21 +2,11 @@
 #define _TONUINO_H_
 
 #include <DFMiniMp3.h>
-#include <EEPROM.h>
 #include <MFRC522.h>
 #include <SPI.h>
 #include <SoftwareSerial.h>
 
-
-#define EEPROM_MAGIC    0x5a5f5059
-#define CHIP_ID_MSB     0x01000000
-#define EEPROM_VERSION  2
-#define EEPROM_CFG_SIZE 9
-#define EEPROM_CFG_LEN  128
-
-#define MAX_VOLUME       35
-#define MIN_VOLUME       0
-#define INITIAL_VOLUME   15
+#include "eeprom_config.h"
 
 #if 0
 #define SOFT_UART_RX_PIN 5
@@ -43,8 +33,6 @@
 #define MFRC522_RST_PIN  9
 #define MFRC522_SS_PIN   10
 
-#define LONG_PRESS_TIMEOUT 1000
-
 enum mp3_notify_event {
     MP3_NOTIFY_ERROR,
     MP3_PLAY_FINISHED,
@@ -60,20 +48,6 @@ class Mp3Notify;
 class RFIDCard;
 class RFIDReader;
 class TState;
-
-class EEPROM_Config {
-public:
-    uint32_t magic;
-    uint8_t  version;
-    uint32_t id;
-    uint8_t  max_volume;
-    uint8_t  min_volume;
-
-    void write();
-    void read();
-    void init();
-    bool check();
-};
 
 class TonUINO {
     protected:
