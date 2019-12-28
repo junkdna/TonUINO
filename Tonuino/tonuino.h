@@ -17,14 +17,23 @@
 #define MIN_VOLUME       0
 #define INITIAL_VOLUME   15
 
+#if 0
 #define SOFT_UART_RX_PIN 5
 #define SOFT_UART_TX_PIN 6
+#else
+#define SOFT_UART_RX_PIN 2
+#define SOFT_UART_TX_PIN 3
+#endif
 
 #define LED_GREEN        A4
 #define LED_RED          A5
 #define LED_BLUE         A6
 
+#if 0
 #define BUSY_PIN         7
+#else
+#define BUSY_PIN         4
+#endif
 
 #define PAUSE_BUTTON_PIN A0
 #define UP_BUTTON_PIN    A1
