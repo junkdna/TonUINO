@@ -215,11 +215,11 @@ TState *TState_NewCard::handle_card(RFIDCard *new_card) {
     TState *state = this;
     this->card = new_card;
 
-    /* TODO do sane thing here */
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
-            /* TODO do we want to cancel NewCard here? */
-            state = new_state_by_name(this, card->extdata[0]);
+            state = new_state_by_name(this, STATE_NEW_CARD);
+            playMP3Track(MESSAGE_RESET_TAG);
+            delay(1000); /* TODO argh don't do this */
             break;
         default:
             /* TODO restart new card at this point? */
