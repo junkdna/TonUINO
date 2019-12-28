@@ -368,6 +368,7 @@ TState *TState_Album::handle_card(RFIDCard *card) {
     TState *state = this;
     this->card = card;
 
+    /* do not handle empty cards */
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
             state = new_state_by_name(this, card->extdata[0]);
@@ -440,6 +441,7 @@ TState *TState_AudioBook::handle_card(RFIDCard *card) {
     TState *state = this;
     this->card = card;
 
+    /* do not handle empty cards */
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
             state = new_state_by_name(this, card->extdata[0]);
@@ -512,6 +514,7 @@ TState *TState_RadioPlay::handle_card(RFIDCard *card) {
     TState *state = this;
     this->card = card;
 
+    /* do not handle empty cards */
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
             state = new_state_by_name(this, card->extdata[0]);
@@ -584,6 +587,7 @@ TState *TState_Single::handle_card(RFIDCard *card) {
     TState *state = this;
     this->card = card;
 
+    /* do not handle empty cards */
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
             state = new_state_by_name(this, card->extdata[0]);
@@ -656,6 +660,7 @@ TState *TState_Album_Random::handle_card(RFIDCard *card) {
     TState *state = this;
     this->card = card;
 
+    /* do not handle empty cards */
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
             state = new_state_by_name(this, card->extdata[0]);
