@@ -113,11 +113,11 @@ int RFIDReader::read(RFIDCard *card) {
     for (size = 0; size < 4; size++)
         card->chip_id[size] = buffer[size];
 
-    for (size = 0; size < 10; size++)
-        card->extdata[size] = buffer[size];
-
     card->version    = buffer[0x4];
     card->card_mode  = buffer[0x5];
+
+    for (size = 0; size < 10; size++)
+        card->extdata[size] = buffer[0x6 + size];
 
     stop();
 
