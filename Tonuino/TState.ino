@@ -616,6 +616,9 @@ TState *TState_RadioPlay::handle_dfplay_event(mp3_notify_event event, uint16_t c
 }
 
 TState *TState_RadioPlay::loop() {
+    if (!is_playing() || !current_track || !current_folder)
+        playRandomTrack(card->extdata[1]);
+
     return this;
 }
 
@@ -626,7 +629,8 @@ TState_RadioPlay::TState_RadioPlay(TonUINO *context) {
 TState_RadioPlay::TState_RadioPlay(TState *last_state) {
     from_last_state(last_state);
     Serial.println(F("RadioPlay(last)"));
-    playRandomTrack(card->extdata[1]);
+    current_track = 0;
+    current_folder = 0;
 }
 
 TState_RadioPlay::~TState_RadioPlay() {
@@ -818,6 +822,7 @@ TState_Album_Random::~TState_Album_Random() {
 /*******************************
  * base class
  *******************************/
+/* TODO add option to clean some variables */
 void TState::from_last_state(TState *last_state) {
         this->card                     = last_state->card;
         this->context                  = last_state->context;
@@ -884,19 +889,19 @@ void TState::playFolderTrack(uint16_t folder, uint16_t track) {
 void TState::playRandomTrack(uint16_t folder) {
     uint16_t track;
 
+    context->get_dfplayer()->loop();
     if (!current_folder_track_num)
         current_folder_track_num = context->get_dfplayer()->getFolderTrackCount(folder);
 
-    track = random(1, current_folder_track_num + 1);
+    if (!current_folder_track_num)
+        track = 1;
+    else
+        track = random(1, current_folder_track_num + 1);
+
     if (track == current_track)
         ++track;
 
-    context->get_dfplayer()->playFolderTrack(folder, track);
-    last_command = MP3_CMD_FOLDER_TRACK;
-    current_folder = folder;
-    current_track = track;
-    /* TODO handle COM Errors etc */
-    delay(200);
+    playFolderTrack(folder, track);
 }
 
 void TState::stop() {
