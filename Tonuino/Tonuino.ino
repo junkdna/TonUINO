@@ -119,6 +119,9 @@ void TonUINO::notify_buttons(uint32_t _map)
 
 void TonUINO::notify_rfid(RFIDCard *card)
 {
+    /* TODO this might be stupid for mod cards we need to keep the current
+     * player card
+     */
     if (rfid_card)
         delete rfid_card;
 

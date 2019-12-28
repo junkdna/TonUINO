@@ -203,6 +203,7 @@ TState *TState_NewCard::handle_card(RFIDCard *new_card) {
     /* TODO do sane thing here */
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
+            /* TODO do we want to cancel NewCard here? */
             state = new_state_by_name(this, card->extdata[0]);
             break;
         default:
