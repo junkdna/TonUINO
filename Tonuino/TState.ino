@@ -102,10 +102,12 @@ TState *TState_Idle::loop() {
 /* this function is called in case we have no previous state */
 TState_Idle::TState_Idle(TonUINO *context) {
     this->context = context;
+    Serial.println(F("idle(context)"));
 }
 
 TState_Idle::TState_Idle(TState *last_state) {
     from_last_state(last_state);
+    Serial.println(F("idle(last)"));
 }
 
 TState_Idle::~TState_Idle() {
@@ -317,6 +319,7 @@ TState_NewCard::TState_NewCard(TonUINO *context) {
 
 TState_NewCard::TState_NewCard(TState *last_state) {
     uint32_t chip_id;
+    Serial.println(F("NewCard(last)"));
 
     from_last_state(last_state);
     menu_item = 0;
@@ -420,6 +423,8 @@ TState_Album::TState_Album(TonUINO *context) {
 
 TState_Album::TState_Album(TState *last_state) {
     from_last_state(last_state);
+    Serial.println(F("Album(last)"));
+    playFolderTrack(card->extdata[1], 1);
 }
 
 TState_Album::~TState_Album() {
@@ -521,6 +526,15 @@ TState_AudioBook::TState_AudioBook(TonUINO *context) {
 
 TState_AudioBook::TState_AudioBook(TState *last_state) {
     from_last_state(last_state);
+    Serial.println(F("AudioBook(last)"));
+    current_folder = card->extdata[1];
+    current_track = EEPROM.read(EEPROM_CFG_LEN + current_folder);
+    current_folder_track_num = context->get_dfplayer()->getFolderTrackCount(current_folder);
+    if (current_track > current_folder_track_num) {
+        current_track = 1;
+        EEPROM.write(EEPROM_CFG_LEN + current_folder, current_track);
+    }
+    playFolderTrack(current_folder, current_track);
 }
 
 TState_AudioBook::~TState_AudioBook() {
@@ -611,6 +625,8 @@ TState_RadioPlay::TState_RadioPlay(TonUINO *context) {
 
 TState_RadioPlay::TState_RadioPlay(TState *last_state) {
     from_last_state(last_state);
+    Serial.println(F("RadioPlay(last)"));
+    playRandomTrack(card->extdata[1]);
 }
 
 TState_RadioPlay::~TState_RadioPlay() {
@@ -701,6 +717,8 @@ TState_Single::TState_Single(TonUINO *context) {
 
 TState_Single::TState_Single(TState *last_state) {
     from_last_state(last_state);
+    Serial.println(F("Single(last)"));
+    playFolderTrack(card->extdata[1], card->extdata[2]);
 }
 
 TState_Single::~TState_Single() {
@@ -790,6 +808,8 @@ TState_Album_Random::TState_Album_Random(TonUINO *context) {
 
 TState_Album_Random::TState_Album_Random(TState *last_state) {
     from_last_state(last_state);
+    Serial.println(F("Album_Random(last)"));
+    playRandomTrack(card->extdata[1]);
 }
 
 TState_Album_Random::~TState_Album_Random() {
