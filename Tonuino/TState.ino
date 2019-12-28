@@ -54,9 +54,29 @@ TState *TState_Idle::handle_card(RFIDCard *card) {
 }
 
 TState *TState_Idle::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
-    (void)event;
     (void)code;
 
+    switch (event) {
+        case MP3_NOTIFY_ERROR:
+            /* TODO handle */
+            break;
+        case MP3_PLAY_FINISHED:
+            /* TODO should not be playing in idle state right, maybe second finish
+               after last track */
+            break;
+        case MP3_CARD_ONLINE:
+            /* TODO make helper */
+            break;
+        case MP3_CARD_INSERTED:
+            break;
+        case MP3_CARD_REMOVED:
+            current_track = 0;
+            current_folder = 0;
+            current_folder_track_num = 0;
+            break;
+        default:
+            break;
+    }
     return this;
 }
 
