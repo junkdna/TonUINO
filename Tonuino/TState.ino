@@ -245,7 +245,7 @@ TState *TState_NewCard::loop() {
     }
 
     if (state != this)
-        delete state;
+        delete this;
 
     return state;
 }
