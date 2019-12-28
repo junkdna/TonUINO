@@ -341,10 +341,26 @@ TState *TState_Album::handle_card(RFIDCard *card) {
 }
 
 TState *TState_Album::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
-    (void)event;
+    TState *state = this;
+
     (void)code;
 
-    return this;
+    switch (event) {
+        case MP3_NOTIFY_ERROR:
+            break;
+        case MP3_PLAY_FINISHED:
+            break;
+        case MP3_CARD_REMOVED:
+            state = new_state_by_name(this, STATE_IDLE);
+            break;
+        default:
+            break;
+    }
+
+    if (this != state)
+        delete this;
+
+    return state;
 }
 
 TState *TState_Album::loop() {
