@@ -49,8 +49,8 @@ public:
     uint8_t card_mode;
     uint8_t extdata[10];
 
-    void write() {reader->write(this);}
-    void read()  {reader->read(this);}
+    bool write() {return reader->write(this) >= 0;}
+    bool read()  {return reader->read(this) >= 0;}
     bool check(uint32_t chip_id) {
         return this->chip_id[0] == ((chip_id >>  0) & 0xff) &&
             this->chip_id[1] == ((chip_id >>  8) & 0xff) &&
