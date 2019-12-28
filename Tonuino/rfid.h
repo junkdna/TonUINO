@@ -25,6 +25,8 @@ class RFIDReader {
         MFRC522::MIFARE_Key keyA;
         MFRC522::MIFARE_Key keyB;
 
+        RFIDCard *current_card;
+
         byte sector;
         byte block_addr;
         byte trailer_block;

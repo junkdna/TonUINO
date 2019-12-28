@@ -5,6 +5,7 @@
  */
 
 #include <SPI.h>
+#include <MFRC522.h>
 
 #include "rfid.h"
 #include "tonuino.h"
@@ -21,7 +22,26 @@ int RFIDReader::write(RFIDCard *card) {
         card->extdata[4], card->extdata[5], card->extdata[6], card->extdata[7],
         card->extdata[8], card->extdata[9]
     };
+    byte dummy[4], dsz = sizeof(dummy);
     MFRC522::StatusCode status;
+
+    status = mfrc522->PICC_RequestA(dummy, &dsz);
+    Serial.print(F("PCD_RequestA() failed: "));
+    Serial.println(mfrc522->GetStatusCodeName(status));
+
+    status = mfrc522->PICC_WakeupA(dummy, &dsz);
+    Serial.print(F("PCD_WakeupA() failed: "));
+    Serial.println(mfrc522->GetStatusCodeName(status));
+
+    if (status != MFRC522::STATUS_OK) {
+        Serial.print(F("No card present"));
+        return -1;
+    }
+
+    if (!mfrc522->PICC_ReadCardSerial()) {
+        Serial.print(F("Failed to read card serial"));
+        return -1;
+    }
 
     Serial.print(F("Card UID:"));
     dump_byte_array(mfrc522->uid.uidByte, mfrc522->uid.size);
@@ -45,6 +65,8 @@ int RFIDReader::write(RFIDCard *card) {
     }
     Serial.println();
 
+    stop();
+
     return 0;
 }
 
@@ -52,7 +74,17 @@ int RFIDReader::read(RFIDCard *card) {
     MFRC522::StatusCode status;
     byte buffer[18], size = 18;
 
-    Serial.print(F("Card UID:"));
+    /* TODO maybe add wakeup if requested by caller */
+    if (!mfrc522->PICC_IsNewCardPresent()) {
+        return -1;
+    }
+
+    if (!mfrc522->PICC_ReadCardSerial()) {
+        Serial.print(F("Failed to read card serial"));
+        return -1;
+    }
+
+    Serial.print(F("Card UID: "));
     dump_byte_array(mfrc522->uid.uidByte, mfrc522->uid.size);
 
     Serial.print(F("PICC type: "));
@@ -87,6 +119,8 @@ int RFIDReader::read(RFIDCard *card) {
     card->version    = buffer[0x4];
     card->card_mode  = buffer[0x5];
 
+    stop();
+
     return 0;
 }
 
@@ -102,22 +136,17 @@ void RFIDReader::setup(TonUINO *tonuino) {
 }
 
 void RFIDReader::loop() {
-    if (!mfrc522->PICC_IsNewCardPresent())
-        return;
-
-    if (!mfrc522->PICC_ReadCardSerial())
-        return;
-
-    RFIDCard *card = new RFIDCard(this);
-    if (!card)
-        return;
-
-    if (!card->read()) {
-        delete card;
-        return;
+    if (!current_card) {
+        current_card = new RFIDCard(this);
+        if (!current_card)
+            return;
     }
 
-    tonuino->notify_rfid(card);
+    if (!current_card->read())
+        return;
+
+    tonuino->notify_rfid(current_card);
+    current_card = nullptr;
 }
 
 void RFIDReader::stop() {
