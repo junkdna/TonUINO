@@ -194,7 +194,7 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
             } else if (button_released(_map, BUTTON_PAUSE)) {
                 menu_item = 250;
                 if (card)
-                    card->extdata[3] = selected_value;
+                    card->extdata[2] = selected_value;
                 selected_value = 0;
                 stop();
             }
