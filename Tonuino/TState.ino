@@ -354,8 +354,8 @@ TState *TState_Album::handle_buttons(uint32_t _map) {
     } else if (button_vol_down(_map)) {
         volume_down();
     } else if (button_released(_map, BUTTON_PAUSE)) {
-        state = new_state_by_name(this, STATE_IDLE);
         pause();
+        state = new_state_by_name(this, STATE_IDLE);
     }
 
     if (state != this)
@@ -391,7 +391,7 @@ TState *TState_Album::handle_dfplay_event(mp3_notify_event event, uint16_t code)
             /* TODO handle */
             break;
         case MP3_PLAY_FINISHED:
-            /* TODO handle */
+            next();
             break;
         case MP3_CARD_ONLINE:
             /* TODO should not happen */
@@ -431,10 +431,38 @@ TState_Album::~TState_Album() {
 /*******************************
  * state AudioBook
  *******************************/
-TState *TState_AudioBook::handle_buttons(uint32_t _map) {
-    (void)_map;
+void TState_AudioBook::next() {
+    TState::next();
+    /* TODO add option to save progress on RFID card */
+    EEPROM.write(EEPROM_CFG_LEN + current_folder, current_track);
+}
 
-    return this;
+void TState_AudioBook::prev() {
+    TState::prev();
+    /* TODO add option to save progress on RFID card */
+    EEPROM.write(EEPROM_CFG_LEN + current_folder, current_track);
+}
+
+TState *TState_AudioBook::handle_buttons(uint32_t _map) {
+    TState *state = this;
+
+    if (button_next(_map)) {
+        next();
+    } else if (button_prev(_map)) {
+        prev();
+    } else if (button_vol_up(_map)) {
+        volume_up();
+    } else if (button_vol_down(_map)) {
+        volume_down();
+    } else if (button_released(_map, BUTTON_PAUSE)) {
+        pause();
+        state = new_state_by_name(this, STATE_IDLE);
+    }
+
+    if (state != this)
+        delete this;
+
+    return state;
 }
 
 TState *TState_AudioBook::handle_card(RFIDCard *card) {
@@ -464,7 +492,7 @@ TState *TState_AudioBook::handle_dfplay_event(mp3_notify_event event, uint16_t c
             /* TODO handle */
             break;
         case MP3_PLAY_FINISHED:
-            /* TODO handle */
+            next();
             break;
         case MP3_CARD_ONLINE:
             /* TODO should not happen */
@@ -505,9 +533,25 @@ TState_AudioBook::~TState_AudioBook() {
  * state RadioPlay
  *******************************/
 TState *TState_RadioPlay::handle_buttons(uint32_t _map) {
-    (void)_map;
+    TState *state = this;
 
-    return this;
+    if (button_next(_map)) {
+        /* ignore next button */
+    } else if (button_prev(_map)) {
+        playFolderTrack(current_folder, current_track);
+    } else if (button_vol_up(_map)) {
+        volume_up();
+    } else if (button_vol_down(_map)) {
+        volume_down();
+    } else if (button_released(_map, BUTTON_PAUSE)) {
+        pause();
+        state = new_state_by_name(this, STATE_IDLE);
+    }
+
+    if (state != this)
+        delete this;
+
+    return state;
 }
 
 TState *TState_RadioPlay::handle_card(RFIDCard *card) {
@@ -537,7 +581,8 @@ TState *TState_RadioPlay::handle_dfplay_event(mp3_notify_event event, uint16_t c
             /* TODO handle */
             break;
         case MP3_PLAY_FINISHED:
-            /* TODO handle */
+            /* do not play another track, goto idle state instead */
+            state = new_state_by_name(this, STATE_IDLE);
             break;
         case MP3_CARD_ONLINE:
             /* TODO should not happen */
@@ -578,9 +623,25 @@ TState_RadioPlay::~TState_RadioPlay() {
  * state Single
  *******************************/
 TState *TState_Single::handle_buttons(uint32_t _map) {
-    (void)_map;
+    TState *state = this;
 
-    return this;
+    if (button_next(_map)) {
+        /* ignore next button */
+    } else if (button_prev(_map)) {
+        playFolderTrack(current_folder, current_track);
+    } else if (button_vol_up(_map)) {
+        volume_up();
+    } else if (button_vol_down(_map)) {
+        volume_down();
+    } else if (button_released(_map, BUTTON_PAUSE)) {
+        pause();
+        state = new_state_by_name(this, STATE_IDLE);
+    }
+
+    if (state != this)
+        delete this;
+
+    return state;
 }
 
 TState *TState_Single::handle_card(RFIDCard *card) {
@@ -610,7 +671,8 @@ TState *TState_Single::handle_dfplay_event(mp3_notify_event event, uint16_t code
             /* TODO handle */
             break;
         case MP3_PLAY_FINISHED:
-            /* TODO handle */
+            /* do not play another track goto idle state instead */
+            state = new_state_by_name(this, STATE_IDLE);
             break;
         case MP3_CARD_ONLINE:
             /* TODO should not happen */
@@ -651,9 +713,25 @@ TState_Single::~TState_Single() {
  * state Album_Random
  *******************************/
 TState *TState_Album_Random::handle_buttons(uint32_t _map) {
-    (void)_map;
+    TState *state = this;
 
-    return this;
+    if (button_next(_map)) {
+        playRandomTrack(current_folder);
+    } else if (button_prev(_map)) {
+        playFolderTrack(current_folder, current_track);
+    } else if (button_vol_up(_map)) {
+        volume_up();
+    } else if (button_vol_down(_map)) {
+        volume_down();
+    } else if (button_released(_map, BUTTON_PAUSE)) {
+        pause();
+        state = new_state_by_name(this, STATE_IDLE);
+    }
+
+    if (state != this)
+        delete this;
+
+    return state;
 }
 
 TState *TState_Album_Random::handle_card(RFIDCard *card) {
@@ -683,7 +761,7 @@ TState *TState_Album_Random::handle_dfplay_event(mp3_notify_event event, uint16_
             /* TODO handle */
             break;
         case MP3_PLAY_FINISHED:
-            /* TODO handle */
+            playRandomTrack(current_folder);
             break;
         case MP3_CARD_ONLINE:
             /* TODO should not happen */

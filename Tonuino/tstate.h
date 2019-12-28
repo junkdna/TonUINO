@@ -134,6 +134,8 @@ class TState_Album_Random : public TState {
 
 class TState_AudioBook : public TState {
     protected:
+        void next();
+        void prev();
 
     public:
         TState *handle_buttons(uint32_t _map);
