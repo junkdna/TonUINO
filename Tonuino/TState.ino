@@ -634,6 +634,24 @@ void TState::playFolderTrack(uint16_t folder, uint16_t track) {
     delay(200);
 }
 
+void TState::playRandomTrack(uint16_t folder) {
+    uint16_t track;
+
+    if (!current_folder_track_num)
+        current_folder_track_num = context->get_dfplayer()->getFolderTrackCount(folder);
+
+    track = random(1, current_folder_track_num + 1);
+    if (track == current_track)
+        ++track;
+
+    context->get_dfplayer()->playFolderTrack(folder, track);
+    last_command = MP3_CMD_FOLDER_TRACK;
+    current_folder = folder;
+    current_track = track;
+    /* TODO handle COM Errors etc */
+    delay(200);
+}
+
 void TState::stop() {
     context->get_dfplayer()->stop();
     last_command = MP3_CMD_STOP;

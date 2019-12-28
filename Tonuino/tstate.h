@@ -46,6 +46,7 @@ class TState {
         void playAdvertTrack(uint16_t track);
         void playMP3Track(uint16_t track);
         void playFolderTrack(uint16_t folder, uint16_t track);
+        void playRandomTrack(uint16_t folder);
         void pause();
         void start();
         void stop();
