@@ -54,6 +54,9 @@ TState *TState_Idle::handle_card(RFIDCard *card) {
 }
 
 TState *TState_Idle::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
+    (void)event;
+    (void)code;
+
     return this;
 }
 
@@ -193,6 +196,8 @@ TState *TState_NewCard::handle_card(RFIDCard *new_card) {
 }
 
 TState *TState_NewCard::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
+    (void)event;
+    (void)code;
 
     return this;
 }
@@ -201,7 +206,7 @@ TState *TState_NewCard::run() {
     TState *state = this;
 
     if (!card)
-        return;
+        return state;
 
     switch (menu_item) {
         case 0:
@@ -247,6 +252,7 @@ TState *TState_NewCard::run() {
 
 
 TState_NewCard::TState_NewCard(TonUINO *context) {
+    this->context = context;
 }
 
 TState_NewCard::TState_NewCard(TState *last_state) {
@@ -276,18 +282,19 @@ TState_NewCard::~TState_NewCard() {
  *******************************/
 TState *TState_Album::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
     TState *state = this;
+    (void)pressed;
 
     if (released & (1 << BUTTON_UP)) {
-        context->get_dfplayer()->nextTrack();
+        next();
     } else if (released & (1 << BUTTON_DOWN)) {
-        context->get_dfplayer()->prevTrack();
+        prev();
     } else if (long_pressed & (1 << BUTTON_UP)) {
         volume_up();
     } else if (long_pressed & (1 << BUTTON_DOWN)) {
         volume_down();
     } else if (released & (1 << BUTTON_PAUSE)) {
         state = new_state_by_name(this, STATE_IDLE);
-        context->get_dfplayer()->pause();
+        pause();
     }
 
     if (state != this)
@@ -313,6 +320,9 @@ TState *TState_Album::handle_card(RFIDCard *card) {
 }
 
 TState *TState_Album::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
+    (void)event;
+    (void)code;
+
     return this;
 }
 
@@ -321,11 +331,11 @@ TState *TState_Album::run() {
 }
 
 TState_Album::TState_Album(TonUINO *context) {
+    this->context = context;
 }
 
 TState_Album::TState_Album(TState *last_state) {
     from_last_state(last_state);
-    Serial.println(F("album(last_state)"));
 }
 
 TState_Album::~TState_Album() {
@@ -336,6 +346,10 @@ TState_Album::~TState_Album() {
  * state AudioBook
  *******************************/
 TState *TState_AudioBook::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
+    (void)pressed;
+    (void)released;
+    (void)long_pressed;
+
     return this;
 }
 
@@ -356,6 +370,9 @@ TState *TState_AudioBook::handle_card(RFIDCard *card) {
 }
 
 TState *TState_AudioBook::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
+    (void)event;
+    (void)code;
+
     return this;
 }
 
@@ -364,6 +381,7 @@ TState *TState_AudioBook::run() {
 }
 
 TState_AudioBook::TState_AudioBook(TonUINO *context) {
+    this->context = context;
 }
 
 TState_AudioBook::TState_AudioBook(TState *last_state) {
@@ -378,6 +396,10 @@ TState_AudioBook::~TState_AudioBook() {
  * state RadioPlay
  *******************************/
 TState *TState_RadioPlay::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
+    (void)pressed;
+    (void)released;
+    (void)long_pressed;
+
     return this;
 }
 
@@ -398,6 +420,9 @@ TState *TState_RadioPlay::handle_card(RFIDCard *card) {
 }
 
 TState *TState_RadioPlay::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
+    (void)event;
+    (void)code;
+
     return this;
 }
 
@@ -406,6 +431,7 @@ TState *TState_RadioPlay::run() {
 }
 
 TState_RadioPlay::TState_RadioPlay(TonUINO *context) {
+    this->context = context;
 }
 
 TState_RadioPlay::TState_RadioPlay(TState *last_state) {
@@ -420,6 +446,10 @@ TState_RadioPlay::~TState_RadioPlay() {
  * state Single
  *******************************/
 TState *TState_Single::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
+    (void)pressed;
+    (void)released;
+    (void)long_pressed;
+
     return this;
 }
 
@@ -440,6 +470,9 @@ TState *TState_Single::handle_card(RFIDCard *card) {
 }
 
 TState *TState_Single::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
+    (void)event;
+    (void)code;
+
     return this;
 }
 
@@ -448,6 +481,7 @@ TState *TState_Single::run() {
 }
 
 TState_Single::TState_Single(TonUINO *context) {
+    this->context = context;
 }
 
 TState_Single::TState_Single(TState *last_state) {
@@ -462,6 +496,10 @@ TState_Single::~TState_Single() {
  * state Album_Random
  *******************************/
 TState *TState_Album_Random::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
+    (void)pressed;
+    (void)released;
+    (void)long_pressed;
+
     return this;
 }
 
@@ -482,6 +520,9 @@ TState *TState_Album_Random::handle_card(RFIDCard *card) {
 }
 
 TState *TState_Album_Random::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
+    (void)event;
+    (void)code;
+
     return this;
 }
 
@@ -490,6 +531,7 @@ TState *TState_Album_Random::run() {
 }
 
 TState_Album_Random::TState_Album_Random(TonUINO *context) {
+    this->context = context;
 }
 
 TState_Album_Random::TState_Album_Random(TState *last_state) {
@@ -505,6 +547,10 @@ TState_Album_Random::~TState_Album_Random() {
  * state Global
  *******************************/
 TState *TState_Global::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
+    (void)pressed;
+    (void)released;
+    (void)long_pressed;
+
     return this;
 }
 
@@ -525,6 +571,9 @@ TState *TState_Global::handle_card(RFIDCard *card) {
 }
 
 TState *TState_Global::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
+    (void)event;
+    (void)code;
+
     return this;
 }
 
@@ -533,6 +582,7 @@ TState *TState_Global::run() {
 }
 
 TState_Global::TState_Global(TonUINO *context) {
+    this->context = context;
 }
 
 TState_Global::TState_Global(TState *last_state) {
@@ -547,6 +597,10 @@ TState_Global::~TState_Global() {
  * state Global_Random
  *******************************/
 TState *TState_Global_Random::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
+    (void)pressed;
+    (void)released;
+    (void)long_pressed;
+
     return this;
 }
 
@@ -567,6 +621,9 @@ TState *TState_Global_Random::handle_card(RFIDCard *card) {
 }
 
 TState *TState_Global_Random::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
+    (void)event;
+    (void)code;
+
     return this;
 }
 
@@ -575,6 +632,7 @@ TState *TState_Global_Random::run() {
 }
 
 TState_Global_Random::TState_Global_Random(TonUINO *context) {
+    this->context = context;
 }
 
 TState_Global_Random::TState_Global_Random(TState *last_state) {
@@ -609,40 +667,60 @@ void TState::volume_down() {
 }
 
 void TState::volume_set(uint8_t vol) {
-    if (vol > MAX_VOLUME && vol < MIN_VOLUME)
+    if (vol > context->get_config().max_volume && vol < context->get_config().min_volume)
         return;
 
     current_volume = vol;
     context->get_dfplayer()->setVolume(current_volume);
+    delay(200);
     last_command = MP3_CMD_SET_VOL;
 }
 
 void TState::playMP3Track(uint16_t track) {
     context->get_dfplayer()->playMp3FolderTrack(track);
+    last_command = MP3_CMD_MP3_TRACK;
     /* TODO handle COM Errors etc */
     delay(200);
 }
 
 void TState::playFolderTrack(uint16_t folder, uint16_t track) {
     context->get_dfplayer()->playFolderTrack(folder, track);
+    last_command = MP3_CMD_FOLDER_TRACK;
     /* TODO handle COM Errors etc */
     delay(200);
 }
 
 void TState::stop() {
     context->get_dfplayer()->stop();
+    last_command = MP3_CMD_STOP;
     /* TODO handle COM Errors etc */
     delay(200);
 }
 
 void TState::pause() {
     context->get_dfplayer()->pause();
+    last_command = MP3_CMD_PAUSE;
     /* TODO handle COM Errors etc */
     delay(200);
 }
 
 void TState::start() {
     context->get_dfplayer()->pause();
+    last_command = MP3_CMD_START;
+    /* TODO handle COM Errors etc */
+    delay(200);
+}
+
+void TState::next() {
+    context->get_dfplayer()->nextTrack();
+    last_command = MP3_CMD_NEXT;
+    /* TODO handle COM Errors etc */
+    delay(200);
+}
+
+void TState::prev() {
+    context->get_dfplayer()->prevTrack();
+    last_command = MP3_CMD_PREV;
     /* TODO handle COM Errors etc */
     delay(200);
 }

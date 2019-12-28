@@ -16,6 +16,20 @@ class RFIDCard;
 #define STATE_AUDIO_BOOK    5
 #define STATE_ADMIN         6
 
+enum mp3_command {
+    MP3_CMD_NONE,
+    MP3_CMD_RESET,
+    MP3_CMD_SET_VOL,
+    MP3_CMD_MP3_TRACK,
+    MP3_CMD_FOLDER_TRACK,
+    MP3_CMD_PAUSE,
+    MP3_CMD_START,
+    MP3_CMD_STOP,
+    MP3_CMD_NEXT,
+    MP3_CMD_PREV,
+};
+
+
 class TState {
     protected:
         TonUINO *context;
@@ -34,6 +48,8 @@ class TState {
         void pause();
         void start();
         void stop();
+        void next();
+        void prev();
 
     public:
         void volume_up();

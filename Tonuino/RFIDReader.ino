@@ -108,6 +108,7 @@ void RFIDReader::setup(TonUINO *tonuino) {
 void RFIDReader::loop() {
     if (!mfrc522->PICC_IsNewCardPresent())
         return;
+
     if (!mfrc522->PICC_ReadCardSerial())
         return;
 

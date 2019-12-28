@@ -9,7 +9,7 @@
 
 
 #define EEPROM_MAGIC    0x5a5f5059
-#define EEPROM_VERSION  1
+#define EEPROM_VERSION  2
 #define EEPROM_CFG_SIZE 9
 #define EEPROM_CFG_LEN  128
 
@@ -55,10 +55,6 @@ enum mp3_notify_event {
     MP3_USB_REMOVED,
 };
 
-enum mp3_command {
-    MP3_CMD_SET_VOL,
-};
-
 class Mp3Notify;
 class RFIDCard;
 class RFIDReader;
@@ -69,6 +65,8 @@ public:
     uint32_t magic;
     uint8_t  version;
     uint32_t id;
+    uint8_t  max_volume;
+    uint8_t  min_volume;
 
     void write();
     void read();

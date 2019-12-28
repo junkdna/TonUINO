@@ -50,6 +50,8 @@ void EEPROM_Config::init() {
     magic = EEPROM_MAGIC;
     version = EEPROM_VERSION;
     id = 0xad000000 | random(0x01000000);
+    max_volume = MAX_VOLUME;
+    min_volume = MIN_VOLUME;
 
     Serial.print("New Chip ID ");
     Serial.println(id);
