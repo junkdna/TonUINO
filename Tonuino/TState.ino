@@ -4,6 +4,7 @@
  * Copyright 2019 Tillmann Heidsieck <theidsieck@leenox.de>
  */
 
+#include "buttons.h"
 #include "tonuino.h"
 #include "tstate.h"
 #include "rfid.h"
@@ -11,17 +12,16 @@
 /*******************************
  * state Idle
  *******************************/
-TState *TState_Idle::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
+TState *TState_Idle::handle_buttons(uint32_t _map) {
     TState *state = this;
-    (void)pressed;
 
-    if (released & (1 << BUTTON_UP)) {
-    } else if (released & (1 << BUTTON_DOWN)) {
-    } else if (long_pressed & (1 << BUTTON_UP)) {
+    if (button_released(_map, BUTTON_UP)) {
+    } else if (button_released(_map, BUTTON_DOWN)) {
+    } else if (button_long_pressed(_map, BUTTON_UP)) {
         volume_up();
-    } else if (long_pressed & (1 << BUTTON_DOWN)) {
+    } else if (button_long_pressed(_map, BUTTON_DOWN)) {
         volume_down();
-    } else if (released & (1 << BUTTON_PAUSE)) {
+    } else if (button_released(_map, BUTTON_PAUSE)) {
         if (card && card->card_mode == CARD_MODE_PLAYER) {
             state = new_state_by_name(this, card->extdata[0]);
             start();
@@ -80,30 +80,29 @@ TState_Idle::~TState_Idle() {
 /*******************************
  * state Menu
  *******************************/
-TState *TState_NewCard::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
+TState *TState_NewCard::handle_buttons(uint32_t _map) {
     TState *state = this;
-    (void)pressed;
 
     switch (menu_item) {
         case 0:
             /* select folder */
-            if (released & (1 << BUTTON_UP)) {
+            if (button_released(_map, BUTTON_UP)) {
                 ++selected_value;
                 playMP3Track(selected_value);
                 preview = 1;
-            } else if (released & (1 << BUTTON_DOWN)) {
+            } else if (button_released(_map, BUTTON_DOWN)) {
                 --selected_value;
                 playMP3Track(selected_value);
                 preview = 1;
-            } else if (long_pressed & (1 << BUTTON_UP)) {
+            } else if (button_long_pressed(_map, BUTTON_UP)) {
                 selected_value += 10;
                 playMP3Track(selected_value);
                 preview = 1;
-            } else if (long_pressed & (1 << BUTTON_DOWN)) {
+            } else if (button_long_pressed(_map, BUTTON_DOWN)) {
                 selected_value -= 10;
                 playMP3Track(selected_value);
                 preview = 1;
-            } else if (released & (1 << BUTTON_PAUSE)) {
+            } else if (button_released(_map, BUTTON_PAUSE)) {
                 ++menu_item;
                 card->extdata[1] = selected_value;
                 selected_value = 0;
@@ -113,19 +112,19 @@ TState *TState_NewCard::handle_buttons(uint8_t pressed, uint8_t released, uint8_
             break;
         case 1:
             /* select mode */
-            if (released & (1 << BUTTON_UP)) {
+            if (button_released(_map, BUTTON_UP)) {
                 ++selected_value;
                 playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
-            } else if (released & (1 << BUTTON_DOWN)) {
+            } else if (button_released(_map, BUTTON_DOWN)) {
                 --selected_value;
                 playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
-            } else if (long_pressed & (1 << BUTTON_UP)) {
+            } else if (button_long_pressed(_map, BUTTON_UP)) {
                 selected_value += 10;
                 playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
-            } else if (long_pressed & (1 << BUTTON_DOWN)) {
+            } else if (button_long_pressed(_map, BUTTON_DOWN)) {
                 selected_value -= 10;
                 playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
-            } else if (released & (1 << BUTTON_PAUSE)) {
+            } else if (button_released(_map, BUTTON_PAUSE)) {
                 stop();
                 if (selected_value != STATE_SINGLE) {
                     menu_item = 250;
@@ -141,23 +140,23 @@ TState *TState_NewCard::handle_buttons(uint8_t pressed, uint8_t released, uint8_
             break;
         case 2:
             /* select track */
-            if (released & (1 << BUTTON_UP)) {
+            if (button_released(_map, BUTTON_UP)) {
                 ++selected_value;
                 playMP3Track(selected_value);
                 preview = 1;
-            } else if (released & (1 << BUTTON_DOWN)) {
+            } else if (button_released(_map, BUTTON_DOWN)) {
                 --selected_value;
                 playMP3Track(selected_value);
                 preview = 1;
-            } else if (long_pressed & (1 << BUTTON_UP)) {
+            } else if (button_long_pressed(_map, BUTTON_UP)) {
                 selected_value += 10;
                 playMP3Track(selected_value);
                 preview = 1;
-            } else if (long_pressed & (1 << BUTTON_DOWN)) {
+            } else if (button_long_pressed(_map, BUTTON_DOWN)) {
                 selected_value -= 10;
                 playMP3Track(selected_value);
                 preview = 1;
-            } else if (released & (1 << BUTTON_PAUSE)) {
+            } else if (button_released(_map, BUTTON_PAUSE)) {
                 menu_item = 250;
                 if (card)
                     card->extdata[3] = selected_value;
@@ -280,19 +279,18 @@ TState_NewCard::~TState_NewCard() {
 /*******************************
  * state Album
  *******************************/
-TState *TState_Album::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
+TState *TState_Album::handle_buttons(uint32_t _map) {
     TState *state = this;
-    (void)pressed;
 
-    if (released & (1 << BUTTON_UP)) {
+    if (button_released(_map, BUTTON_UP)) {
         next();
-    } else if (released & (1 << BUTTON_DOWN)) {
+    } else if (button_released(_map, BUTTON_DOWN)) {
         prev();
-    } else if (long_pressed & (1 << BUTTON_UP)) {
+    } else if (button_long_pressed(_map, BUTTON_UP)) {
         volume_up();
-    } else if (long_pressed & (1 << BUTTON_DOWN)) {
+    } else if (button_long_pressed(_map, BUTTON_DOWN)) {
         volume_down();
-    } else if (released & (1 << BUTTON_PAUSE)) {
+    } else if (button_released(_map, BUTTON_PAUSE)) {
         state = new_state_by_name(this, STATE_IDLE);
         pause();
     }
@@ -345,10 +343,8 @@ TState_Album::~TState_Album() {
 /*******************************
  * state AudioBook
  *******************************/
-TState *TState_AudioBook::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
-    (void)pressed;
-    (void)released;
-    (void)long_pressed;
+TState *TState_AudioBook::handle_buttons(uint32_t _map) {
+    (void)_map;
 
     return this;
 }
@@ -395,10 +391,8 @@ TState_AudioBook::~TState_AudioBook() {
 /*******************************
  * state RadioPlay
  *******************************/
-TState *TState_RadioPlay::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
-    (void)pressed;
-    (void)released;
-    (void)long_pressed;
+TState *TState_RadioPlay::handle_buttons(uint32_t _map) {
+    (void)_map;
 
     return this;
 }
@@ -445,10 +439,8 @@ TState_RadioPlay::~TState_RadioPlay() {
 /*******************************
  * state Single
  *******************************/
-TState *TState_Single::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
-    (void)pressed;
-    (void)released;
-    (void)long_pressed;
+TState *TState_Single::handle_buttons(uint32_t _map) {
+    (void)_map;
 
     return this;
 }
@@ -495,10 +487,8 @@ TState_Single::~TState_Single() {
 /*******************************
  * state Album_Random
  *******************************/
-TState *TState_Album_Random::handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed) {
-    (void)pressed;
-    (void)released;
-    (void)long_pressed;
+TState *TState_Album_Random::handle_buttons(uint32_t _map) {
+    (void)_map;
 
     return this;
 }

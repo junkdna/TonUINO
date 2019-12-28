@@ -58,7 +58,7 @@ class TState {
 
         bool is_playing() {return !digitalRead(BUSY_PIN);}
 
-        virtual TState *handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed) = 0;
+        virtual TState *handle_buttons(uint32_t _map) = 0;
         virtual TState *handle_card(RFIDCard *card) = 0;
         virtual TState *handle_dfplay_event(mp3_notify_event event, uint16_t code) = 0;
         virtual TState *loop() = 0;
@@ -75,7 +75,7 @@ class TState_Idle : public TState {
     protected:
 
     public:
-        TState *handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
+        TState *handle_buttons(uint32_t _map);
         TState *handle_card(RFIDCard *card);
         TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
         TState *loop();
@@ -92,7 +92,7 @@ class TState_NewCard : public TState {
         uint8_t preview;
 
     public:
-        TState *handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
+        TState *handle_buttons(uint32_t _map);
         TState *handle_card(RFIDCard *card);
         TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
         TState *loop();
@@ -106,7 +106,7 @@ class TState_Album : public TState {
     protected:
 
     public:
-        TState *handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
+        TState *handle_buttons(uint32_t _map);
         TState *handle_card(RFIDCard *card);
         TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
         TState *loop();
@@ -120,7 +120,7 @@ class TState_Album_Random : public TState {
     protected:
 
     public:
-        TState *handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
+        TState *handle_buttons(uint32_t _map);
         TState *handle_card(RFIDCard *card);
         TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
         TState *loop();
@@ -134,7 +134,7 @@ class TState_AudioBook : public TState {
     protected:
 
     public:
-        TState *handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
+        TState *handle_buttons(uint32_t _map);
         TState *handle_card(RFIDCard *card);
         TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
         TState *loop();
@@ -148,7 +148,7 @@ class TState_RadioPlay : public TState {
     protected:
 
     public:
-        TState *handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
+        TState *handle_buttons(uint32_t _map);
         TState *handle_card(RFIDCard *card);
         TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
         TState *loop();
@@ -162,7 +162,7 @@ class TState_Single : public TState {
     protected:
 
     public:
-        TState *handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
+        TState *handle_buttons(uint32_t _map);
         TState *handle_card(RFIDCard *card);
         TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
         TState *loop();

@@ -81,9 +81,7 @@ class TonUINO {
         TState *state;
         RFIDCard *rfid_card;
 
-        uint8_t buttons_pressed = 0;
-        uint8_t buttons_released = 0;
-        uint8_t buttons_long_press = 0;
+        uint32_t button_map = 0;
 
     public:
         DFMiniMp3<SoftwareSerial, Mp3Notify>* get_dfplayer();
@@ -92,7 +90,7 @@ class TonUINO {
         void loop();
 
         /* this goes into the state */
-        void notify_buttons(uint8_t pressed, uint8_t released, uint8_t long_pressed);
+        void notify_buttons(uint32_t _map);
 
         void notify_rfid(RFIDCard *rfid_card);
         void notify_mp3(mp3_notify_event event, uint16_t code);
