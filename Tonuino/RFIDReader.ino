@@ -171,4 +171,23 @@ RFIDReader::RFIDReader(MFRC522 *mfrc522) : mfrc522(mfrc522) {
     sector = block_addr / 4;
     trailer_block = block_addr + 3;
 }
+
+bool RFIDCard::check(uint32_t _id) {
+    if (chip_id[0] != ((_id >>  0) & 0xff))
+        return false;
+
+    if (chip_id[1] != ((_id >>  8) & 0xff))
+        return false;
+
+    if (chip_id[2] != ((_id >> 16) & 0xff))
+        return false;
+
+    if (chip_id[3] != ((_id >> 24) & 0xff))
+        return false;
+
+    if (version != CARD_VERSION)
+        return false;
+
+    return true;
+}
 // vim: ts=4 sw=4 et cindent
