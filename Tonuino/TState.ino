@@ -102,8 +102,6 @@ TState *TState_Idle::loop() {
 /* this function is called in case we have no previous state */
 TState_Idle::TState_Idle(TonUINO *context) {
     this->context = context;
-
-    volume_set(INITIAL_VOLUME);
 }
 
 TState_Idle::TState_Idle(TState *last_state) {
@@ -826,12 +824,14 @@ void TState::volume_set(uint8_t vol) {
     }
 
     Serial.print(F("Setting new volume "));
-    Serial.println(vol);
+    Serial.print(vol);
 
     current_volume = vol;
     context->get_dfplayer()->setVolume(current_volume);
     delay(200);
     last_command = MP3_CMD_SET_VOL;
+
+    Serial.println(F(" ... done"));
 }
 
 void TState::playMP3Track(uint16_t track) {

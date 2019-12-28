@@ -111,6 +111,7 @@ void TonUINO::setup(DFMiniMp3<SoftwareSerial, Mp3Notify>* dfp) {
     }
 
     state = new TState_Idle(&tonuino);
+    state->volume_set(INITIAL_VOLUME);
 
     if ((button_map & 0x7) == 0x7) {
         /* reset */
