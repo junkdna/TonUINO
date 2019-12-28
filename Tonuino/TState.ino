@@ -565,8 +565,14 @@ void TState::volume_down() {
 }
 
 void TState::volume_set(uint8_t vol) {
-    if (vol > context->get_config().max_volume && vol < context->get_config().min_volume)
+    if (vol > context->get_config().max_volume && vol < context->get_config().min_volume) {
+        Serial.print(vol);
+        Serial.println(F(" is out of configured range"));
         return;
+    }
+
+    Serial.print(F("Setting new volume "));
+    Serial.println(vol);
 
     current_volume = vol;
     context->get_dfplayer()->setVolume(current_volume);
