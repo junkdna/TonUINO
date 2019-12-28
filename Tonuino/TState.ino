@@ -933,7 +933,11 @@ void TState::next() {
         return;
 #endif
 
+#if 0
     context->get_dfplayer()->nextTrack();
+#else
+    playFolderTrack(current_folder, current_track);
+#endif
     last_command = MP3_CMD_NEXT;
     /* TODO handle COM Errors etc */
     delay(200);
@@ -942,7 +946,11 @@ void TState::next() {
 void TState::prev() {
     --current_track;
     current_track %= current_folder_track_num;
+#if 0
     context->get_dfplayer()->prevTrack();
+#else
+    playFolderTrack(current_folder, current_track);
+#endif
     last_command = MP3_CMD_PREV;
     /* TODO handle COM Errors etc */
     delay(200);
