@@ -670,7 +670,7 @@ void TState::pause() {
 }
 
 void TState::start() {
-    context->get_dfplayer()->pause();
+    context->get_dfplayer()->start();
     last_command = MP3_CMD_START;
     /* TODO handle COM Errors etc */
     delay(200);
