@@ -53,6 +53,7 @@ int RFIDReader::write(RFIDCard *card) {
     Serial.println(F("Authenticating again using key B..."));
     status = mfrc522->PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_B, trailer_block, &keyB, &(mfrc522->uid));
     if (status != MFRC522::STATUS_OK) {
+        stop();
         Serial.print(F("PCD_Authenticate() failed: "));
         Serial.println(mfrc522->GetStatusCodeName(status));
         return -1;
@@ -60,6 +61,7 @@ int RFIDReader::write(RFIDCard *card) {
 
     status = mfrc522->MIFARE_Write(block_addr, buffer, 16);
     if (status != MFRC522::STATUS_OK) {
+        stop();
         Serial.print(F("MIFARE_Write() failed: "));
         return -1;
     }
@@ -94,6 +96,7 @@ int RFIDReader::read(RFIDCard *card) {
     Serial.println(F("Authenticating using key A..."));
     status = mfrc522->PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, trailer_block, &keyA, &(mfrc522->uid));
     if (status != MFRC522::STATUS_OK) {
+        stop();
         Serial.print(F("PCD_Authenticate() failed: "));
         Serial.println(mfrc522->GetStatusCodeName(status));
         return -1;
@@ -105,6 +108,7 @@ int RFIDReader::read(RFIDCard *card) {
 
     status = mfrc522->MIFARE_Read(block_addr, buffer, &size);
     if (status != MFRC522::STATUS_OK) {
+        stop();
         Serial.print(F("MIFARE_Read() failed: "));
         Serial.println(mfrc522->GetStatusCodeName(status));
         return -1;
