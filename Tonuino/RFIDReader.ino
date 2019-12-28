@@ -134,9 +134,9 @@ void RFIDReader::dump_byte_array(byte *buffer, byte buffer_size) {
 }
 
 RFIDReader::RFIDReader(MFRC522 *mfrc522) : mfrc522(mfrc522) {
-    sector = 1;
     block_addr = 4;
-    trailer_block = 7;
+    sector = block_addr / 4;
+    trailer_block = block_addr + 3;
 }
 
 // vim: ts=4 sw=4 et cindent
