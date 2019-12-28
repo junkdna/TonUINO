@@ -172,35 +172,5 @@ class TState_Single : public TState {
         ~TState_Single();
 };
 
-#if 0
-class TState_Global : public TState {
-    protected:
-
-    public:
-        TState *handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
-        TState *handle_card(RFIDCard *card);
-        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
-        TState *run();
-
-        TState_Global(TonUINO *context);
-        TState_Global(TState *last_state);
-        ~TState_Global();
-};
-
-class TState_Global_Random : public TState {
-    protected:
-
-    public:
-        TState *handle_buttons(uint8_t pressed, uint8_t released, uint8_t long_ressed);
-        TState *handle_card(RFIDCard *card);
-        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
-        TState *run();
-
-        TState_Global_Random(TonUINO *context);
-        TState_Global_Random(TState *last_state);
-        ~TState_Global_Random();
-};
-#endif
-
 #endif
 // vim: ts=4 sw=4 et cindent
