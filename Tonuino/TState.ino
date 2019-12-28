@@ -971,14 +971,6 @@ TState *new_state_by_name(TState *orig, uint8_t state_name) {
     case STATE_SINGLE:
         return new TState_Single(orig);
         break;
-#if 0
-    case STATE_GLOBAL:
-        return new TState_Global(orig);
-        break;
-    case STATE_GLOBAL_RANDOM:
-        return new TState_Global_Random(orig);
-        break;
-#endif
     default:
         return orig;
     }
