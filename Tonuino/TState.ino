@@ -927,7 +927,8 @@ void TState::next() {
     ++current_track;
     /* TODO do we want wrap-around or end of playback here */
 #if 1
-    current_track %= current_folder_track_num;
+    if (current_track > current_folder_track_num)
+        current_track = 1;
 #else
     if (current_track > current_folder_track_num)
         return;
@@ -945,7 +946,8 @@ void TState::next() {
 
 void TState::prev() {
     --current_track;
-    current_track %= current_folder_track_num;
+    if (current_track < 1)
+        current_track = 1;
 #if 0
     context->get_dfplayer()->prevTrack();
 #else
