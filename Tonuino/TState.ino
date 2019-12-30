@@ -367,12 +367,14 @@ TState *TState_Album::handle_buttons(uint32_t _map) {
 
 TState *TState_Album::handle_card(RFIDCard *card) {
     TState *state = this;
-    this->card = card;
 
     /* do not handle empty cards */
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
+#if 0
+            this->card = card;
             state = new_state_by_name(this, card->extdata[0]);
+#endif
             break;
     }
 
@@ -470,11 +472,11 @@ TState *TState_AudioBook::handle_buttons(uint32_t _map) {
 
 TState *TState_AudioBook::handle_card(RFIDCard *card) {
     TState *state = this;
-    this->card = card;
 
     /* do not handle empty cards */
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
+            this->card = card;
             state = new_state_by_name(this, card->extdata[0]);
             break;
     }
@@ -568,11 +570,11 @@ TState *TState_RadioPlay::handle_buttons(uint32_t _map) {
 
 TState *TState_RadioPlay::handle_card(RFIDCard *card) {
     TState *state = this;
-    this->card = card;
 
     /* do not handle empty cards */
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
+            this->card = card;
             state = new_state_by_name(this, card->extdata[0]);
             break;
     }
@@ -664,11 +666,11 @@ TState *TState_Single::handle_buttons(uint32_t _map) {
 
 TState *TState_Single::handle_card(RFIDCard *card) {
     TState *state = this;
-    this->card = card;
 
     /* do not handle empty cards */
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
+            this->card = card;
             state = new_state_by_name(this, card->extdata[0]);
             break;
     }
@@ -756,11 +758,11 @@ TState *TState_Album_Random::handle_buttons(uint32_t _map) {
 
 TState *TState_Album_Random::handle_card(RFIDCard *card) {
     TState *state = this;
-    this->card = card;
 
     /* do not handle empty cards */
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
+            this->card = card;
             state = new_state_by_name(this, card->extdata[0]);
             break;
     }
