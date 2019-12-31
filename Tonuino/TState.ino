@@ -624,9 +624,6 @@ TState *TState_RadioPlay::handle_dfplay_event(mp3_notify_event event, uint16_t c
 }
 
 TState *TState_RadioPlay::loop() {
-    if (!is_playing() || !current_track || !current_folder)
-        playRandomTrack(card->extdata[1]);
-
     return this;
 }
 
@@ -637,8 +634,8 @@ TState_RadioPlay::TState_RadioPlay(TonUINO *context) {
 TState_RadioPlay::TState_RadioPlay(TState *last_state) {
     from_last_state(last_state);
     Serial.println(F("RadioPlay(last)"));
-    current_track = 0;
-    current_folder = 0;
+    playRandomTrack(card->extdata[1]);
+
 }
 
 TState_RadioPlay::~TState_RadioPlay() {
@@ -856,21 +853,15 @@ void TState::volume_down() {
 }
 
 void TState::volume_set(uint8_t vol) {
-    if (vol > context->get_config().max_volume && vol < context->get_config().min_volume) {
-        Serial.print(vol);
-        Serial.println(F(" is out of configured range"));
+    if (vol > context->get_config().max_volume &&
+            vol < context->get_config().min_volume) {
         return;
     }
 
-    Serial.print(F("Setting new volume "));
-    Serial.print(vol);
-
     current_volume = vol;
     context->get_dfplayer()->setVolume(current_volume);
-    delay(200);
     last_command = MP3_CMD_SET_VOL;
-
-    Serial.println(F(" ... done"));
+    delay(200);
 }
 
 void TState::playMP3Track(uint16_t track) {
@@ -904,8 +895,7 @@ void TState::playRandomTrack(uint16_t folder) {
     uint16_t track;
 
     context->get_dfplayer()->loop();
-    if (!current_folder_track_num)
-        current_folder_track_num = context->get_dfplayer()->getFolderTrackCount(folder);
+    current_folder_track_num = context->get_dfplayer()->getFolderTrackCount(folder);
 
     if (!current_folder_track_num)
         track = 1;
