@@ -935,19 +935,10 @@ void TState::start() {
 void TState::next() {
     ++current_track;
     /* TODO do we want wrap-around or end of playback here */
-#if 1
     if (current_track > current_folder_track_num)
         current_track = 1;
-#else
-    if (current_track > current_folder_track_num)
-        return;
-#endif
 
-#if 0
-    context->get_dfplayer()->nextTrack();
-#else
     playFolderTrack(current_folder, current_track);
-#endif
     last_command = MP3_CMD_NEXT;
     /* TODO handle COM Errors etc */
     delay(200);
@@ -957,11 +948,7 @@ void TState::prev() {
     --current_track;
     if (current_track < 1)
         current_track = 1;
-#if 0
-    context->get_dfplayer()->prevTrack();
-#else
     playFolderTrack(current_folder, current_track);
-#endif
     last_command = MP3_CMD_PREV;
     /* TODO handle COM Errors etc */
     delay(200);
