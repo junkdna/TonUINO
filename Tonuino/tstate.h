@@ -104,6 +104,22 @@ class TState_NewCard : public TState {
         ~TState_NewCard();
 };
 
+class TState_Menu : public TState {
+    protected:
+        uint8_t menu_item;
+        uint8_t selected_value;
+
+    public:
+        TState *handle_buttons(uint32_t _map);
+        TState *handle_card(RFIDCard *card);
+        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
+        TState *loop();
+
+        TState_Menu(TonUINO *context);
+        TState_Menu(TState *last_state);
+        ~TState_Menu();
+};
+
 class TState_Album : public TState {
     protected:
 

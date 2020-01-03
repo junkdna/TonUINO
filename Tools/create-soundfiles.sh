@@ -17,7 +17,7 @@ tts_sox() {
 
 for i in {1..250}; do
     echo "${i} \"${i}\""
-    tts_google "$i" ${TMP}/$(printf "%04d" $i)
+#    tts_google "$i" ${TMP}/$(printf "%04d" $i)
 done
 
 gcc -I ${BASE}/../Tonuino -E -x c++ -w -P \
