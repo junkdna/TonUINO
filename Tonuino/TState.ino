@@ -149,17 +149,11 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
             break;
         case 1:
             /* select mode */
-            if (button_released(_map, BUTTON_UP)) {
+            if (button_released(_map, BUTTON_UP) || button_long_pressed(_map, BUTTON_UP)) {
                 ++selected_value;
                 playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
-            } else if (button_released(_map, BUTTON_DOWN)) {
+            } else if (button_released(_map, BUTTON_DOWN) || button_long_pressed(_map, BUTTON_DOWN)) {
                 --selected_value;
-                playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
-            } else if (button_long_pressed(_map, BUTTON_UP)) {
-                selected_value += 10;
-                playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
-            } else if (button_long_pressed(_map, BUTTON_DOWN)) {
-                selected_value -= 10;
                 playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
             } else if (button_released(_map, BUTTON_PAUSE)) {
                 stop();
