@@ -140,13 +140,14 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
                 playMP3Track(selected_value);
                 preview = 1;
             } else if (button_released(_map, BUTTON_PAUSE)) {
-                ++menu_item;
+                menu_item = 1;
                 card->extdata[1] = selected_value;
                 selected_value = 0;
                 stop();
                 playMP3Track(MESSAGE_CARD_ASSIGNED);
             }
             break;
+
         case 1:
             /* select mode */
             if (button_released(_map, BUTTON_UP) || button_long_pressed(_map, BUTTON_UP)) {
@@ -157,18 +158,23 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
                 playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
             } else if (button_released(_map, BUTTON_PAUSE)) {
                 stop();
-                if (selected_value != STATE_SINGLE) {
-                    menu_item = 250;
-                } else {
-                    ++menu_item;
-                    delay(200);
-                    playMP3Track(MESSAGE_SELECT_FILE);
-                }
                 if (card)
                     card->extdata[0] = selected_value;
+
+                if (selected_value == STATE_SINGLE) {
+                    playMP3Track(MESSAGE_SELECT_FILE);
+                    menu_item = 2;
+                } else if (selected_value == STATE_ADMIN) {
+                    card->card_mode = CARD_MODE_ADMIN;
+                    menu_item = 250;
+                } else {
+                    menu_item = 250;
+                }
+
                 selected_value = 0;
             }
             break;
+
         case 2:
             /* select track */
             if (button_released(_map, BUTTON_UP)) {
@@ -195,6 +201,7 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
                 stop();
             }
             break;
+
         default:
             break;
     }
@@ -283,8 +290,9 @@ TState *TState_NewCard::loop() {
             break;
 
         case 250:
-            ++menu_item;
             playMP3Track(MESSAGE_MODE_RADIO_PLAY + card->extdata[0]);
+            if (!is_playing())
+                ++menu_item;
             break;
 
         case 251:
@@ -989,5 +997,4 @@ TState::TState(TonUINO *context) {
 
 TState::~TState() {
 }
-
 // vim: ts=4 sw=4 et cindent

@@ -10,10 +10,8 @@ class TonUINO;
 enum Card_Mode {
     CARD_MODE_NONE = 0,
     CARD_MODE_PLAYER = 1,
-#if 0
-    CARD_MODE_MODIFY,
-    CARD_MODE_ADMIN,
-#endif
+    CARD_MODE_ADMIN = 2,
+    CARD_MODE_MODIFY = 3,
 };
 
 class RFIDCard;
