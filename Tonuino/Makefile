@@ -10,7 +10,7 @@ MCU = arduino:avr:nano:cpu=atmega328old
 BOARD = arduino:avr
 SERIAL = /dev/ttyUSB0
 ## Main
-SKETCH = Tonuino
+SKETCH = .
 ## Helper
 OS = $(shell uname)
 .PHONY: help
@@ -57,12 +57,7 @@ pio-init:
 	@platformio lib install 77   # JC_Button
 	@platformio lib install 63   # MFRC522
 
-prepare:
-	@mkdir -p "$(SKETCH)" ; echo "folder is only for backwards compatibility" > "$(SKETCH)/DO-NOT-EDIT"
-	@if [ "$(SKETCH)/$(SKETCH).ino" -nt "./$(SKETCH).ino" ]; then echo "ERROR: do not edit files in TonUINO/!"; exit 1; fi;
-	@cp -p "./$(SKETCH).ino" "$(SKETCH)/$(SKETCH).ino"
-
-compile: prepare
+compile:
 	@arduino-cli compile --fqbn $(MCU) --warnings none "$(SKETCH)"
 
 find:
@@ -71,7 +66,7 @@ find:
 upload:
 	@arduino-cli upload -p $(SERIAL) --fqbn $(MCU) --verify "$(SKETCH)"
 
-test: prepare
+test:
 	@arduino-cli compile --fqbn $(MCU) --warnings more "$(SKETCH)"
 
 clean:
