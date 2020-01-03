@@ -1,0 +1,7 @@
+*cache
+*table
+*-bak
+*.bak
+*.bck
+_autosave-*
+*-cache.*
