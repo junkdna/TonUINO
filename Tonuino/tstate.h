@@ -71,7 +71,7 @@ class TState {
         virtual ~TState();
 };
 
-TState *new_state_by_name(uint8_t state_name);
+TState *new_state_by_name(TState *state, uint8_t state_name);
 
 class TState_Idle : public TState {
     protected:

@@ -1,2 +1,12 @@
 tags
 cscope*
+
+# pio generated folders are ignored
+lib
+include
+test
+src
+.pio
+.vscode
+
+Tonuino
