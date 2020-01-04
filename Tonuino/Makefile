@@ -69,5 +69,8 @@ upload:
 test:
 	@arduino-cli compile --fqbn $(MCU) --warnings more "$(SKETCH)"
 
+tags: *.ino *.h
+	@../Tools/gen_tags.sh
+
 clean:
 	@rm -rf ..arduino*
