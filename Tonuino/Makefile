@@ -70,4 +70,4 @@ test:
 	@arduino-cli compile --fqbn $(MCU) --warnings more "$(SKETCH)"
 
 clean:
-	@rm -rf "$(SKETCH)"
+	@rm -rf ..arduino*
