@@ -26,7 +26,7 @@ help:
 	$(info - init    : initialize environment (arduino-cli))
 	$(info - pio-init: initialize environment (PlatformIO))
 	$(info - compile : create binary)
-	$(info - upload  : store binary on board EEPROM)
+	$(info - upload  : store binary on board flash)
 	$(info - find    : get information about the pluged-in board)
 	$(info - test    : run some basic tests on the code)
 	$(info - clean   : delete temporary files)
