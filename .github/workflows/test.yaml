@@ -50,9 +50,11 @@ jobs:
       # We then install the platform, which one will be determined
       # dynamically by the build matrix.
       - name: Install platform
-        run: make -C Tonuino install init
+        working-directory: Tonuino
+        run: make install init
 
       # Finally, we compile the sketch, using the FQBN that was set
       # in the build matrix.
       - name: Test Sketch
-        run: make -C Tonuino test
+        working-directory: Tonuino
+        run: make test
