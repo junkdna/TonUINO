@@ -37,7 +37,7 @@ class RFIDReader {
         void setup(TonUINO *tonuino);
         void loop();
 
-        RFIDReader(MFRC522 *mfrc522);
+        explicit RFIDReader(MFRC522 *mfrc522);
         void dump_byte_array(byte *buffer, byte bufferSize);
 };
 
@@ -53,7 +53,7 @@ public:
     bool write() {return reader->write(this) >= 0;}
     bool read()  {return reader->read(this) >= 0;}
     bool check(uint32_t chip_id);
-    RFIDCard(RFIDReader *r) : reader(r) {}
+    explicit RFIDCard(RFIDReader *r);
 };
 
 #endif

@@ -166,8 +166,7 @@ void RFIDReader::dump_byte_array(byte *buffer, byte buffer_size) {
     Serial.println();
 }
 
-RFIDReader::RFIDReader(MFRC522 *mfrc522) : mfrc522(mfrc522) {
-    block_addr = 4;
+RFIDReader::RFIDReader(MFRC522 *mfrc522) : mfrc522(mfrc522), block_addr(4), current_card(nullptr), tonuino(nullptr) {
     sector = block_addr / 4;
     trailer_block = block_addr + 3;
 }
@@ -190,4 +189,12 @@ bool RFIDCard::check(uint32_t _id) {
 
     return true;
 }
+
+RFIDCard::RFIDCard(RFIDReader *r) : reader(r) {
+    memset(chip_id, 0, 4);
+    memset(extdata, 0, 10);
+    version = CARD_VERSION;
+    card_mode = CARD_MODE_NONE;
+}
+
 // vim: ts=4 sw=4 et cindent
