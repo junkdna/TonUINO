@@ -1,5 +1,6 @@
 tags
 cscope*
+..*
 
 # pio generated folders are ignored
 lib
