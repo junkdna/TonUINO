@@ -32,14 +32,14 @@ enum mp3_command {
 
 class TState {
     protected:
-        TonUINO *context;
-        RFIDCard *card;
-        mp3_command last_command;
+        TonUINO *context = nullptr;
+        RFIDCard *card = nullptr;
+        mp3_command last_command = MP3_CMD_NONE;
 
-        uint16_t current_folder;
-        uint16_t current_folder_track_num;
-        uint16_t current_track;
-        uint16_t current_volume;
+        uint16_t current_folder = 0;
+        uint16_t current_folder_track_num = 0;
+        uint16_t current_track = 0;
+        uint16_t current_volume = 0;
 
     protected:
         void from_last_state(TState *last_state);
@@ -65,8 +65,8 @@ class TState {
         virtual TState *handle_dfplay_event(mp3_notify_event event, uint16_t code) = 0;
         virtual TState *loop() = 0;
 
-        TState(TonUINO *context);
-        TState(TState *last_state);
+        explicit TState(TonUINO *context);
+        explicit TState(TState *last_state);
         TState();
         virtual ~TState();
 };
@@ -77,46 +77,46 @@ class TState_Idle : public TState {
     protected:
 
     public:
-        TState *handle_buttons(uint32_t _map);
-        TState *handle_card(RFIDCard *card);
-        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
-        TState *loop();
+        TState *handle_buttons(uint32_t _map) override;
+        TState *handle_card(RFIDCard *card) override;
+        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code) override;
+        TState *loop() override;
 
-        TState_Idle(TonUINO *context);
-        TState_Idle(TState *last_state);
+        explicit TState_Idle(TonUINO *context);
+        explicit TState_Idle(TState *last_state);
         ~TState_Idle();
 };
 
 class TState_NewCard : public TState {
     protected:
-        uint8_t menu_item;
-        uint8_t selected_value;
-        uint8_t preview;
+        uint8_t menu_item = 0;
+        uint8_t selected_value = 0;
+        uint8_t preview = 0;
 
     public:
-        TState *handle_buttons(uint32_t _map);
-        TState *handle_card(RFIDCard *card);
-        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
-        TState *loop();
+        TState *handle_buttons(uint32_t _map) override;
+        TState *handle_card(RFIDCard *card) override;
+        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code) override;
+        TState *loop() override;
 
-        TState_NewCard(TonUINO *context);
-        TState_NewCard(TState *last_state);
+        explicit TState_NewCard(TonUINO *context);
+        explicit TState_NewCard(TState *last_state);
         ~TState_NewCard();
 };
 
 class TState_Menu : public TState {
     protected:
-        uint8_t menu_item;
-        uint8_t selected_value;
+        uint8_t menu_item = 0;
+        uint8_t selected_value = 0;
 
     public:
-        TState *handle_buttons(uint32_t _map);
-        TState *handle_card(RFIDCard *card);
-        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
-        TState *loop();
+        TState *handle_buttons(uint32_t _map) override;
+        TState *handle_card(RFIDCard *card) override;
+        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code) override;
+        TState *loop() override;
 
-        TState_Menu(TonUINO *context);
-        TState_Menu(TState *last_state);
+        explicit TState_Menu(TonUINO *context);
+        explicit TState_Menu(TState *last_state);
         ~TState_Menu();
 };
 
@@ -124,13 +124,13 @@ class TState_Album : public TState {
     protected:
 
     public:
-        TState *handle_buttons(uint32_t _map);
-        TState *handle_card(RFIDCard *card);
-        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
-        TState *loop();
+        TState *handle_buttons(uint32_t _map) override;
+        TState *handle_card(RFIDCard *card) override;
+        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code) override;
+        TState *loop() override;
 
-        TState_Album(TonUINO *context);
-        TState_Album(TState *last_state);
+        explicit TState_Album(TonUINO *context);
+        explicit TState_Album(TState *last_state);
         ~TState_Album();
 };
 
@@ -138,13 +138,13 @@ class TState_Album_Random : public TState {
     protected:
 
     public:
-        TState *handle_buttons(uint32_t _map);
-        TState *handle_card(RFIDCard *card);
-        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
-        TState *loop();
+        TState *handle_buttons(uint32_t _map) override;
+        TState *handle_card(RFIDCard *card) override;
+        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code) override;
+        TState *loop() override;
 
-        TState_Album_Random(TonUINO *context);
-        TState_Album_Random(TState *last_state);
+        explicit TState_Album_Random(TonUINO *context);
+        explicit TState_Album_Random(TState *last_state);
         ~TState_Album_Random();
 };
 
@@ -154,13 +154,13 @@ class TState_AudioBook : public TState {
         void prev();
 
     public:
-        TState *handle_buttons(uint32_t _map);
-        TState *handle_card(RFIDCard *card);
-        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
-        TState *loop();
+        TState *handle_buttons(uint32_t _map) override;
+        TState *handle_card(RFIDCard *card) override;
+        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code) override;
+        TState *loop() override;
 
-        TState_AudioBook(TonUINO *context);
-        TState_AudioBook(TState *last_state);
+        explicit TState_AudioBook(TonUINO *context);
+        explicit TState_AudioBook(TState *last_state);
         ~TState_AudioBook();
 };
 
@@ -168,13 +168,13 @@ class TState_RadioPlay : public TState {
     protected:
 
     public:
-        TState *handle_buttons(uint32_t _map);
-        TState *handle_card(RFIDCard *card);
-        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
-        TState *loop();
+        TState *handle_buttons(uint32_t _map) override;
+        TState *handle_card(RFIDCard *card) override;
+        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code) override;
+        TState *loop() override;
 
-        TState_RadioPlay(TonUINO *context);
-        TState_RadioPlay(TState *last_state);
+        explicit TState_RadioPlay(TonUINO *context);
+        explicit TState_RadioPlay(TState *last_state);
         ~TState_RadioPlay();
 };
 
@@ -182,13 +182,13 @@ class TState_Single : public TState {
     protected:
 
     public:
-        TState *handle_buttons(uint32_t _map);
-        TState *handle_card(RFIDCard *card);
-        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code);
-        TState *loop();
+        TState *handle_buttons(uint32_t _map) override;
+        TState *handle_card(RFIDCard *card) override;
+        TState *handle_dfplay_event(mp3_notify_event event, uint16_t code) override;
+        TState *loop() override;
 
-        TState_Single(TonUINO *context);
-        TState_Single(TState *last_state);
+        explicit TState_Single(TonUINO *context);
+        explicit TState_Single(TState *last_state);
         ~TState_Single();
 };
 
