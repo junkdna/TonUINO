@@ -123,6 +123,7 @@ TState_Idle::~TState_Idle() {
 TState *TState_Menu::handle_buttons(uint32_t _map) {
     TState *state = this;
 
+    stop();
     if (menu_item == 0) {
         if (button_released(_map, BUTTON_UP) || button_long_pressed(_map, BUTTON_UP)) {
             ++selected_value;
@@ -154,6 +155,7 @@ TState *TState_Menu::handle_buttons(uint32_t _map) {
                 state = new_state_by_name(this, STATE_IDLE);
             }
         } else if (button_long_pressed(_map, BUTTON_PAUSE)) {
+            playMP3Track(MESSAGE_MENU_EXIT);
             state = new_state_by_name(this, STATE_IDLE);
         }
     } else if (menu_item == 1) {
@@ -357,6 +359,7 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
             } else if (button_long_pressed(_map, BUTTON_PAUSE)) {
                 state = new_state_by_name(this, STATE_IDLE);
                 stop();
+                playMP3Track(MESSAGE_MENU_EXIT);
             }
             break;
 
@@ -387,6 +390,7 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
             } else if (button_long_pressed(_map, BUTTON_PAUSE)) {
                 state = new_state_by_name(this, STATE_IDLE);
                 stop();
+                playMP3Track(MESSAGE_MENU_EXIT);
             }
 
             break;
@@ -418,6 +422,7 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
             } else if (button_long_pressed(_map, BUTTON_PAUSE)) {
                 state = new_state_by_name(this, STATE_IDLE);
                 stop();
+                playMP3Track(MESSAGE_MENU_EXIT);
             }
 
             break;
