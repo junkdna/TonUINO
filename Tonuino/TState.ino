@@ -1093,11 +1093,11 @@ void TState::from_last_state(TState *last_state) {
 }
 
 void TState::volume_up() {
-    volume_set(current_volume + 1);
+    volume_set(current_volume + context->get_config().step_volume);
 }
 
 void TState::volume_down() {
-    volume_set(current_volume - 1);
+    volume_set(current_volume - context->get_config().step_volume);
 }
 
 void TState::volume_set(uint8_t vol) {
