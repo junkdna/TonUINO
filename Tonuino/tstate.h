@@ -41,6 +41,8 @@ class TState {
         uint16_t current_track = 0;
         uint16_t current_volume = 0;
 
+        bool restore = false;
+
     protected:
         void from_last_state(TState *last_state);
         void playAdvertTrack(uint16_t track);
@@ -65,13 +67,14 @@ class TState {
         virtual TState *handle_dfplay_event(mp3_notify_event event, uint16_t code) = 0;
         virtual TState *loop() = 0;
 
+        void set_restore(bool r);
         explicit TState(TonUINO *context);
         explicit TState(TState *last_state);
         TState();
         virtual ~TState();
 };
 
-TState *new_state_by_name(TState *state, uint8_t state_name);
+TState *new_state_by_name(TState *state, uint8_t state_name, bool restore = false);
 
 class TState_Idle : public TState {
     protected:

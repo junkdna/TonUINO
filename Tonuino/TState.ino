@@ -37,7 +37,7 @@ TState *TState_Idle::handle_buttons(uint32_t _map) {
         volume_down();
     } else if (button_released(_map, BUTTON_PAUSE)) {
         if (card && card->card_mode == CARD_MODE_PLAYER) {
-            state = new_state_by_name(this, card->extdata[0]);
+            state = new_state_by_name(this, card->extdata[0], true);
             start();
         }
     }
@@ -154,7 +154,7 @@ TState *TState_Menu::handle_buttons(uint32_t _map) {
                 state = new_state_by_name(this, STATE_IDLE);
             }
         } else if (button_long_pressed(_map, BUTTON_PAUSE)) {
-                state = new_state_by_name(this, STATE_IDLE);
+            state = new_state_by_name(this, STATE_IDLE);
         }
     } else if (menu_item == 1) {
         /* Volume steps */
@@ -648,7 +648,12 @@ TState_Album::TState_Album(TonUINO *context) {
 TState_Album::TState_Album(TState *last_state) {
     from_last_state(last_state);
     Serial.println(F("Album(last)"));
-    playFolderTrack(card->extdata[1], 1);
+    if (restore) {
+        start();
+        restore = false;
+    } else {
+        playFolderTrack(card->extdata[1], 1);
+    }
 }
 
 TState_Album::~TState_Album() {
@@ -761,7 +766,12 @@ TState_AudioBook::TState_AudioBook(TState *last_state) {
         current_track = 1;
         EEPROM.write(EEPROM_CFG_LEN + current_folder, current_track);
     }
-    playFolderTrack(current_folder, current_track);
+    if (restore) {
+        start();
+        restore = false;
+    } else {
+        playFolderTrack(current_folder, current_track);
+    }
 }
 
 TState_AudioBook::~TState_AudioBook() {
@@ -856,7 +866,12 @@ TState_RadioPlay::TState_RadioPlay(TonUINO *context) {
 TState_RadioPlay::TState_RadioPlay(TState *last_state) {
     from_last_state(last_state);
     Serial.println(F("RadioPlay(last)"));
-    playRandomTrack(card->extdata[1]);
+    if (restore) {
+        start();
+        restore = false;
+    } else {
+        playRandomTrack(card->extdata[1]);
+    }
 
 }
 
@@ -952,7 +967,12 @@ TState_Single::TState_Single(TonUINO *context) {
 TState_Single::TState_Single(TState *last_state) {
     from_last_state(last_state);
     Serial.println(F("Single(last)"));
-    playFolderTrack(card->extdata[1], card->extdata[2]);
+    if (restore) {
+        start();
+        restore = false;
+    } else {
+        playFolderTrack(card->extdata[1], card->extdata[2]);
+    }
 }
 
 TState_Single::~TState_Single() {
@@ -1046,7 +1066,12 @@ TState_Album_Random::TState_Album_Random(TonUINO *context) {
 TState_Album_Random::TState_Album_Random(TState *last_state) {
     from_last_state(last_state);
     Serial.println(F("Album_Random(last)"));
-    playRandomTrack(card->extdata[1]);
+    if (restore) {
+        start();
+        restore = false;
+    } else {
+        playRandomTrack(card->extdata[1]);
+    }
 }
 
 TState_Album_Random::~TState_Album_Random() {
@@ -1064,6 +1089,7 @@ void TState::from_last_state(TState *last_state) {
         this->current_track            = last_state->current_track;
         this->current_volume           = last_state->current_volume;
         this->last_command             = last_state->last_command;
+        this->restore                  = last_state->restore;
 }
 
 void TState::volume_up() {
@@ -1176,7 +1202,9 @@ void TState::prev() {
     delay(200);
 }
 
-TState *new_state_by_name(TState *orig, uint8_t state_name) {
+TState *new_state_by_name(TState *orig, uint8_t state_name, bool restore = false) {
+    orig->set_restore(restore);
+
     switch (state_name) {
     case STATE_IDLE:
         return new TState_Idle(orig);
@@ -1205,6 +1233,10 @@ TState *new_state_by_name(TState *orig, uint8_t state_name) {
     default:
         return orig;
     }
+}
+
+void TState::set_restore(bool r) {
+    restore = r;
 }
 
 TState::TState() {
