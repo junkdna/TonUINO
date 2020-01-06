@@ -1220,6 +1220,7 @@ void TState::prev() {
     --current_track;
     if (current_track < 1)
         current_track = 1;
+
     playFolderTrack(current_folder, current_track);
     last_command = MP3_CMD_PREV;
     /* TODO handle COM Errors etc */
