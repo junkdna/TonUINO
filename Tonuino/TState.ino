@@ -1116,14 +1116,14 @@ TState_Album_Random::~TState_Album_Random() {
  *******************************/
 /* TODO add option to clean some variables */
 void TState::from_last_state(TState *last_state) {
-        this->card                     = last_state->card;
-        this->context                  = last_state->context;
-        this->current_folder           = last_state->current_folder;
-        this->current_folder_track_num = last_state->current_folder_track_num;
-        this->current_track            = last_state->current_track;
-        this->current_volume           = last_state->current_volume;
-        this->last_command             = last_state->last_command;
-        this->restore                  = last_state->restore;
+    this->card                     = last_state->card;
+    this->context                  = last_state->context;
+    this->current_folder           = last_state->current_folder;
+    this->current_folder_track_num = last_state->current_folder_track_num;
+    this->current_track            = last_state->current_track;
+    this->current_volume           = last_state->current_volume;
+    this->last_command             = last_state->last_command;
+    this->restore                  = last_state->restore;
 }
 
 void TState::volume_up() {
