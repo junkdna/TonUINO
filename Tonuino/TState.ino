@@ -1148,6 +1148,9 @@ void TState::playAdvertTrack(uint16_t track) {
 }
 
 void TState::playFolderTrack(uint16_t folder, uint16_t track) {
+    if (current_folder_track_num < 1)
+        current_folder_track_num = context->get_dfplayer()->getFolderTrackCount(folder);
+
     context->get_dfplayer()->playFolderTrack(folder, track);
     last_command = MP3_CMD_FOLDER_TRACK;
     current_folder = folder;
@@ -1198,6 +1201,10 @@ void TState::start() {
 }
 
 void TState::next() {
+    if (current_folder_track_num < 1)
+        current_folder_track_num =
+            context->get_dfplayer()->getFolderTrackCount(current_folder);
+
     ++current_track;
     /* TODO do we want wrap-around or end of playback here */
     if (current_track > current_folder_track_num)
