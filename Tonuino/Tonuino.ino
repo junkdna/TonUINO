@@ -5,6 +5,7 @@
  */
 
 #include "buttons.h"
+#include "messages.h"
 #include "rfid.h"
 #include "tonuino.h"
 #include "tstate.h"
@@ -105,10 +106,18 @@ void TonUINO::setup(DFMiniMp3<SoftwareSerial, Mp3Notify>* dfp) {
     state = new TState_Idle(&tonuino);
     state->volume_set(config.init_volume);
 
-    if ((button_map & 0x7) == 0x7) {
+    //if ((button_map & 0x7) == 0x7) {
+    if (digitalRead(PAUSE_BUTTON_PIN) == LOW && digitalRead(UP_BUTTON_PIN) == LOW &&
+            digitalRead(DOWN_BUTTON_PIN) == LOW) {
         /* reset */
+        config.init();
+        config.write();
+        state->volume_set(config.init_volume);
+        dfplay->playMp3FolderTrack(MESSAGE_RESET_DONE);
+        delay(200);
         button_map = 0;
     }
+
 }
 
 void TonUINO::loop() {
