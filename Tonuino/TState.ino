@@ -559,18 +559,18 @@ TState_NewCard::TState_NewCard(TonUINO *context) {
 }
 
 TState_NewCard::TState_NewCard(TState *last_state) {
-    uint32_t chip_id;
+    uint32_t magic;
     Serial.println(F("NewCard(last)"));
 
     from_last_state(last_state);
     menu_item = 0;
     selected_value = 0;
 
-    chip_id = context->get_config().id;
-    card->chip_id[0] = (chip_id >>  0) & 0xff;
-    card->chip_id[1] = (chip_id >>  8) & 0xff;
-    card->chip_id[2] = (chip_id >> 16) & 0xff;
-    card->chip_id[3] = (chip_id >> 24) & 0xff;
+    magic = CARD_MAGIC;
+    card->magic[0] = (magic >>  0) & 0xff;
+    card->magic[1] = (magic >>  8) & 0xff;
+    card->magic[2] = (magic >> 16) & 0xff;
+    card->magic[3] = (magic >> 24) & 0xff;
     card->version = CARD_VERSION;
     card->card_mode = CARD_MODE_PLAYER;
     memset(card->extdata, 0, 10);

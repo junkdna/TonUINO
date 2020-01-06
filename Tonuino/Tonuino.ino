@@ -68,7 +68,7 @@ void TonUINO::notify_rfid(RFIDCard *card)
         delete rfid_card;
 
     rfid_card = card;
-    if (!rfid_card->check(config.id))
+    if (!rfid_card->check())
         rfid_card->card_mode = 255;
 
     state = state->handle_card(rfid_card);

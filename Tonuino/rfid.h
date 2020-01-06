@@ -6,6 +6,7 @@
 class TonUINO;
 
 #define CARD_VERSION 1
+#define CARD_MAGIC   0x5c5d5e5f
 
 enum Card_Mode {
     CARD_MODE_NONE = 0,
@@ -45,14 +46,14 @@ class RFIDCard {
 protected:
     RFIDReader *reader;
 public:
-    uint8_t chip_id[4];
+    uint8_t magic[4];
     uint8_t version;
     uint8_t card_mode;
     uint8_t extdata[10];
 
     bool write() {return reader->write(this) >= 0;}
     bool read()  {return reader->read(this) >= 0;}
-    bool check(uint32_t chip_id);
+    bool check();
     explicit RFIDCard(RFIDReader *r);
 };
 

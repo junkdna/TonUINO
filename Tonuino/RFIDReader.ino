@@ -16,7 +16,7 @@ const uint8_t keyB_default[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 
 int RFIDReader::write(RFIDCard *card) {
     byte buffer[16] = {
-        card->chip_id[0], card->chip_id[1], card->chip_id[2], card->chip_id[3],
+        card->magic[0], card->magic[1], card->magic[2], card->magic[3],
         card->version, card->card_mode,
         card->extdata[0], card->extdata[1], card->extdata[2], card->extdata[3],
         card->extdata[4], card->extdata[5], card->extdata[6], card->extdata[7],
@@ -115,7 +115,7 @@ int RFIDReader::read(RFIDCard *card) {
     }
 
     for (size = 0; size < 4; size++)
-        card->chip_id[size] = buffer[size];
+        card->magic[size] = buffer[size];
 
     card->version    = buffer[0x4];
     card->card_mode  = buffer[0x5];
@@ -171,17 +171,18 @@ RFIDReader::RFIDReader(MFRC522 *mfrc522) : mfrc522(mfrc522), block_addr(4), curr
     trailer_block = block_addr + 3;
 }
 
-bool RFIDCard::check(uint32_t _id) {
-    if (chip_id[0] != ((_id >>  0) & 0xff))
+bool RFIDCard::check() {
+    uint32_t _magic = CARD_MAGIC;
+    if (magic[0] != ((_magic >>  0) & 0xff))
         return false;
 
-    if (chip_id[1] != ((_id >>  8) & 0xff))
+    if (magic[1] != ((_magic >>  8) & 0xff))
         return false;
 
-    if (chip_id[2] != ((_id >> 16) & 0xff))
+    if (magic[2] != ((_magic >> 16) & 0xff))
         return false;
 
-    if (chip_id[3] != ((_id >> 24) & 0xff))
+    if (magic[3] != ((_magic >> 24) & 0xff))
         return false;
 
     if (version != CARD_VERSION)
@@ -191,7 +192,7 @@ bool RFIDCard::check(uint32_t _id) {
 }
 
 RFIDCard::RFIDCard(RFIDReader *r) : reader(r) {
-    memset(chip_id, 0, 4);
+    memset(magic, 0, 4);
     memset(extdata, 0, 10);
     version = CARD_VERSION;
     card_mode = CARD_MODE_NONE;
