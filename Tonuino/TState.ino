@@ -657,6 +657,9 @@ TState_Album::TState_Album(TState *last_state) {
         start();
         restore = false;
     } else {
+        current_folder = 0;
+        current_folder_track_num = 0;
+        current_track = 0;
         playFolderTrack(card->extdata[1], 1);
     }
 }
@@ -875,6 +878,9 @@ TState_RadioPlay::TState_RadioPlay(TState *last_state) {
         start();
         restore = false;
     } else {
+        current_folder = 0;
+        current_folder_track_num = 0;
+        current_track = 0;
         playRandomTrack(card->extdata[1]);
     }
 
@@ -976,6 +982,9 @@ TState_Single::TState_Single(TState *last_state) {
         start();
         restore = false;
     } else {
+        current_folder = 0;
+        current_folder_track_num = 0;
+        current_track = 0;
         playFolderTrack(card->extdata[1], card->extdata[2]);
     }
 }
@@ -1075,6 +1084,9 @@ TState_Album_Random::TState_Album_Random(TState *last_state) {
         start();
         restore = false;
     } else {
+        current_folder = 0;
+        current_folder_track_num = 0;
+        current_track = 0;
         playRandomTrack(card->extdata[1]);
     }
 }
