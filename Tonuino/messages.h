@@ -34,5 +34,14 @@
 #define MENU_EXIT     6
 #define MENU_ENTRIES  MENU_EXIT
 
+#define MENU_CMOD_RADIO_PLAY 1
+#define MENU_CMOD_ALBUM      2
+#define MENU_CMOD_PARTY      3
+#define MENU_CMOD_SINGLE     4
+#define MENU_CMOD_AUDIOBOOK  5
+#define MENU_CMOD_ADMIN      6
+#define MENU_CMOD_MOD        7
+#define MENU_CMOD_ENTRIES    MENU_CMOD_MOD
+
 #endif
 // vim: ts=4 sw=4 et cindent

@@ -367,9 +367,13 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
             /* select mode */
             if (button_released(_map, BUTTON_UP) || button_long_pressed(_map, BUTTON_UP)) {
                 ++selected_value;
+                if (selected_value > MENU_CMOD_ENTRIES)
+                    selected_value = 1;
                 playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
             } else if (button_released(_map, BUTTON_DOWN) || button_long_pressed(_map, BUTTON_DOWN)) {
                 --selected_value;
+                if (selected_value < 1)
+                    selected_value = MENU_CMOD_ENTRIES;
                 playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
             } else if (button_released(_map, BUTTON_PAUSE)) {
                 stop();
@@ -379,6 +383,8 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
                 if (selected_value == STATE_SINGLE) {
                     playMP3Track(MESSAGE_SELECT_FILE);
                     menu_item = 2;
+                    current_folder_track_num =
+                        context->get_dfplayer()->getFolderTrackCount(card->extdata[1]);
                 } else if (selected_value == STATE_ADMIN) {
                     card->card_mode = CARD_MODE_ADMIN;
                     menu_item = 250;
@@ -399,18 +405,26 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
             /* select track */
             if (button_released(_map, BUTTON_UP)) {
                 ++selected_value;
+                if (selected_value > current_folder_track_num)
+                    selected_value = 1;
                 playMP3Track(selected_value);
                 preview = 1;
             } else if (button_released(_map, BUTTON_DOWN)) {
                 --selected_value;
+                if (selected_value < 1)
+                    selected_value = current_folder_track_num;
                 playMP3Track(selected_value);
                 preview = 1;
             } else if (button_long_pressed(_map, BUTTON_UP)) {
                 selected_value += 10;
+                if (selected_value > current_folder_track_num)
+                    selected_value = 1;
                 playMP3Track(selected_value);
                 preview = 1;
             } else if (button_long_pressed(_map, BUTTON_DOWN)) {
                 selected_value -= 10;
+                if (selected_value < 1)
+                    selected_value = current_folder_track_num;
                 playMP3Track(selected_value);
                 preview = 1;
             } else if (button_released(_map, BUTTON_PAUSE)) {
