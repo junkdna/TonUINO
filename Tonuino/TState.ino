@@ -1131,15 +1131,22 @@ void TState::volume_up() {
 }
 
 void TState::volume_down() {
-    volume_set(current_volume - context->get_config().step_volume);
+    uint8_t step = context->get_config().step_volume;
+    if (current_volume < step)
+        volume_set(0);
+    else
+        volume_set(current_volume - step);
 }
 
 void TState::volume_set(uint8_t vol) {
-    if (vol > context->get_config().max_volume &&
-            vol < context->get_config().min_volume) {
-        return;
-    }
+    if (vol > context->get_config().max_volume)
+        vol = context->get_config().max_volume;
 
+    if (vol < context->get_config().min_volume)
+        vol = context->get_config().min_volume;
+
+    Serial.print(F("Set volume "));
+    Serial.println(vol);
     current_volume = vol;
     context->get_dfplayer()->setVolume(current_volume);
     last_command = MP3_CMD_SET_VOL;

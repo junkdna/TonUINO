@@ -13,7 +13,7 @@
 #define INITIAL_VOLUME     15
 #define LONG_PRESS_TIMEOUT 1000
 #define MAX_VOLUME         35
-#define MIN_VOLUME         0
+#define MIN_VOLUME         1
 #define STEP_VOLUME        1
 
 class EEPROM_Config {
