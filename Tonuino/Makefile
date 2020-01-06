@@ -57,13 +57,13 @@ pio-init:
 	@platformio lib install 77   # JC_Button
 	@platformio lib install 63   # MFRC522
 
-compile:
+compile: *.ino *.h
 	@arduino-cli compile --fqbn $(MCU) --warnings none "$(SKETCH)"
 
 find:
 	@arduino-cli board list
 
-upload:
+upload: compile
 	@arduino-cli upload -p $(SERIAL) --fqbn $(MCU) --verify "$(SKETCH)"
 
 test:
