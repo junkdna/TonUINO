@@ -1,4 +1,5 @@
 EESchema Schematic File Version 4
+LIBS:tonuino-cache
 EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
@@ -34,17 +35,6 @@ F 2 "Resistor_SMD:R_0402_1005Metric" V 3380 3300 50  0001 C CNN
 F 3 "~" H 3450 3300 50  0001 C CNN
 	1    3450 3300
 	-1   0    0    1   
-$EndComp
-$Comp
-L MCU_Module:Arduino_Nano_v2.x A1
-U 1 1 5E011EDD
-P 7050 3500
-F 0 "A1" H 6700 4450 50  0000 C CNN
-F 1 "Arduino_Nano_v2.x" H 7550 2550 50  0000 C CNN
-F 2 "Module:Arduino_Nano" H 7050 3500 50  0001 C CIN
-F 3 "https://www.arduino.cc/en/uploads/Main/ArduinoNanoManual23.pdf" H 7050 3500 50  0001 C CNN
-	1    7050 3500
-	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	3450 3650 3450 3450
@@ -209,12 +199,6 @@ Text Label 9500 3950 2    50   ~ 0
 ~HEADP
 Text Label 6550 3500 2    50   ~ 0
 ~HEADP
-Wire Wire Line
-	6550 3400 5250 3400
-Wire Wire Line
-	5250 3750 4650 3750
-Wire Wire Line
-	5250 3400 5250 3750
 Text Label 6800 5350 1    50   ~ 0
 3V3
 Text Label 7000 5350 1    50   ~ 0
@@ -307,4 +291,38 @@ Wire Wire Line
 	3350 3450 3350 3750
 Wire Wire Line
 	3350 2850 3350 3150
+$Comp
+L Device:R R7
+U 1 1 5E1322DE
+P 7350 1600
+F 0 "R7" H 7420 1646 50  0000 L CNN
+F 1 "4k7" H 7420 1555 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 7280 1600 50  0001 C CNN
+F 3 "~" H 7350 1600 50  0001 C CNN
+	1    7350 1600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7350 1850 7450 1850
+Text Label 7450 1850 0    50   ~ 0
+~SPK_EN
+Wire Wire Line
+	7350 1850 7350 1750
+Text Label 7350 1450 0    50   ~ 0
+VCC
+Text Label 6550 3400 2    50   ~ 0
+~SPK_EN
+$Comp
+L tonuino-rescue:Arduino_Nano_v2.x-MCU_Module A1
+U 1 1 5E011EDD
+P 7050 3500
+F 0 "A1" H 6700 4450 50  0000 C CNN
+F 1 "Arduino_Nano_v2.x" H 7550 2550 50  0000 C CNN
+F 2 "Module:Arduino_Nano" H 7050 3500 50  0001 C CIN
+F 3 "https://www.arduino.cc/en/uploads/Main/ArduinoNanoManual23.pdf" H 7050 3500 50  0001 C CNN
+	1    7050 3500
+	1    0    0    -1  
+$EndComp
+Text Label 4650 3750 0    50   ~ 0
+~SPK_EN
 $EndSCHEMATC
