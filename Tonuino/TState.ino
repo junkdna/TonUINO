@@ -635,7 +635,8 @@ TState *TState_Album::handle_dfplay_event(mp3_notify_event event, uint16_t code)
             /* TODO handle */
             break;
         case MP3_PLAY_FINISHED:
-            next();
+            if (!is_playing())
+                next();
             break;
         case MP3_CARD_ONLINE:
             /* TODO should not happen */
@@ -749,7 +750,8 @@ TState *TState_AudioBook::handle_dfplay_event(mp3_notify_event event, uint16_t c
             /* TODO handle */
             break;
         case MP3_PLAY_FINISHED:
-            next();
+            if (!is_playing())
+                next();
             break;
         case MP3_CARD_ONLINE:
             /* TODO should not happen */
@@ -1062,7 +1064,8 @@ TState *TState_Album_Random::handle_dfplay_event(mp3_notify_event event, uint16_
             /* TODO handle */
             break;
         case MP3_PLAY_FINISHED:
-            playRandomTrack(current_folder);
+            if (!is_playing())
+                playRandomTrack(current_folder);
             break;
         case MP3_CARD_ONLINE:
             /* TODO should not happen */
