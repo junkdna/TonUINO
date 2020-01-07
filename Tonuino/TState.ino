@@ -9,6 +9,7 @@
 #include "tstate.h"
 #include "rfid.h"
 
+#ifdef LONG_PRESS_IS_VOLUME_KEY
 static inline bool button_vol_up(uint32_t _map) {
     return button_long_pressed(_map, BUTTON_UP);
 }
@@ -24,6 +25,23 @@ static inline bool button_next(uint32_t _map) {
 static inline bool button_prev(uint32_t _map) {
     return button_released(_map, BUTTON_DOWN);
 }
+#else
+static inline bool button_vol_up(uint32_t _map) {
+    return button_released(_map, BUTTON_UP);
+}
+
+static inline bool button_vol_down(uint32_t _map) {
+    return button_released(_map, BUTTON_DOWN);
+}
+
+static inline bool button_next(uint32_t _map) {
+    return button_long_pressed(_map, BUTTON_UP);
+}
+
+static inline bool button_prev(uint32_t _map) {
+    return button_long_pressed(_map, BUTTON_DOWN);
+}
+#endif
 
 /*******************************
  * state Idle

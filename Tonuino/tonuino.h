@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-only
+ * Copyright TODO Thorsten Voß
+ * Copyright 2019 Tillmann Heidsieck <theidsieck@leenox.de>
+ */
+
 #ifndef _TONUINO_H_
 #define _TONUINO_H_
 
@@ -7,6 +13,8 @@
 #include <SoftwareSerial.h>
 
 #include "eeprom_config.h"
+
+#define LONG_PRESS_IS_VOLUME_KEY
 
 #if 0
 #define SOFT_UART_RX_PIN 5
