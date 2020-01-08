@@ -161,7 +161,7 @@ TState *new_state_by_name(TState *orig, uint8_t state_name, bool restore = false
         return new TState_Album(orig);
         break;
     case STATE_ALBUM_RANDOM:
-        return new TState_Album_Random(orig);
+        return new TState_AlbumRandom(orig);
         break;
     case STATE_AUDIO_BOOK:
         return new TState_AudioBook(orig);

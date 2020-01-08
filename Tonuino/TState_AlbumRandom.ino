@@ -10,7 +10,7 @@
 #include "rfid.h"
 
 
-TState *TState_Album_Random::handle_buttons(uint32_t _map) {
+TState *TState_AlbumRandom::handle_buttons(uint32_t _map) {
     TState *state = this;
 
     if (button_next(_map)) {
@@ -32,7 +32,7 @@ TState *TState_Album_Random::handle_buttons(uint32_t _map) {
     return state;
 }
 
-TState *TState_Album_Random::handle_card(RFIDCard *card) {
+TState *TState_AlbumRandom::handle_card(RFIDCard *card) {
     TState *state = this;
     (void)card;
 
@@ -52,7 +52,7 @@ TState *TState_Album_Random::handle_card(RFIDCard *card) {
     return state;
 }
 
-TState *TState_Album_Random::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
+TState *TState_AlbumRandom::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
     TState *state = this;
 
     (void)code;
@@ -84,17 +84,17 @@ TState *TState_Album_Random::handle_dfplay_event(mp3_notify_event event, uint16_
     return state;
 }
 
-TState *TState_Album_Random::loop() {
+TState *TState_AlbumRandom::loop() {
     return this;
 }
 
-TState_Album_Random::TState_Album_Random(TonUINO *context) {
+TState_AlbumRandom::TState_AlbumRandom(TonUINO *context) {
     this->context = context;
 }
 
-TState_Album_Random::TState_Album_Random(TState *last_state) {
+TState_AlbumRandom::TState_AlbumRandom(TState *last_state) {
     from_last_state(last_state);
-    Serial.println(F("Album_Random(last)"));
+    Serial.println(F("AlbumRandom(last)"));
     if (restore) {
         start();
         restore = false;
@@ -106,6 +106,6 @@ TState_Album_Random::TState_Album_Random(TState *last_state) {
     }
 }
 
-TState_Album_Random::~TState_Album_Random() {
+TState_AlbumRandom::~TState_AlbumRandom() {
 }
 // vim: ts=4 sw=4 et cindent

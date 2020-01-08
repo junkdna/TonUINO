@@ -137,7 +137,7 @@ class TState_Album : public TState {
         ~TState_Album();
 };
 
-class TState_Album_Random : public TState {
+class TState_AlbumRandom : public TState {
     protected:
 
     public:
@@ -146,9 +146,9 @@ class TState_Album_Random : public TState {
         TState *handle_dfplay_event(mp3_notify_event event, uint16_t code) override;
         TState *loop() override;
 
-        explicit TState_Album_Random(TonUINO *context);
-        explicit TState_Album_Random(TState *last_state);
-        ~TState_Album_Random();
+        explicit TState_AlbumRandom(TonUINO *context);
+        explicit TState_AlbumRandom(TState *last_state);
+        ~TState_AlbumRandom();
 };
 
 class TState_AudioBook : public TState {
