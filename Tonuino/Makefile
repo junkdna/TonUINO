@@ -78,3 +78,4 @@ check: *.ino *.h
 clean:
 	@rm -rf ..arduino*
 	@rm -rf ".pio/build/"
+	@rm -rf tags cscope*
