@@ -54,10 +54,10 @@ endif
 
 ifeq ($(OS),Linux)
 ifeq (,$(shell find $(ACLI)))
-	@pip3 install -U --user setuptools wheel
 	@curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
 endif
 ifeq (,$(shell find $(PIO)))
+	@pip3 install -U --user setuptools wheel
 	@pip3 install -U --user platformio
 endif
 endif
