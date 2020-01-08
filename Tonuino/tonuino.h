@@ -15,29 +15,30 @@
 #include "eeprom_config.h"
 
 #if 0
-#define SOFT_UART_RX_PIN 5
-#define SOFT_UART_TX_PIN 6
+#define SOFT_UART_RX_PIN        5
+#define SOFT_UART_TX_PIN        6
 #else
-#define SOFT_UART_RX_PIN 2
-#define SOFT_UART_TX_PIN 3
+#define SOFT_UART_RX_PIN        2
+#define SOFT_UART_TX_PIN        3
 #endif
 
-#define LED_GREEN        A4
-#define LED_RED          A5
-#define LED_BLUE         A6
+#define LED_GREEN               A4
+#define LED_RED                 A5
+#define LED_BLUE                A6
 
 #if 0
-#define BUSY_PIN         7
+#define BUSY_PIN                7
 #else
-#define BUSY_PIN         4
+#define BUSY_PIN                4
 #endif
 
-#define PAUSE_BUTTON_PIN A0
-#define UP_BUTTON_PIN    A1
-#define DOWN_BUTTON_PIN  A2
+#define BUTTON_EXTERNAL_PULLUP  true
+#define PAUSE_BUTTON_PIN        A0
+#define UP_BUTTON_PIN           A1
+#define DOWN_BUTTON_PIN         A2
 
-#define MFRC522_RST_PIN  9
-#define MFRC522_SS_PIN   10
+#define MFRC522_RST_PIN         9
+#define MFRC522_SS_PIN          10
 
 enum mp3_notify_event {
     MP3_NOTIFY_ERROR,

@@ -131,9 +131,9 @@ static DFMiniMp3<SoftwareSerial, Mp3Notify> g_dfplay(g_soft_uart);
 MFRC522 mfrc522(MFRC522_SS_PIN, MFRC522_RST_PIN);
 RFIDReader rfid(&mfrc522);
 
-static Button button_down(DOWN_BUTTON_PIN, 25, false, true);
-static Button button_pause(PAUSE_BUTTON_PIN, 25, false, true);
-static Button button_up(UP_BUTTON_PIN, 25, false, true);
+static Button button_down(DOWN_BUTTON_PIN, 25, !BUTTON_EXTERNAL_PULLUP, true);
+static Button button_pause(PAUSE_BUTTON_PIN, 25, !BUTTON_EXTERNAL_PULLUP, true);
+static Button button_up(UP_BUTTON_PIN, 25, !BUTTON_EXTERNAL_PULLUP, true);
 static Buttons buttons(&button_down, &button_pause, &button_up);
 
 void setup() {
