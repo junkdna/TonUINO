@@ -14,8 +14,6 @@
 
 #include "eeprom_config.h"
 
-#define LONG_PRESS_IS_VOLUME_KEY
-
 #if 0
 #define SOFT_UART_RX_PIN 5
 #define SOFT_UART_TX_PIN 6

@@ -7,6 +7,8 @@
 
 #include <JC_Button.h>
 
+#define LONG_PRESS_IS_VOLUME_KEY
+
 class TonUINO;
 
 /* N.B.: Maximum number of buttons is limited to 10 */
@@ -42,6 +44,41 @@ static inline bool button_released(uint32_t _map, button_names button) {
 static inline bool button_long_pressed(uint32_t _map, button_names button) {
     return _map & (1 << (2 * BUTTON_MAX + button));
 }
+
+#ifdef LONG_PRESS_IS_VOLUME_KEY
+static inline bool button_vol_up(uint32_t _map) {
+    return button_long_pressed(_map, BUTTON_UP);
+}
+
+static inline bool button_vol_down(uint32_t _map) {
+    return button_long_pressed(_map, BUTTON_DOWN);
+}
+
+static inline bool button_next(uint32_t _map) {
+    return button_released(_map, BUTTON_UP);
+}
+
+static inline bool button_prev(uint32_t _map) {
+    return button_released(_map, BUTTON_DOWN);
+}
+#else
+static inline bool button_vol_up(uint32_t _map) {
+    return button_released(_map, BUTTON_UP);
+}
+
+static inline bool button_vol_down(uint32_t _map) {
+    return button_released(_map, BUTTON_DOWN);
+}
+
+static inline bool button_next(uint32_t _map) {
+    return button_long_pressed(_map, BUTTON_UP);
+}
+
+static inline bool button_prev(uint32_t _map) {
+    return button_long_pressed(_map, BUTTON_DOWN);
+}
+#endif
+
 
 #endif
 // vim: ts=4 sw=4 et cindent
