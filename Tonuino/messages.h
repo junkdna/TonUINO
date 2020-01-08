@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-only
+ * Copyright 2019-2020 Tillmann Heidsieck <theidsieck@leenox.de>
+ */
+
 #ifndef _MESSAGES_H_
 #define _MESSAGES_H_
 

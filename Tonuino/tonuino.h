@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-only
- * Copyright TODO Thorsten Voß
- * Copyright 2019 Tillmann Heidsieck <theidsieck@leenox.de>
+ * Copyright 2018-2019 Thorsten Voß <voss@bummel.de>
+ * Copyright 2019-2020 Tillmann Heidsieck <theidsieck@leenox.de>
  */
 
 #ifndef _TONUINO_H_

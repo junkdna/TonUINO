@@ -1,8 +1,8 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright 2020 Alexander Willner
+# Copyright 2019-2020 Tillmann Heidsieck <theidsieck@leenox.de>
 #
 # TonUINO Makefile
-#
-# Author: Alexander Willner
-# Date: 2020-01-03
 
 # Config
 ## Arduino Nano (old bootloader)

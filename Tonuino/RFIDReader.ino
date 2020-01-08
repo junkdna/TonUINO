@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-only
  * based on https://github.com/miguelbalboa/rfid examples/ReadAndWrite/ReadAndWrite.ino
- * Copyright 2019 Tillmann Heidsieck <theidsieck@leenox.de>
+ * Copyright 2019-2020 Tillmann Heidsieck <theidsieck@leenox.de>
  */
 
 #include <SPI.h>

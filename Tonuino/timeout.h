@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-only
+ * Copyright 2019-2020 Tillmann Heidsieck <theidsieck@leenox.de>
+ */
+
 #ifndef _TIMEOUT_H_
 #define _TIMEOUT_H_
 
