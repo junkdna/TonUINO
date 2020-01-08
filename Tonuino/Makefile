@@ -13,7 +13,17 @@ SERIAL = /dev/ttyUSB0
 SKETCH = .
 ## Helper
 OS = $(shell uname)
-.PHONY: help
+.PHONY: help install clean
+
+PIO = $(shell which platformio)
+ifeq (, $(PIO))
+	PIO = $(HOME)/.local/bin/platformio
+endif
+
+ACLI = $(shell which arduino-cli)
+ifeq (, $(ACLI))
+	ACLI = $(shell pwd)/bin/arduino-cli
+endif
 
 help:
 	$(info TonUINO Makefile)
@@ -22,8 +32,8 @@ help:
 	$(info Configured to use MCU "$(MCU)" attached to port "$(SERIAL)".)
 	$(info )
 	$(info Available commands:)
-	$(info - install : installation of required binaries (arduino-cli))
-	$(info - init    : initialize environment (arduino-cli))
+	$(info - install : installation of required binaries (arduino-cli/platformio))
+	$(info - init    : initialize environment (arduino-cli/platformio))
 	$(info - compile : create binary)
 	$(info - upload  : store binary on board flash)
 	$(info - find    : get information about the pluged-in board)
@@ -41,39 +51,40 @@ else
 	@brew install platformio arduino-cli
 endif
 endif
+
 ifeq ($(OS),Linux)
-ifeq (, $(shell which arduino-cli))
-	@pip install setuptools wheel
+ifeq (,$(shell find $(ACLI)))
+	@pip3 install -U --user setuptools wheel
 	@curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
 endif
-ifeq (, $(shell which platformio))
-	@pip install -U platformio
+ifeq (,$(shell find $(PIO)))
+	@pip3 install -U --user platformio
 endif
 endif
 
 init:
-	@arduino-cli config init
-	@arduino-cli core update-index
-	@arduino-cli core install $(BOARD)
-	@arduino-cli lib install "DFPlayer Mini Mp3 by Makuna"
-	@arduino-cli lib install "MFRC522"
-	@arduino-cli lib install "JC_Button"
-	@platformio lib install 1561 # DFPlayer Mini Mp3 by Makuna
-	@platformio lib install 2284 # EEPROM
-	@platformio lib install 77   # JC_Button
-	@platformio lib install 63   # MFRC522
+	@$(ACLI) config init
+	@$(ACLI) core update-index
+	@$(ACLI) core install $(BOARD)
+	@$(ACLI) lib install "DFPlayer Mini Mp3 by Makuna"
+	@$(ACLI) lib install "MFRC522"
+	@$(ACLI) lib install "JC_Button"
+	@$(PIO) lib install 1561 # DFPlayer Mini Mp3 by Makuna
+	@$(PIO) lib install 2284 # EEPROM
+	@$(PIO) lib install 77   # JC_Button
+	@$(PIO) lib install 63   # MFRC522
 
 compile: *.ino *.h
-	@arduino-cli compile --fqbn $(MCU) --warnings none "$(SKETCH)"
+	@$(ACLI) compile --fqbn $(MCU) --warnings none "$(SKETCH)"
 
 find:
-	@arduino-cli board list
+	@$(ACLI) board list
 
 upload: compile
-	@arduino-cli upload -p $(SERIAL) --fqbn $(MCU) --verify "$(SKETCH)"
+	@$(ACLI) upload -p $(SERIAL) --fqbn $(MCU) --verify "$(SKETCH)"
 
 test:
-	@arduino-cli compile --fqbn $(MCU) --warnings more "$(SKETCH)"
+	@$(ACLI) compile --fqbn $(MCU) --warnings more "$(SKETCH)"
 
 tags: *.ino *.h
 	@../Tools/gen_tags.sh
