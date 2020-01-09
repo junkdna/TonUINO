@@ -12,6 +12,18 @@
 
 /* TODO add option to clean some variables */
 void TState::from_last_state(TState *last_state) {
+    /* TODO do we always want to delete all mods here or should some stay in place
+     * maybe add a marker?
+     * if (!mods[i] || mods[i]->marker)
+     *     continue;
+     */
+    for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
+        if (!mods[i])
+            continue;
+        delete mods[i];
+        mods[i] = nullptr;
+    }
+
     this->card                     = last_state->card;
     this->context                  = last_state->context;
     this->current_folder           = last_state->current_folder;

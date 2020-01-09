@@ -10,6 +10,7 @@
 #include "tonuino.h"
 
 class RFIDCard;
+class Modificator;
 
 #define STATE_IDLE          255
 #define STATE_NEW_CARD      128
@@ -21,6 +22,8 @@ class RFIDCard;
 //#define STATE_GLOBAL_RANDOM
 #define STATE_AUDIO_BOOK    5
 #define STATE_ADMIN         6
+
+#define MAX_MODIFICATORS    4
 
 enum mp3_command {
     MP3_CMD_NONE,
@@ -41,6 +44,8 @@ class TState {
         TonUINO *context = nullptr;
         RFIDCard *card = nullptr;
         mp3_command last_command = MP3_CMD_NONE;
+
+        Modificator *mods[MAX_MODIFICATORS] = {nullptr};
 
         uint16_t current_folder = 0;
         uint16_t current_folder_track_num = 0;

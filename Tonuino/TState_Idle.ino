@@ -13,6 +13,16 @@
 TState *TState_Idle::handle_buttons(uint32_t _map) {
     TState *state = this;
 
+    for (int8_t i; i < MAX_MODIFICATORS; i++) {
+        if (!mods[i])
+            continue;
+        state = mods[i]->handle_buttons(_map);
+        if (state != this) {
+            delete this;
+            return state;
+        }
+    }
+
     if (button_vol_up(_map)) {
         volume_up();
     } else if (button_vol_down(_map)) {
@@ -32,6 +42,17 @@ TState *TState_Idle::handle_buttons(uint32_t _map) {
 
 TState *TState_Idle::handle_card(RFIDCard *card) {
     TState *state = this;
+
+    for (int8_t i; i < MAX_MODIFICATORS; i++) {
+        if (!mods[i])
+            continue;
+        state = mods[i]->handle_card(card);
+        if (state != this) {
+            delete this;
+            return state;
+        }
+    }
+
     this->card = card;
 
     switch(card->card_mode) {
@@ -53,7 +74,17 @@ TState *TState_Idle::handle_card(RFIDCard *card) {
 }
 
 TState *TState_Idle::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
-    (void)code;
+    TState *state = this;
+
+    for (int8_t i; i < MAX_MODIFICATORS; i++) {
+        if (!mods[i])
+            continue;
+        state = mods[i]->handle_dfplay_event(event, code);
+        if (state != this) {
+            delete this;
+            return state;
+        }
+    }
 
     switch (event) {
         case MP3_NOTIFY_ERROR:
@@ -81,6 +112,18 @@ TState *TState_Idle::handle_dfplay_event(mp3_notify_event event, uint16_t code) 
 }
 
 TState *TState_Idle::loop() {
+    TState *state = this;
+
+    for (int8_t i; i < MAX_MODIFICATORS; i++) {
+        if (!mods[i])
+            continue;
+        state = mods[i]->loop();
+        if (state != this) {
+            delete this;
+            return state;
+        }
+    }
+
     return this;
 }
 

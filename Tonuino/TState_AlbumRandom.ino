@@ -13,6 +13,16 @@
 TState *TState_AlbumRandom::handle_buttons(uint32_t _map) {
     TState *state = this;
 
+    for (int8_t i; i < MAX_MODIFICATORS; i++) {
+        if (!mods[i])
+            continue;
+        state = mods[i]->handle_buttons(_map);
+        if (state != this) {
+            delete this;
+            return state;
+        }
+    }
+
     if (button_next(_map)) {
         playRandomTrack(current_folder);
     } else if (button_prev(_map)) {
@@ -34,7 +44,16 @@ TState *TState_AlbumRandom::handle_buttons(uint32_t _map) {
 
 TState *TState_AlbumRandom::handle_card(RFIDCard *card) {
     TState *state = this;
-    (void)card;
+
+    for (int8_t i; i < MAX_MODIFICATORS; i++) {
+        if (!mods[i])
+            continue;
+        state = mods[i]->handle_card(card);
+        if (state != this) {
+            delete this;
+            return state;
+        }
+    }
 
 #if 0
     /* do not handle empty cards */
@@ -55,7 +74,15 @@ TState *TState_AlbumRandom::handle_card(RFIDCard *card) {
 TState *TState_AlbumRandom::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
     TState *state = this;
 
-    (void)code;
+    for (int8_t i; i < MAX_MODIFICATORS; i++) {
+        if (!mods[i])
+            continue;
+        state = mods[i]->handle_dfplay_event(event, code);
+        if (state != this) {
+            delete this;
+            return state;
+        }
+    }
 
     switch (event) {
         case MP3_NOTIFY_ERROR:
@@ -85,6 +112,18 @@ TState *TState_AlbumRandom::handle_dfplay_event(mp3_notify_event event, uint16_t
 }
 
 TState *TState_AlbumRandom::loop() {
+    TState *state = this;
+
+    for (int8_t i; i < MAX_MODIFICATORS; i++) {
+        if (!mods[i])
+            continue;
+        state = mods[i]->loop();
+        if (state != this) {
+            delete this;
+            return state;
+        }
+    }
+
     return this;
 }
 
