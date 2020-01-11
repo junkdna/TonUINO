@@ -13,7 +13,7 @@
 TState *TState_AlbumRandom::handle_buttons(uint32_t _map) {
     TState *state = this;
 
-    for (int8_t i; i < MAX_MODIFICATORS; i++) {
+    for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
         if (!mods[i])
             continue;
         state = mods[i]->handle_buttons(_map);
@@ -45,7 +45,7 @@ TState *TState_AlbumRandom::handle_buttons(uint32_t _map) {
 TState *TState_AlbumRandom::handle_card(RFIDCard *card) {
     TState *state = this;
 
-    for (int8_t i; i < MAX_MODIFICATORS; i++) {
+    for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
         if (!mods[i])
             continue;
         state = mods[i]->handle_card(card);
@@ -74,7 +74,7 @@ TState *TState_AlbumRandom::handle_card(RFIDCard *card) {
 TState *TState_AlbumRandom::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
     TState *state = this;
 
-    for (int8_t i; i < MAX_MODIFICATORS; i++) {
+    for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
         if (!mods[i])
             continue;
         state = mods[i]->handle_dfplay_event(event, code);
@@ -114,7 +114,7 @@ TState *TState_AlbumRandom::handle_dfplay_event(mp3_notify_event event, uint16_t
 TState *TState_AlbumRandom::loop() {
     TState *state = this;
 
-    for (int8_t i; i < MAX_MODIFICATORS; i++) {
+    for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
         if (!mods[i])
             continue;
         state = mods[i]->loop();
