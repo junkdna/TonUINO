@@ -26,13 +26,9 @@ int RFIDReader::write(RFIDCard *card) {
     MFRC522::StatusCode status;
 
     status = mfrc522->PICC_RequestA(dummy, &dsz);
-    Serial.print(F("PCD_RequestA() failed: "));
-    Serial.println(mfrc522->GetStatusCodeName(status));
+    (void)status;
 
     status = mfrc522->PICC_WakeupA(dummy, &dsz);
-    Serial.print(F("PCD_WakeupA() failed: "));
-    Serial.println(mfrc522->GetStatusCodeName(status));
-
     if (status != MFRC522::STATUS_OK) {
         Serial.print(F("No card present"));
         return -1;
@@ -43,19 +39,13 @@ int RFIDReader::write(RFIDCard *card) {
         return -1;
     }
 
-    Serial.print(F("Card UID:"));
-    dump_byte_array(mfrc522->uid.uidByte, mfrc522->uid.size);
-
-    Serial.print(F("PICC type: "));
     MFRC522::PICC_Type piccType = mfrc522->PICC_GetType(mfrc522->uid.sak);
-    Serial.println(mfrc522->PICC_GetTypeName(piccType));
+    (void)piccType;
 
-    Serial.println(F("Authenticating again using key B..."));
     status = mfrc522->PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_B, trailer_block, &keyB, &(mfrc522->uid));
     if (status != MFRC522::STATUS_OK) {
         stop();
         Serial.print(F("PCD_Authenticate() failed: "));
-        Serial.println(mfrc522->GetStatusCodeName(status));
         return -1;
     }
 
@@ -86,31 +76,20 @@ int RFIDReader::read(RFIDCard *card) {
         return -1;
     }
 
-    Serial.print(F("Card UID: "));
-    dump_byte_array(mfrc522->uid.uidByte, mfrc522->uid.size);
-
-    Serial.print(F("PICC type: "));
     MFRC522::PICC_Type piccType = mfrc522->PICC_GetType(mfrc522->uid.sak);
-    Serial.println(mfrc522->PICC_GetTypeName(piccType));
+    (void)piccType;
 
-    Serial.println(F("Authenticating using key A..."));
     status = mfrc522->PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, trailer_block, &keyA, &(mfrc522->uid));
     if (status != MFRC522::STATUS_OK) {
         stop();
         Serial.print(F("PCD_Authenticate() failed: "));
-        Serial.println(mfrc522->GetStatusCodeName(status));
         return -1;
     }
-
-    Serial.println(F("Current data in sector:"));
-    mfrc522->PICC_DumpMifareClassicSectorToSerial(&(mfrc522->uid), &keyA, sector);
-    Serial.println();
 
     status = mfrc522->MIFARE_Read(block_addr, buffer, &size);
     if (status != MFRC522::STATUS_OK) {
         stop();
         Serial.print(F("MIFARE_Read() failed: "));
-        Serial.println(mfrc522->GetStatusCodeName(status));
         return -1;
     }
 
@@ -132,7 +111,6 @@ void RFIDReader::setup(TonUINO *tonuino) {
     this->tonuino = tonuino;
     SPI.begin();
     mfrc522->PCD_Init();
-    mfrc522->PCD_DumpVersionToSerial();
     for (byte i = 0; i < 6; i++) {
         keyA.keyByte[i] = keyA_default[i];
         keyB.keyByte[i] = keyB_default[i];
@@ -156,14 +134,6 @@ void RFIDReader::loop() {
 void RFIDReader::stop() {
     mfrc522->PICC_HaltA();
     mfrc522->PCD_StopCrypto1();
-}
-
-void RFIDReader::dump_byte_array(byte *buffer, byte buffer_size) {
-    for (byte i = 0; i < buffer_size; i++) {
-        Serial.print(buffer[i] < 0x10 ? " 0" : " ");
-        Serial.print(buffer[i], HEX);
-    }
-    Serial.println();
 }
 
 RFIDReader::RFIDReader(MFRC522 *mfrc522) : mfrc522(mfrc522), block_addr(4), current_card(nullptr), tonuino(nullptr) {
@@ -197,5 +167,4 @@ RFIDCard::RFIDCard(RFIDReader *r) : reader(r) {
     version = CARD_VERSION;
     card_mode = CARD_MODE_NONE;
 }
-
 // vim: ts=4 sw=4 et cindent
