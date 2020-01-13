@@ -114,6 +114,8 @@ TState *TState_RadioPlay::handle_dfplay_event(mp3_notify_event event, uint16_t c
 TState *TState_RadioPlay::loop() {
     TState *state = this;
 
+    notify_led->loop();
+
     for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
         if (!mods[i])
             continue;
@@ -133,6 +135,7 @@ TState_RadioPlay::TState_RadioPlay(TonUINO *context) {
 
 TState_RadioPlay::TState_RadioPlay(TState *last_state) {
     from_last_state(last_state);
+    notify_led->update_state(LED_STATE_PLAY);
     Serial.println(F("RadioPlay(last)"));
     if (restore) {
         start();

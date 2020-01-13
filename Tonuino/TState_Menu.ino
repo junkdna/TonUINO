@@ -184,6 +184,8 @@ TState *TState_Menu::handle_dfplay_event(mp3_notify_event event, uint16_t code) 
 TState *TState_Menu::loop() {
     TState *state = this;
 
+    notify_led->loop();
+
     if (!card)
         return state;
 
@@ -205,6 +207,8 @@ TState_Menu::TState_Menu(TState *last_state) {
     Serial.println(F("Menu(last)"));
 
     from_last_state(last_state);
+    notify_led->update_state(LED_STATE_MENU);
+
     menu_item = 0;
     selected_value = 0;
 

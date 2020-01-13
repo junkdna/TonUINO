@@ -32,6 +32,7 @@ void TState::from_last_state(TState *last_state) {
     this->current_volume           = last_state->current_volume;
     this->last_command             = last_state->last_command;
     this->restore                  = last_state->restore;
+    this->notify_led               = last_state->notify_led;
 }
 
 void TState::volume_up() {

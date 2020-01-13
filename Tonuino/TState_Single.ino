@@ -114,6 +114,8 @@ TState *TState_Single::handle_dfplay_event(mp3_notify_event event, uint16_t code
 TState *TState_Single::loop() {
     TState *state = this;
 
+    notify_led->loop();
+
     for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
         if (!mods[i])
             continue;
@@ -133,6 +135,7 @@ TState_Single::TState_Single(TonUINO *context) {
 
 TState_Single::TState_Single(TState *last_state) {
     from_last_state(last_state);
+    notify_led->update_state(LED_STATE_PLAY);
     Serial.println(F("Single(last)"));
     if (restore) {
         start();

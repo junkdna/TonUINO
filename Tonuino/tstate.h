@@ -8,6 +8,7 @@
 #define _TSTATE_H_
 
 #include "tonuino.h"
+#include "notification_led.h"
 
 class RFIDCard;
 class Modificator;
@@ -44,6 +45,7 @@ class TState {
         TonUINO *context = nullptr;
         RFIDCard *card = nullptr;
         mp3_command last_command = MP3_CMD_NONE;
+        NotificationLED *notify_led = nullptr;
 
         Modificator *mods[MAX_MODIFICATORS] = {nullptr};
 
