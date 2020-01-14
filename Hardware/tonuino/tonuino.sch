@@ -137,11 +137,11 @@ Text Label 9500 3650 2    50   ~ 0
 LED1
 Text Label 9500 3550 2    50   ~ 0
 LED2
-Text Label 7550 4000 0    50   ~ 0
+Text Label 7550 3800 0    50   ~ 0
 LED0
-Text Label 7550 4100 0    50   ~ 0
+Text Label 7550 3900 0    50   ~ 0
 LED1
-Text Label 7550 4200 0    50   ~ 0
+Text Label 7550 4000 0    50   ~ 0
 LED2
 Text Label 7550 3500 0    50   ~ 0
 ~PAUSE
@@ -313,7 +313,7 @@ VCC
 Text Label 6550 3400 2    50   ~ 0
 ~SPK_EN
 $Comp
-L tonuino-rescue:Arduino_Nano_v2.x-MCU_Module A1
+L tonuino-rescue:Arduino_Nano_v2.x-MCU_Module-tonuino-rescue A1
 U 1 1 5E011EDD
 P 7050 3500
 F 0 "A1" H 6700 4450 50  0000 C CNN
