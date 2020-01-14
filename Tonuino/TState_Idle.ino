@@ -24,13 +24,13 @@ TState *TState_Idle::handle_buttons(uint32_t _map) {
     }
 
     if (button_vol_up(_map)) {
-        volume_up();
+        player->volume_up();
     } else if (button_vol_down(_map)) {
-        volume_down();
+        player->volume_down();
     } else if (button_released(_map, BUTTON_PAUSE)) {
         if (card && card->card_mode == CARD_MODE_PLAYER) {
             state = new_state_by_name(this, card->extdata[0], true);
-            start();
+            player->start();
         }
     }
 
@@ -73,13 +73,13 @@ TState *TState_Idle::handle_card(RFIDCard *card) {
     return state;
 }
 
-TState *TState_Idle::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
+TState *TState_Idle::handle_player_event(mp3_notify_event event, uint16_t code) {
     TState *state = this;
 
     for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
         if (!mods[i])
             continue;
-        state = mods[i]->handle_dfplay_event(event, code);
+        state = mods[i]->handle_player_event(event, code);
         if (state != this) {
             delete this;
             return state;
@@ -100,9 +100,6 @@ TState *TState_Idle::handle_dfplay_event(mp3_notify_event event, uint16_t code) 
         case MP3_CARD_INSERTED:
             break;
         case MP3_CARD_REMOVED:
-            current_track = 0;
-            current_folder = 0;
-            current_folder_track_num = 0;
             break;
         default:
             break;
@@ -129,7 +126,7 @@ TState *TState_Idle::loop() {
     return this;
 }
 
-/* this function is called in case we have no previous state */
+/* this function is called in case we have no player->previous state */
 TState_Idle::TState_Idle(TonUINO *context) {
     this->context = context;
     notify_led = new NotificationLED_3LEDs(LED_RED, LED_GREEN, LED_BLUE);

@@ -18,7 +18,7 @@ public:
 	virtual TState *loop() = 0;
 	virtual TState *handle_buttons(uint32_t &_map) = 0;
 	virtual TState *handle_card(RFIDCard *card) = 0;
-	virtual TState *handle_dfplay_event(mp3_notify_event &event, uint16_t &code) = 0;
+	virtual TState *handle_player_event(mp3_notify_event &event, uint16_t &code) = 0;
 
 	explicit Modificator(TonUINO *context, TState *state);
     Modificator();
@@ -29,7 +29,7 @@ class Modificator_LockKeys : public Modificator {
 	TState *loop() override;
 	TState *handle_buttons(uint32_t &_map) override;
 	TState *handle_card(RFIDCard *card) override;
-	TState *handle_dfplay_event(mp3_notify_event &event, uint16_t &code) override;
+	TState *handle_player_event(mp3_notify_event &event, uint16_t &code) override;
 
 	explicit Modificator_LockKeys(TonUINO *context, TState *state);
 	~Modificator_LockKeys();

@@ -18,7 +18,7 @@ TState *Modificator_LockKeys::handle_card(RFIDCard *card)  {
     return state;
 }
 
-TState *Modificator_LockKeys::handle_dfplay_event(mp3_notify_event &event, uint16_t &code)  {
+TState *Modificator_LockKeys::handle_player_event(mp3_notify_event &event, uint16_t &code)  {
     return state;
 }
 

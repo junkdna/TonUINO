@@ -7,30 +7,22 @@
 #ifndef _TONUINO_H_
 #define _TONUINO_H_
 
-#include <DFMiniMp3.h>
 #include <MFRC522.h>
 #include <SPI.h>
-#include <SoftwareSerial.h>
 
+#include "player.h"
 #include "eeprom_config.h"
 
-#if 0
-#define SOFT_UART_RX_PIN        5
-#define SOFT_UART_TX_PIN        6
-#else
 #define SOFT_UART_RX_PIN        2
 #define SOFT_UART_TX_PIN        3
-#endif
 
 #define LED_GREEN               A4
 #define LED_RED                 A5
 #define LED_BLUE                A6
 
-#if 0
-#define BUSY_PIN                7
-#else
 #define BUSY_PIN                4
-#endif
+#define SPK_ENABLE_PIN          5
+#define HPP_PIN                 6
 
 #define BUTTON_EXTERNAL_PULLUP  true
 #define PAUSE_BUTTON_PIN        A0
@@ -40,18 +32,6 @@
 #define MFRC522_RST_PIN         9
 #define MFRC522_SS_PIN          10
 
-enum mp3_notify_event {
-    MP3_NOTIFY_ERROR,
-    MP3_PLAY_FINISHED,
-    MP3_CARD_ONLINE,
-    MP3_CARD_INSERTED,
-    MP3_CARD_REMOVED,
-    MP3_USB_ONLINE,
-    MP3_USB_INSERTED,
-    MP3_USB_REMOVED,
-};
-
-class Mp3Notify;
 class RFIDCard;
 class RFIDReader;
 class TState;
@@ -59,21 +39,21 @@ class TState;
 class TonUINO {
     protected:
         EEPROM_Config config;
-        DFMiniMp3<SoftwareSerial, Mp3Notify> *dfplay;
-        TState *state;
         RFIDCard *rfid_card;
+        Player player;
+
+        TState *state;
 
         uint32_t button_map = 0;
 
     public:
-        DFMiniMp3<SoftwareSerial, Mp3Notify>* get_dfplayer();
         EEPROM_Config &get_config();
-        void setup(DFMiniMp3<SoftwareSerial, Mp3Notify> *dfp);
+        Player &get_player();
+        void setup();
         void loop();
 
         /* this goes into the state */
         void notify_buttons(uint32_t _map);
-
         void notify_rfid(RFIDCard *rfid_card);
         void notify_mp3(mp3_notify_event event, uint16_t code);
 };
@@ -134,6 +114,7 @@ class Mp3Notify {
             tonuino.notify_mp3(MP3_USB_REMOVED, code);
         }
 };
+
 
 #endif
 // vim: ts=4 sw=4 et cindent

@@ -24,15 +24,15 @@ TState *TState_Single::handle_buttons(uint32_t _map) {
     }
 
     if (button_next(_map)) {
-        /* ignore next button */
+        /* ignore player->next button */
     } else if (button_prev(_map)) {
-        playFolderTrack(current_folder, current_track);
+        player->playFolderTrack(player->get_current_folder(), player->get_current_track());
     } else if (button_vol_up(_map)) {
-        volume_up();
+        player->volume_up();
     } else if (button_vol_down(_map)) {
-        volume_down();
+        player->volume_down();
     } else if (button_released(_map, BUTTON_PAUSE)) {
-        pause();
+        player->pause();
         state = new_state_by_name(this, STATE_IDLE);
     }
 
@@ -71,13 +71,13 @@ TState *TState_Single::handle_card(RFIDCard *card) {
     return state;
 }
 
-TState *TState_Single::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
+TState *TState_Single::handle_player_event(mp3_notify_event event, uint16_t code) {
     TState *state = this;
 
     for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
         if (!mods[i])
             continue;
-        state = mods[i]->handle_dfplay_event(event, code);
+        state = mods[i]->handle_player_event(event, code);
         if (state != this) {
             delete this;
             return state;
@@ -138,13 +138,10 @@ TState_Single::TState_Single(TState *last_state) {
     notify_led->update_state(LED_STATE_PLAY);
     Serial.println(F("Single(last)"));
     if (restore) {
-        start();
+        player->start();
         restore = false;
     } else {
-        current_folder = 0;
-        current_folder_track_num = 0;
-        current_track = 0;
-        playFolderTrack(card->extdata[1], card->extdata[2]);
+        player->playFolderTrack(card->extdata[1], card->extdata[2]);
     }
 }
 

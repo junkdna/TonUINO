@@ -24,15 +24,15 @@ TState *TState_Album::handle_buttons(uint32_t _map) {
     }
 
     if (button_next(_map)) {
-        next();
+        player->next();
     } else if (button_prev(_map)) {
-        prev();
+        player->prev();
     } else if (button_vol_up(_map)) {
-        volume_up();
+        player->volume_up();
     } else if (button_vol_down(_map)) {
-        volume_down();
+        player->volume_down();
     } else if (button_released(_map, BUTTON_PAUSE)) {
-        pause();
+        player->pause();
         state = new_state_by_name(this, STATE_IDLE);
     }
 
@@ -71,13 +71,13 @@ TState *TState_Album::handle_card(RFIDCard *card) {
     return state;
 }
 
-TState *TState_Album::handle_dfplay_event(mp3_notify_event event, uint16_t code) {
+TState *TState_Album::handle_player_event(mp3_notify_event event, uint16_t code) {
     TState *state = this;
 
     for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
         if (!mods[i])
             continue;
-        state = mods[i]->handle_dfplay_event(event, code);
+        state = mods[i]->handle_player_event(event, code);
         if (state != this) {
             delete this;
             return state;
@@ -89,8 +89,8 @@ TState *TState_Album::handle_dfplay_event(mp3_notify_event event, uint16_t code)
             /* TODO handle */
             break;
         case MP3_PLAY_FINISHED:
-            if (!is_playing())
-                next();
+            if (!player->is_playing())
+                player->next();
             break;
         case MP3_CARD_ONLINE:
             /* TODO should not happen */
@@ -138,13 +138,10 @@ TState_Album::TState_Album(TState *last_state) {
     notify_led->update_state(LED_STATE_PLAY);
     Serial.println(F("Album(last)"));
     if (restore) {
-        start();
+        player->start();
         restore = false;
     } else {
-        current_folder = 0;
-        current_folder_track_num = 0;
-        current_track = 0;
-        playFolderTrack(card->extdata[1], 1);
+        player->playFolderTrack(card->extdata[1], 1);
     }
 }
 

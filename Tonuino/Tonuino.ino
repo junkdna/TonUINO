@@ -12,40 +12,13 @@
 
 TonUINO tonuino;
 
-DFMiniMp3<SoftwareSerial, Mp3Notify>* TonUINO::get_dfplayer()
-{
-    return this->dfplay;
-}
-
 EEPROM_Config &TonUINO::get_config()
 {
     return this->config;
 }
 
 void TonUINO::notify_mp3(mp3_notify_event event, uint16_t code) {
-    (void)code;
-    switch(event) {
-        case MP3_NOTIFY_ERROR:
-            /* Fallthrough */
-        case MP3_PLAY_FINISHED:
-            /* Fallthrough */
-        case MP3_CARD_ONLINE:
-            /* Fallthrough */
-        case MP3_CARD_INSERTED:
-            /* Fallthrough */
-        case MP3_CARD_REMOVED:
-            state = state->handle_dfplay_event(event, code);
-            break;
-        case MP3_USB_ONLINE:
-            /* ignore for now */
-            break;
-        case MP3_USB_INSERTED:
-            /* ignore for now */
-            break;
-        case MP3_USB_REMOVED:
-            /* ignore for now */
-            break;
-    }
+    state->handle_player_event(event, code);
 }
 
 void TonUINO::notify_buttons(uint32_t _map)
@@ -74,7 +47,7 @@ void TonUINO::notify_rfid(RFIDCard *card)
     state = state->handle_card(rfid_card);
 }
 
-void TonUINO::setup(DFMiniMp3<SoftwareSerial, Mp3Notify>* dfp) {
+void TonUINO::setup() {
     uint32_t i, seed = 0;
 
     /* PIN A3 is open, the ADC should produce noise */
@@ -89,14 +62,6 @@ void TonUINO::setup(DFMiniMp3<SoftwareSerial, Mp3Notify>* dfp) {
     digitalWrite(LED_RED, 0);
     digitalWrite(LED_BLUE, 0);
 
-    pinMode(BUSY_PIN, INPUT);
-    dfplay = dfp;
-    dfplay->begin();
-    dfplay->loop();
-
-    dfplay->reset();
-    dfplay->loop();
-
     config.read();
     if (!config.check()) {
         config.init();
@@ -104,29 +69,26 @@ void TonUINO::setup(DFMiniMp3<SoftwareSerial, Mp3Notify>* dfp) {
     }
 
     state = new TState_Idle(&tonuino);
-    state->volume_set(config.init_volume);
+    player.set_state(state);
+    player.volume_set(config.init_volume);
 
     //if ((button_map & 0x7) == 0x7) {
     if (digitalRead(PAUSE_BUTTON_PIN) == LOW && digitalRead(UP_BUTTON_PIN) == LOW &&
             digitalRead(DOWN_BUTTON_PIN) == LOW) {
-        /* reset */
+        /* reset config*/
         config.init();
         config.write();
-        state->volume_set(config.init_volume);
-        dfplay->playMp3FolderTrack(MESSAGE_RESET_DONE);
-        delay(200);
+        player.volume_set(config.init_volume);
+        player.playMP3Track(MESSAGE_RESET_DONE);
         button_map = 0;
+        /* TODO reset board ? */
     }
 
 }
 
 void TonUINO::loop() {
-    dfplay->loop();
     state = state->loop();
 }
-
-static SoftwareSerial g_soft_uart(SOFT_UART_RX_PIN, SOFT_UART_TX_PIN);
-static DFMiniMp3<SoftwareSerial, Mp3Notify> g_dfplay(g_soft_uart);
 
 MFRC522 mfrc522(MFRC522_SS_PIN, MFRC522_RST_PIN);
 RFIDReader rfid(&mfrc522);
@@ -145,7 +107,7 @@ void setup() {
 
     buttons.setup(&tonuino);
     rfid.setup(&tonuino);
-    tonuino.setup(&g_dfplay);
+    tonuino.setup();
 }
 
 void loop() {
