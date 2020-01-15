@@ -189,6 +189,12 @@ TState *TState_NewCard::loop() {
 
     notify_led->loop();
 
+    state = player->loop();
+    if (state != this) {
+        delete this;
+        return state;
+    }
+
     if (!card)
         return state;
 

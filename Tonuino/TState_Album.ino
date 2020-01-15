@@ -116,6 +116,12 @@ TState *TState_Album::loop() {
 
     notify_led->loop();
 
+    state = player->loop();
+    if (state != this) {
+        delete this;
+        return state;
+    }
+
     for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
         if (!mods[i])
             continue;

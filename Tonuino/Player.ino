@@ -110,6 +110,9 @@ void Player::playRandomTrack(uint16_t folder) {
         idx = 0;
     }
 
+    if (idx >= current_folder_track_num)
+        state = new_state_by_name(state, STATE_IDLE);
+
     if (!current_folder_track_num)
         track = 1;
     else
