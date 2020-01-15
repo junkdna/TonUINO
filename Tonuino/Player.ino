@@ -91,16 +91,29 @@ void Player::playFolderTrack(uint16_t folder, uint16_t track) {
 void Player::playRandomTrack(uint16_t folder) {
     uint16_t track;
 
-    g_dfplayer.loop();
-    current_folder_track_num = g_dfplayer.getFolderTrackCount(folder);
+    if (!current_track || !current_folder) {
+        g_dfplayer.loop();
+        current_folder_track_num = g_dfplayer.getFolderTrackCount(folder);
+
+        /* init list to sorted */
+        for (track = 1; track <= current_folder_track_num; track++)
+            random_queue[track] = track;
+
+        /* shuffle */
+        for (track = 1; track <= current_folder_track_num; track++) {
+            idx = random(1, current_folder_track_num + 1);
+            uint8_t tmp = random_queue[track];
+            random_queue[track] = random_queue[idx];
+            random_queue[idx] = tmp;
+        }
+
+        idx = 0;
+    }
 
     if (!current_folder_track_num)
         track = 1;
     else
-        track = random(1, current_folder_track_num + 1);
-
-    if (track == current_track)
-        ++track;
+        track = random_queue[idx++];
 
     playFolderTrack(folder, track);
 }

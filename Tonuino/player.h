@@ -47,7 +47,8 @@ class Player {
         uint16_t current_track = 0;
         uint16_t current_volume = 0;
 
-        uint8_t random_queue[255];
+        uint8_t idx = 0;
+        uint8_t random_queue[255] = {0};
 
         void spk_enable();
         void spk_disable();
