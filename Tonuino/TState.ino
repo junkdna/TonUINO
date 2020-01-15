@@ -64,6 +64,8 @@ void TState::from_last_state(TState *last_state) {
     this->notify_led               = last_state->notify_led;
 
     this->player->set_state(this);
+    if (!this->restore)
+        this->player->set_current_folder(0);
 }
 
 void TState::set_restore(bool r) {
