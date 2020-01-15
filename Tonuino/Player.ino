@@ -185,9 +185,15 @@ const uint16_t Player::get_current_folder_track_num() {
 }
 
 void Player::set_current_folder(uint16_t folder) {
-    current_folder = folder;
-    current_track = 0;
-    current_folder_track_num = g_dfplayer.getFolderTrackCount(current_folder);
+    if (!folder) {
+        current_folder = 0;
+        current_track = 0;
+        current_folder_track_num = 0;
+    } else {
+        current_folder = folder;
+        current_track = 0;
+        current_folder_track_num = g_dfplayer.getFolderTrackCount(current_folder);
+    }
 }
 
 Player::Player() {
