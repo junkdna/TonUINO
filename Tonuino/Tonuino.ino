@@ -55,13 +55,6 @@ void TonUINO::setup() {
         seed ^= (analogRead(A7) & 0x1) << (i % 32);
     randomSeed(seed);
 
-    pinMode(LED_GREEN, OUTPUT);
-    pinMode(LED_RED, OUTPUT);
-    pinMode(LED_BLUE, OUTPUT);
-    digitalWrite(LED_GREEN, 0);
-    digitalWrite(LED_RED, 0);
-    digitalWrite(LED_BLUE, 0);
-
     config.read();
     if (!config.check()) {
         config.init();

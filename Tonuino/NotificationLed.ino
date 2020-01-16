@@ -71,6 +71,10 @@ NotificationLED_3LEDs::NotificationLED_3LEDs(uint8_t led0, uint8_t led1, uint8_t
     led_pins[2] = led2;
     ms = 0;
     idx = 0;
+
+    pinMode(led_pins[0], OUTPUT);
+    pinMode(led_pins[1], OUTPUT);
+    pinMode(led_pins[2], OUTPUT);
 }
 
 NotificationLED::NotificationLED() {
