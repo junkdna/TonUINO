@@ -16,9 +16,9 @@
 #define SOFT_UART_RX_PIN        2
 #define SOFT_UART_TX_PIN        3
 
-#define LED_GREEN               A4
-#define LED_RED                 A5
-#define LED_BLUE                A6
+#define LED_GREEN               A5
+#define LED_RED                 A4
+#define LED_BLUE                A3
 
 #define BUSY_PIN                4
 #define SPK_ENABLE_PIN          5

@@ -76,6 +76,7 @@ class Player {
         bool is_playing();
 
         TState *loop();
+        void setup();
         void set_state(TState *_state);
         void set_context(TonUINO *_tonuino);
 

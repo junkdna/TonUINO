@@ -64,7 +64,7 @@ class TState_Idle : public TState {
         TState *handle_player_event(mp3_notify_event event, uint16_t code) override;
         TState *loop() override;
 
-        explicit TState_Idle(TonUINO *context);
+        explicit TState_Idle(TonUINO *context, Player *player);
         explicit TState_Idle(TState *last_state);
         ~TState_Idle();
 };

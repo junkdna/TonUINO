@@ -133,10 +133,11 @@ TState *TState_Idle::loop() {
 }
 
 /* this function is called in case we have no player->previous state */
-TState_Idle::TState_Idle(TonUINO *context) {
+TState_Idle::TState_Idle(TonUINO *context, Player *player) {
     this->context = context;
-    notify_led = new NotificationLED_3LEDs(LED_RED, LED_GREEN, LED_BLUE);
-    notify_led->update_state(LED_STATE_IDLE);
+    this->player = player;
+    this->notify_led = new NotificationLED_3LEDs(LED_RED, LED_GREEN, LED_BLUE);
+    this->notify_led->update_state(LED_STATE_IDLE);
 }
 
 TState_Idle::TState_Idle(TState *last_state) {

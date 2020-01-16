@@ -33,7 +33,7 @@ TState *TState_Single::handle_buttons(uint32_t _map) {
         player->volume_down();
     } else if (button_released(_map, BUTTON_PAUSE)) {
         player->pause();
-        state = new_state_by_name(this, STATE_IDLE);
+        state = new_state_by_name(this, STATE_IDLE, true);
     }
 
     if (state != this)

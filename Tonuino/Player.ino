@@ -91,17 +91,17 @@ void Player::playFolderTrack(uint16_t folder, uint16_t track) {
 void Player::playRandomTrack(uint16_t folder) {
     uint16_t track;
 
-    if (!current_track || !current_folder) {
+    if (!current_track || !current_folder || folder != current_folder) {
         g_dfplayer.loop();
         current_folder_track_num = g_dfplayer.getFolderTrackCount(folder);
 
         /* init list to sorted */
-        for (track = 1; track <= current_folder_track_num; track++)
+        for (track = 1; track <= current_folder_track_num; ++track)
             random_queue[track] = track;
 
         /* shuffle */
-        for (track = 1; track <= current_folder_track_num; track++) {
-            idx = random(1, current_folder_track_num + 1);
+        for (track = 0; track < current_folder_track_num; ++track) {
+            idx = random(0, current_folder_track_num);
             uint8_t tmp = random_queue[track];
             random_queue[track] = random_queue[idx];
             random_queue[idx] = tmp;
@@ -110,13 +110,12 @@ void Player::playRandomTrack(uint16_t folder) {
         idx = 0;
     }
 
-    if (idx >= current_folder_track_num)
+    if (idx >= current_folder_track_num) {
         state = new_state_by_name(state, STATE_IDLE);
+        return;
+    }
 
-    if (!current_folder_track_num)
-        track = 1;
-    else
-        track = random_queue[idx++];
+    track = random_queue[idx++];
 
     playFolderTrack(folder, track);
 }
@@ -172,7 +171,7 @@ void Player::prev() {
 }
 
 TState *Player::loop() {
-    if (is_playing() && !hp_present())
+    if (!hp_present())
         spk_enable();
     else
         spk_disable();
@@ -212,19 +211,21 @@ void Player::set_current_folder(uint16_t folder) {
     }
 }
 
-Player::Player() {
+void Player::setup() {
     pinMode(BUSY_PIN, INPUT);
     pinMode(HPP_PIN, INPUT);
     pinMode(SPK_ENABLE_PIN, OUTPUT);
 
-    /* note that this signal is low_active */
-    digitalWrite(SPK_ENABLE_PIN, 1);
+    spk_disable();
 
     g_dfplayer.begin();
     g_dfplayer.loop();
 
     g_dfplayer.reset();
     g_dfplayer.loop();
+}
+
+Player::Player() {
 }
 
 Player::~Player() {

@@ -8,6 +8,7 @@ void NotificationLED_3LEDs::loop() {
     uint32_t delta;
 
     delta = millis() - ms;
+    idx %= 3;
 
     switch (state) {
         case LED_STATE_IDLE:
@@ -22,8 +23,9 @@ void NotificationLED_3LEDs::loop() {
             break;
         case LED_STATE_PAUSE:
             if (delta >= 500) {
-                digitalWrite(led_pins[idx], idx);
+                digitalWrite(led_pins[1], idx);
                 idx = !idx;
+                ms = millis();
             }
             break;
         case LED_STATE_MENU:
@@ -36,7 +38,7 @@ void NotificationLED_3LEDs::loop() {
 void NotificationLED_3LEDs::update_state(notification_led_state _state) {
     state = _state;
     idx = 0;
-    ms = millis();
+    ms = 0;
 
     /* reset LEDs to off */
     digitalWrite(led_pins[0], 1);
@@ -45,6 +47,8 @@ void NotificationLED_3LEDs::update_state(notification_led_state _state) {
 
     switch (state) {
         case LED_STATE_IDLE:
+            digitalWrite(led_pins[0], 0);
+            digitalWrite(led_pins[1], 0);
             digitalWrite(led_pins[2], 0);
             break;
         case LED_STATE_PLAY:

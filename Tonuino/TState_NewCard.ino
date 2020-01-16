@@ -217,7 +217,6 @@ TState *TState_NewCard::loop() {
             break;
 
         case 250:
-            player->playMP3Track(MESSAGE_MODE_RADIO_PLAY + card->extdata[0]);
             if (!player->is_playing())
                 ++menu_item;
             break;
