@@ -100,10 +100,10 @@ void Player::playRandomTrack(uint16_t folder) {
             random_queue[track] = track;
 
         /* shuffle */
-        for (track = 0; track < current_folder_track_num; ++track) {
+        for (track = 0; track < 10 * current_folder_track_num; ++track) {
             idx = random(0, current_folder_track_num);
-            uint8_t tmp = random_queue[track];
-            random_queue[track] = random_queue[idx];
+            uint8_t tmp = random_queue[track % current_folder_track_num];
+            random_queue[track % current_folder_track_num] = random_queue[idx];
             random_queue[idx] = tmp;
         }
 
