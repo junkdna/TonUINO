@@ -212,7 +212,7 @@ void Player::set_current_folder(uint16_t folder) {
 }
 
 void Player::setup() {
-    pinMode(BUSY_PIN, INPUT);
+    pinMode(BUSY_PIN, INPUT_PULLUP);
     pinMode(HPP_PIN, INPUT);
     pinMode(SPK_ENABLE_PIN, OUTPUT);
 

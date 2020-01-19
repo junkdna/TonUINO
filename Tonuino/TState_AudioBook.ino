@@ -138,6 +138,9 @@ TState *TState_AudioBook::loop() {
         }
     }
 
+    if (!player->is_playing())
+        Mp3Notify::OnPlayFinished(player->get_current_track());
+
     return this;
 }
 
