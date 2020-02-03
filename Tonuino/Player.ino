@@ -78,9 +78,12 @@ void Player::playAdvertTrack(uint16_t track) {
     delay(200);
 }
 
-void Player::playFolderTrack(uint16_t folder, uint16_t track) {
+bool Player::playFolderTrack(uint16_t folder, uint16_t track) {
     if (current_folder_track_num < 1)
         current_folder_track_num = g_dfplayer.getFolderTrackCount(folder);
+
+    if (!current_folder_track_num || track > current_folder_track_num)
+        return false;
 
     g_dfplayer.playFolderTrack(folder, track);
     last_command = MP3_CMD_FOLDER_TRACK;
@@ -88,9 +91,11 @@ void Player::playFolderTrack(uint16_t folder, uint16_t track) {
     current_track = track;
     /* TODO handle COM Errors etc */
     delay(200);
+
+    return true;
 }
 
-void Player::playRandomTrack(uint16_t folder) {
+bool Player::playRandomTrack(uint16_t folder) {
     uint16_t track;
 
     if (!current_track || !current_folder || folder != current_folder) {
@@ -119,7 +124,7 @@ void Player::playRandomTrack(uint16_t folder) {
 
     track = random_queue[idx++];
 
-    playFolderTrack(folder, track);
+    return playFolderTrack(folder, track);
 }
 
 void Player::stop() {
@@ -155,10 +160,7 @@ void Player::next() {
     if (current_track > current_folder_track_num)
         current_track = 1;
 
-    playFolderTrack(current_folder, current_track);
-    last_command = MP3_CMD_NEXT;
-    /* TODO handle COM Errors etc */
-    delay(200);
+    return playFolderTrack(current_folder, current_track);
 }
 
 void Player::prev() {
@@ -166,10 +168,7 @@ void Player::prev() {
     if (current_track < 1)
         current_track = 1;
 
-    playFolderTrack(current_folder, current_track);
-    last_command = MP3_CMD_PREV;
-    /* TODO handle COM Errors etc */
-    delay(200);
+    return playFolderTrack(current_folder, current_track);
 }
 
 TState *Player::loop() {
