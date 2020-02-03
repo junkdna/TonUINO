@@ -58,10 +58,9 @@ tts_sox() {
 }
 
 for i in {1..255}; do
-    continue
     out=$(printf "%04d" $i)
     echo -n "${out} "
-    if [[ -f ${OUT}/${out} ]]; then
+    if [[ -f ${OUT}/mp3/${out}.mp3 ]]; then
         echo "skipping"
         continue
     fi
@@ -79,7 +78,7 @@ while read f; do
     t=$(echo -ne "$f" | awk -F ';' '{print $3}' | sed -e 's/"//g')
     out="$(printf "%04d" $i)"
     echo -n "$out "
-    if [[ -f ${OUT}/$d/${out} ]]; then
+    if [[ -f ${OUT}/$d/${out}.mp3 ]]; then
         echo "skipping"
         continue
     fi
