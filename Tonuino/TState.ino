@@ -61,6 +61,7 @@ void TState::from_last_state(TState *last_state) {
     this->context                  = last_state->context;
     this->restore                  = last_state->restore;
     this->player                   = last_state->player;
+    this->error                    = last_state->error;
     this->notify_led               = last_state->notify_led;
 
     this->player->set_state(this);
@@ -70,6 +71,10 @@ void TState::from_last_state(TState *last_state) {
 
 void TState::set_restore(bool r) {
     restore = r;
+}
+
+void TState::set_error(bool e) {
+    error = e;
 }
 
 TState::TState() {

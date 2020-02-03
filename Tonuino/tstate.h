@@ -36,6 +36,7 @@ class TState {
         Modificator *mods[MAX_MODIFICATORS] = {nullptr};
 
         bool restore = false;
+        bool error = false;
 
     protected:
         void from_last_state(TState *last_state);
@@ -47,6 +48,8 @@ class TState {
         virtual TState *loop() = 0;
 
         void set_restore(bool r);
+        void set_error(bool e);
+
         explicit TState(TonUINO *context);
         explicit TState(TState *last_state);
         TState();
