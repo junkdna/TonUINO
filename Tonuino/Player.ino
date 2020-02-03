@@ -33,6 +33,7 @@ void Player::spk_disable() {
 
 void Player::volume_up() {
     volume_set(current_volume + context->get_config().step_volume);
+    playAdvertTrack(ADVERT_VOL_UP);
 }
 
 void Player::volume_down() {
@@ -41,6 +42,7 @@ void Player::volume_down() {
         volume_set(0);
     else
         volume_set(current_volume - step);
+    playAdvertTrack(ADVERT_VOL_DOWN);
 }
 
 void Player::volume_set(uint8_t vol) {
