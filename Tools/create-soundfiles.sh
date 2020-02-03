@@ -77,7 +77,7 @@ while read f; do
     i=$(echo -ne "$f" | awk -F ';' '{print $2}')
     t=$(echo -ne "$f" | awk -F ';' '{print $3}' | sed -e 's/"//g')
     out="$(printf "%04d" $i)"
-    echo -n "$out "
+    echo -n "$d $out "
     if [[ -f ${OUT}/$d/${out}.mp3 ]]; then
         echo "skipping"
         continue
