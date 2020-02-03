@@ -6,9 +6,13 @@
 #ifndef _MESSAGES_H_
 #define _MESSAGES_H_
 
-#define ADVERT_VOL_DOWN         100
-#define ADVERT_VOL_UP           101
+/* N.B. 0 is an invalid track number */
 
+/* ADVERT 1..255 is reserved for numbers */
+#define ADVERT_VOL_DOWN         300
+#define ADVERT_VOL_UP           301
+
+/* MESSAGE 1..255 is reserved for numbers */
 #define MESSAGE_NEW_CARD        300
 #define MESSAGE_CARD_ASSIGNED   310
 #define MESSAGE_MODE_RADIO_PLAY 311
