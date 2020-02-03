@@ -20,7 +20,11 @@ case $LANG in
 esac
 
 BASE=$(dirname $0)
-TMP=$(mktemp -d)
+TMP=${TMP:-$(mktemp -d)}
+
+mkdir -p ${TMP}/advert
+mkdir -p ${TMP}/mp3
+
 
 tts_gcloud() {
     if [[ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]]; then
@@ -53,7 +57,8 @@ tts_sox() {
     lame -b 128 ${2}.wav ${2}.mp3
 }
 
-for i in {1..250}; do
+for i in {1..255}; do
+    continue
     out=$(printf "%04d" $i)
     echo -n "${out} "
     if [[ -f ${OUT}/${out} ]]; then
@@ -64,22 +69,33 @@ for i in {1..250}; do
     echo "done"
 done
 
-gcc -I ${BASE}/../Tonuino -E -x c++ -w -P \
-    ${BASE}/../Data/sound_files_${LANG}.txt -o ${TMP}/soundfiles.txt
+cat ${BASE}/../Data/sound_files_${LANG}.txt | \
+    awk -F ';' '/ADVERT_/{print "advert;" $0 ";";next}/MESSAGE_/{print "mp3;" $0;next}{print $0}' | \
+    gcc -I ${BASE}/../Tonuino -E -x c++ -w -P -o ${TMP}/soundfiles.txt -
 
 while read f; do
-    i=$(echo -ne "$f" | awk -F ';' '{print $1}')
-    t=$(echo -ne "$f" | awk -F ';' '{print $2}' | sed -e 's/"//g')
-    out=$(printf "%04d" $i)
+    d=$(echo -ne "$f" | awk -F ';' '{print $1}')
+    i=$(echo -ne "$f" | awk -F ';' '{print $2}')
+    t=$(echo -ne "$f" | awk -F ';' '{print $3}' | sed -e 's/"//g')
+    out="$(printf "%04d" $i)"
     echo -n "$out "
-    if [[ -f ${OUT}/${out} ]]; then
+    if [[ -f ${OUT}/$d/${out} ]]; then
         echo "skipping"
         continue
     fi
-    ${TTS} "$t" ${TMP}/$out
+    ${TTS} "$t" ${TMP}/$d/$out
     echo "done"
 done < <(cat ${TMP}/soundfiles.txt)
 
-mkdir -p ${OUT}
-mv ${TMP}/*.mp3 ${OUT}/
+mkdir -p ${OUT}/mp3
+mkdir -p ${OUT}/advert
+
+# copy numbers
+cp ${TMP}/*.mp3 ${OUT}/advert
+mv ${TMP}/*.mp3 ${OUT}/mp3
+
+# copy advert and mp3 to output dir
+mv ${TMP}/advert/*.mp3 ${OUT}/advert
+mv ${TMP}/mp3/*.mp3 ${OUT}/mp3
+
 rm -rf ${TMP}
