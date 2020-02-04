@@ -151,7 +151,7 @@ void Player::start() {
     delay(200);
 }
 
-void Player::next() {
+bool Player::next() {
     if (current_folder_track_num < 1)
         current_folder_track_num = g_dfplayer.getFolderTrackCount(current_folder);
 
@@ -163,7 +163,7 @@ void Player::next() {
     return playFolderTrack(current_folder, current_track);
 }
 
-void Player::prev() {
+bool Player::prev() {
     --current_track;
     if (current_track < 1)
         current_track = 1;

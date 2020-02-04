@@ -67,8 +67,8 @@ class Player {
         void pause();
         void start();
         void stop();
-        void next();
-        void prev();
+        bool next();
+        bool prev();
         void volume_up();
         void volume_down();
         void volume_set(uint8_t vol);

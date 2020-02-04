@@ -132,10 +132,15 @@ TState *TState_RadioPlay::loop() {
         }
     }
 
-    if (!player->is_playing())
-        Mp3Notify::OnPlayFinished(player->get_current_track());
+    if (!player->is_playing()) {
+        set_error(true);
+        state = new_state_by_name(this, STATE_IDLE);
+    }
 
-    return this;
+    if (state != this)
+        delete this;
+
+    return state;
 }
 
 TState_RadioPlay::TState_RadioPlay(TonUINO *context) {

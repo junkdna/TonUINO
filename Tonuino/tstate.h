@@ -135,8 +135,8 @@ class TState_AlbumRandom : public TState {
 
 class TState_AudioBook : public TState {
     protected:
-        void next();
-        void prev();
+        bool next();
+        bool prev();
 
     public:
         TState *handle_buttons(uint32_t _map) override;

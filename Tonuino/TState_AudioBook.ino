@@ -10,16 +10,16 @@
 #include "rfid.h"
 
 
-void TState_AudioBook::next() {
-    player->next();
+bool TState_AudioBook::next() {
     /* TODO add option to save progress on RFID card */
     EEPROM.write(EEPROM_CFG_LEN + player->get_current_folder(), player->get_current_track());
+    return player->next();
 }
 
-void TState_AudioBook::prev() {
-    player->prev();
+bool TState_AudioBook::prev() {
     /* TODO add option to save progress on RFID card */
     EEPROM.write(EEPROM_CFG_LEN + player->get_current_folder(), player->get_current_track());
+    return player->prev();
 }
 
 TState *TState_AudioBook::handle_buttons(uint32_t _map) {
@@ -36,9 +36,9 @@ TState *TState_AudioBook::handle_buttons(uint32_t _map) {
     }
 
     if (button_next(_map)) {
-        player->next();
+        next();
     } else if (button_prev(_map)) {
-        player->prev();
+        prev();
     } else if (button_vol_up(_map)) {
         player->volume_up();
     } else if (button_vol_down(_map)) {
@@ -101,8 +101,11 @@ TState *TState_AudioBook::handle_player_event(mp3_notify_event event, uint16_t c
             /* TODO handle */
             break;
         case MP3_PLAY_FINISHED:
-            if (!player->is_playing())
-                player->next();
+            /* TODO in case we want to stop playing here we need something else */
+            if (!player->is_playing() && !next()) {
+                set_error(true);
+                state = new_state_by_name(this, STATE_IDLE);
+            }
             break;
         case MP3_CARD_ONLINE:
             /* TODO should not happen */

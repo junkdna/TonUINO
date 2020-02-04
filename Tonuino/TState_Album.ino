@@ -89,8 +89,11 @@ TState *TState_Album::handle_player_event(mp3_notify_event event, uint16_t code)
             /* TODO handle */
             break;
         case MP3_PLAY_FINISHED:
-            if (!player->is_playing())
-                player->next();
+            /* TODO in case we want to stop playing here we need something else */
+            if (!player->is_playing() && !player->next()) {
+                set_error(true);
+                state = new_state_by_name(this, STATE_IDLE);
+            }
             break;
         case MP3_CARD_ONLINE:
             /* TODO should not happen */
