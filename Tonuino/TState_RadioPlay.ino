@@ -86,7 +86,7 @@ TState *TState_RadioPlay::handle_player_event(mp3_notify_event event, uint16_t c
 
     switch (event) {
         case MP3_NOTIFY_ERROR:
-            /* TODO handle */
+            state = player->handle_error(code);
             break;
         case MP3_PLAY_FINISHED:
             /* do not play another track, goto idle state instead */

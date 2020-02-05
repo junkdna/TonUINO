@@ -54,6 +54,8 @@ class Player {
         void spk_disable();
         bool hp_present();
 
+        TState *Player::redo_last_command();
+
     public:
         const uint16_t get_current_track();
         const uint16_t get_current_folder();
@@ -76,6 +78,7 @@ class Player {
         bool is_playing();
 
         TState *loop();
+        TState *handle_error(uint16_t code);
         void setup();
         void set_state(TState *_state);
         void set_context(TonUINO *_tonuino);

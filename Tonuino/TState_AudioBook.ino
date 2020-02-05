@@ -98,7 +98,7 @@ TState *TState_AudioBook::handle_player_event(mp3_notify_event event, uint16_t c
 
     switch (event) {
         case MP3_NOTIFY_ERROR:
-            /* TODO handle */
+            state = player->handle_error(code);
             break;
         case MP3_PLAY_FINISHED:
             /* TODO in case we want to stop playing here we need something else */

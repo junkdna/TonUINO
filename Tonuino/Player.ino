@@ -65,7 +65,6 @@ void Player::playMP3Track(uint16_t track) {
     last_command = MP3_CMD_MP3_TRACK;
     current_folder = 0;
     current_track = track;
-    /* TODO handle COM Errors etc */
     delay(200);
 }
 
@@ -74,7 +73,6 @@ void Player::playAdvertTrack(uint16_t track) {
     last_command = MP3_CMD_ADVERT_TRACK;
     current_folder = 0;
     current_track = track;
-    /* TODO handle COM Errors etc */
     delay(200);
 }
 
@@ -89,7 +87,6 @@ bool Player::playFolderTrack(uint16_t folder, uint16_t track) {
     last_command = MP3_CMD_FOLDER_TRACK;
     current_folder = folder;
     current_track = track;
-    /* TODO handle COM Errors etc */
     delay(200);
 
     return true;
@@ -133,21 +130,18 @@ void Player::stop() {
     current_folder = 0;
     current_track = 0;
     current_folder_track_num = 0;
-    /* TODO handle COM Errors etc */
     delay(200);
 }
 
 void Player::pause() {
     g_dfplayer.pause();
     last_command = MP3_CMD_PAUSE;
-    /* TODO handle COM Errors etc */
     delay(200);
 }
 
 void Player::start() {
     g_dfplayer.start();
     last_command = MP3_CMD_START;
-    /* TODO handle COM Errors etc */
     delay(200);
 }
 
@@ -169,6 +163,95 @@ bool Player::prev() {
         current_track = 1;
 
     return playFolderTrack(current_folder, current_track);
+}
+
+TState *Player::redo_last_command()
+{
+    bool r;
+
+    switch (last_command) {
+        case MP3_CMD_RESET:
+            spk_disable();
+            g_dfplayer.reset();
+            delay(200);
+            /* fallthroug */
+        case MP3_CMD_NONE:
+            state = new_state_by_name(state, STATE_IDLE);
+            break;
+        case MP3_CMD_SET_VOL:
+            volume_set(current_volume);
+            break;
+        case MP3_CMD_MP3_TRACK:
+            break;
+        case MP3_CMD_ADVERT_TRACK:
+            break;
+        case MP3_CMD_FOLDER_TRACK:
+            r = playFolderTrack(current_folder, current_track);
+            if (!r)
+                state = new_state_by_name(state, STATE_IDLE);
+            break;
+        case MP3_CMD_PAUSE:
+            pause();
+            break;
+        case MP3_CMD_START:
+            start();
+            break;
+        case MP3_CMD_STOP:
+            stop();
+            break;
+        case MP3_CMD_NEXT:
+            r = playFolderTrack(current_folder, current_track);
+            if (!r)
+                state = new_state_by_name(state, STATE_IDLE);
+            break;
+        case MP3_CMD_PREV:
+            r = playFolderTrack(current_folder, current_track);
+            if (!r)
+                state = new_state_by_name(state, STATE_IDLE);
+            break;
+    }
+    return state;
+}
+
+TState *Player::handle_error(uint16_t code)
+{
+    switch (code) {
+        case DfMp3_Error_Sleeping:
+            spk_disable();
+            g_dfplayer.reset();
+            delay(200);
+            /* fallthrough */
+        case DfMp3_Error_Busy:
+            /* fallthrough */
+        case DfMp3_Error_SerialWrongStack:
+            /* fallthrough */
+        case DfMp3_Error_CheckSumNotMatch:
+            /* fallthrough */
+        case DfMp3_Error_FileIndexOut:
+            /* fallthrough */
+        case DfMp3_Error_General:
+            /* fallthrough */
+        case DfMp3_Error_FileMismatch:
+            state->set_error(true);
+            state = new_state_by_name(state, STATE_IDLE);
+            break;
+        case DfMp3_Error_RxTimeout:
+            /* fallthrough */
+        case DfMp3_Error_PacketSize:
+            /* fallthrough */
+        case DfMp3_Error_PacketHeader:
+            /* fallthrough */
+        case DfMp3_Error_PacketChecksum:
+            state = redo_last_command();
+            break;
+        case DfMp3_Error_Advertise:
+            /* ignored for now */
+            break;
+        default:
+            break;
+    }
+
+    return state;
 }
 
 TState *Player::loop() {
