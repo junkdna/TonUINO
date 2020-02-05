@@ -11,6 +11,8 @@
 /* ADVERT 1..255 is reserved for numbers */
 #define ADVERT_VOL_DOWN         300
 #define ADVERT_VOL_UP           301
+#define ADVERT_ERROR            302
+#define ADVERT_WELCOME          303
 
 /* MESSAGE 1..255 is reserved for numbers */
 #define MESSAGE_NEW_CARD        300

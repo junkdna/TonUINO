@@ -2,6 +2,8 @@
 
 ADVERT_VOL_UP;"Lautstärke erhöht."
 ADVERT_VOL_DOWN;"Lautstärke verringert."
+ADVERT_ERROR;"Es ist ein Fehler aufgetreten. Bitte lege eine Karte auf, um die Ausgabe zu starten."
+ADVERT_WELCOME;"Willkommen! Bitte lege eine Karte auf, um die Ausgabe zu startenn."
 MESSAGE_CARD_ASSIGNED;"OK, ich habe die Karte mit dem Ordner verknüpft. Wähle nun mit den Lautstärke Tasten den Wiedergabemodus aus."
 MESSAGE_CARD_CONFIGURED;"OK. Ich habe die Karte konfiguriert."
 MESSAGE_ERROR;"Das hat leider nicht geklappt!"

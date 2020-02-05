@@ -138,17 +138,20 @@ TState_Idle::TState_Idle(TonUINO *context, Player *player) {
     this->player = player;
     this->notify_led = new NotificationLED_3LEDs(LED_RED, LED_GREEN, LED_BLUE);
     this->notify_led->update_state(LED_STATE_IDLE);
+    player->playAdvertTrack(ADVERT_WELCOME);
 }
 
 TState_Idle::TState_Idle(TState *last_state) {
     from_last_state(last_state);
 
-    if (restore)
+    if (restore) {
         notify_led->update_state(LED_STATE_PAUSE);
-    else if (!restore && !error)
-        notify_led->update_state(LED_STATE_IDLE);
-    else
+    } else if (error) {
         notify_led->update_state(LED_STATE_ERROR);
+        player->playAdvertTrack(ADVERT_ERROR);
+    } else {
+        notify_led->update_state(LED_STATE_IDLE);
+    }
 
     error = false;
     Serial.println(F("idle(last)"));
