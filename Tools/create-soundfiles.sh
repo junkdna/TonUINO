@@ -37,7 +37,7 @@ tts_gcloud() {
         --data "{'input':{'text':'${1}'},
         'voice':{
           'languageCode':'${LANG_CODE}',
-          'name':'${LANG_CODE}-Wavenet-A',
+          'name':'${LANG_CODE}-Wavenet-C',
           'ssmlGender':'FEMALE'
         },
         'audioConfig':{
