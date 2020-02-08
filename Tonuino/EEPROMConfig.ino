@@ -15,50 +15,39 @@ void EEPROM_Config::write() {
     buf[ 2] = (magic >> 16) & 0xff;
     buf[ 3] = (magic >> 24) & 0xff;
     buf[ 4] = version;
-    buf[ 5] = (id >>  0) & 0xff;
-    buf[ 6] = (id >>  8) & 0xff;
-    buf[ 7] = (id >> 16) & 0xff;
-    buf[ 8] = (id >> 24) & 0xff;
-    buf[ 9] = max_volume;
-    buf[10] = min_volume;
-    buf[11] = step_volume;
-    buf[12] = init_volume;
+    buf[ 5] = max_volume;
+    buf[ 6] = min_volume;
+    buf[ 7] = step_volume;
+    buf[ 8] = init_volume;
 
-    for (i = 0; i < EEPROM_CFG_SIZE; i++)
+    for (i = 0; i < EEPROM_CFG_SIZE; i++) {
         EEPROM.write(i, buf[i]);
+        Serial.println(buf[i]);
+    }
 }
 
 void EEPROM_Config::read() {
     uint8_t buf[EEPROM_CFG_LEN] = {0x0};
     uint8_t i;
 
-    for (i = 0; i < EEPROM_CFG_SIZE; i++)
+    for (i = 0; i < EEPROM_CFG_SIZE; i++) {
         buf[i] = EEPROM.read(i);
+        Serial.println(buf[i]);
+    }
 
     magic = ((uint32_t)buf[3] << 24) | ((uint32_t)buf[2] << 16) | \
             ((uint32_t)buf[1] << 8) | buf[0];
     version = buf[4];
-    id = ((uint32_t)buf[8] << 24) | ((uint32_t)buf[7] << 16) | \
-         ((uint32_t)buf[6] << 8) | buf[5];
 
-    max_volume = buf[9];
-    min_volume = buf[10];
-    step_volume = buf[11];
-    init_volume = buf[12];
-
-    Serial.print("Chip ID ");
-    Serial.println(id);
+    max_volume = buf[5];
+    min_volume = buf[6];
+    step_volume = buf[7];
+    init_volume = buf[8];
 }
 
 void EEPROM_Config::init() {
     magic = EEPROM_MAGIC;
     version = EEPROM_VERSION;
-
-    if (!id || !(id & 0x00ffffff) || (id & 0xff000000) != CHIP_ID_MSB) {
-        id = CHIP_ID_MSB | random(0x01000000);
-        Serial.print("New Chip ID ");
-        Serial.println(id);
-    }
 
     max_volume = MAX_VOLUME;
     min_volume = MIN_VOLUME;
@@ -71,9 +60,6 @@ bool EEPROM_Config::check() {
         return false;
 
     if (version != EEPROM_VERSION)
-        return false;
-
-    if (!id || !(id & 0x00ffffff) || (id & 0xff000000) != 0xad000000)
         return false;
 
     return true;
