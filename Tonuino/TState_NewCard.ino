@@ -34,9 +34,14 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
             } else if (button_released(_map, BUTTON_PAUSE)) {
                 menu_item = 1;
                 card->extdata[1] = selected_value;
-                selected_value = 0;
                 player->stop();
-                player->playMP3Track(MESSAGE_CARD_ASSIGNED);
+                if (selected_value) {
+                    selected_value = 0;
+                    player->playMP3Track(MESSAGE_CARD_ASSIGNED);
+                } else {
+                    selected_value = STATE_ADMIN;
+                    player->playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
+                }
             } else if (button_long_pressed(_map, BUTTON_PAUSE)) {
                 state = new_state_by_name(this, STATE_IDLE);
                 player->stop();
@@ -58,18 +63,28 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
                 player->playMP3Track(MESSAGE_CARD_ASSIGNED + selected_value);
             } else if (button_released(_map, BUTTON_PAUSE)) {
                 player->stop();
-                if (card)
-                    card->extdata[0] = selected_value;
 
-                if (selected_value == STATE_SINGLE) {
-                    player->playMP3Track(MESSAGE_SELECT_FILE);
-                    menu_item = 2;
-                    player->set_current_folder(card->extdata[1]);
-                } else if (selected_value == STATE_ADMIN) {
-                    card->card_mode = CARD_MODE_ADMIN;
-                    menu_item = 250;
-                } else {
-                    menu_item = 250;
+                switch (selected_value) {
+                    case STATE_RADIO_PLAY ... STATE_ALBUM_RANDOM:
+                        /* fallthrough */
+                    case STATE_AUDIO_BOOK:
+                        card->extdata[0] = selected_value;
+                        menu_item = 250;
+                        break;
+                    case STATE_SINGLE:
+                        menu_item = 2;
+                        card->extdata[0] = selected_value;
+                        player->set_current_folder(card->extdata[1]);
+                        player->playMP3Track(MESSAGE_SELECT_FILE);
+                        break;
+                    case STATE_MOD:
+                        menu_item = 3;
+                        card->card_mode = CARD_MODE_MODIFY;
+                        break;
+                    case STATE_ADMIN:
+                        card->card_mode = CARD_MODE_ADMIN;
+                        menu_item = 250;
+                        break;
                 }
 
                 selected_value = 0;
@@ -109,8 +124,7 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
                 preview = 1;
             } else if (button_released(_map, BUTTON_PAUSE)) {
                 menu_item = 250;
-                if (card)
-                    card->extdata[2] = selected_value;
+                card->extdata[2] = selected_value;
                 selected_value = 0;
                 player->stop();
             } else if (button_long_pressed(_map, BUTTON_PAUSE)) {
@@ -119,6 +133,29 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
                 player->playMP3Track(MESSAGE_MENU_EXIT);
             }
 
+            break;
+
+        case 3:
+            /* select mod */
+            if (button_released(_map, BUTTON_UP) || button_long_pressed(_map, BUTTON_UP)) {
+                ++selected_value;
+                if (selected_value > MENU_MOD_ENTRIES)
+                    selected_value = 1;
+                player->playMP3Track(MESSAGE_MOD_LOCK + selected_value - 1);
+            } else if (button_released(_map, BUTTON_DOWN) || button_long_pressed(_map, BUTTON_DOWN)) {
+                --selected_value;
+                if (selected_value < 1)
+                    selected_value = MENU_MOD_ENTRIES;
+                player->playMP3Track(MESSAGE_MOD_LOCK + selected_value - 1);
+            } else if (button_released(_map, BUTTON_PAUSE)) {
+                card->extdata[0] = selected_value;
+                menu_item = 250;
+                player->stop();
+            } else if (button_long_pressed(_map, BUTTON_PAUSE)) {
+                state = new_state_by_name(this, STATE_IDLE);
+                player->stop();
+                player->playMP3Track(MESSAGE_MENU_EXIT);
+            }
             break;
 
         default:

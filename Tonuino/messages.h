@@ -13,6 +13,8 @@
 #define ADVERT_VOL_UP           301
 #define ADVERT_ERROR            302
 #define ADVERT_WELCOME          303
+#define ADVERT_MOD_LOCK_ON      500
+#define ADVERT_MOD_LOCK_OFF     501
 
 /* MESSAGE 1..255 is reserved for numbers */
 #define MESSAGE_NEW_CARD        300
@@ -34,9 +36,8 @@
 #define MESSAGE_MENU_EXIT       336
 #define MESSAGE_CARD_CONFIGURED 400
 #define MESSAGE_ERROR           401
+#define MESSAGE_MOD_LOCK        500
 #define MESSAGE_RESET_TAG       800
-#define MESSAGE_RESET_TAG_OK    801
-#define MESSAGE_RESET_ABORTED   802
 #define MESSAGE_RESET_DONE      999
 
 /* helpers */
@@ -56,6 +57,8 @@
 #define MENU_CMOD_ADMIN      6
 #define MENU_CMOD_MOD        7
 #define MENU_CMOD_ENTRIES    MENU_CMOD_MOD
+
+#define MENU_MOD_ENTRIES     1
 
 #endif
 // vim: ts=4 sw=4 et cindent

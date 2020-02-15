@@ -24,6 +24,7 @@ class Modificator;
 //#define STATE_GLOBAL_RANDOM
 #define STATE_AUDIO_BOOK    5
 #define STATE_ADMIN         6
+#define STATE_MOD           7 /* pseudo state */
 
 #define MAX_MODIFICATORS    4
 
