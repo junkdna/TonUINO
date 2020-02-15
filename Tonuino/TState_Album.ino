@@ -63,6 +63,9 @@ TState *TState_Album::handle_card(RFIDCard *card) {
             state = new_state_by_name(this, card->extdata[0]);
 #endif
             break;
+        case CARD_MODE_MODIFY:
+            apply_modificator(card);
+            break;
     }
 
     if (state != this)

@@ -9,12 +9,20 @@
 #include "tonuino.h"
 #include "tstate.h"
 
+/* NOTE: the order has to be kept */
+enum {
+    MOD_BASE_CLASS = 0,
+    MOD_LOCK_KEYS = 1,
+};
+
+
 class Modificator {
 protected:
 	TonUINO *context = nullptr;
     TState *state = nullptr;
 
 public:
+    const int8_t type = MOD_BASE_CLASS;
 	virtual TState *loop() = 0;
 	virtual TState *handle_buttons(uint32_t &_map) = 0;
 	virtual TState *handle_card(RFIDCard *card) = 0;
@@ -26,6 +34,8 @@ public:
 };
 
 class Modificator_LockKeys : public Modificator {
+public:
+    const int8_t type = MOD_LOCK_KEYS;
 	TState *loop() override;
 	TState *handle_buttons(uint32_t &_map) override;
 	TState *handle_card(RFIDCard *card) override;

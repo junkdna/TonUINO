@@ -40,6 +40,7 @@ class TState {
 
     protected:
         void from_last_state(TState *last_state);
+        void apply_modificator(RFIDCard *card);
 
     public:
         virtual TState *handle_buttons(uint32_t _map) = 0;

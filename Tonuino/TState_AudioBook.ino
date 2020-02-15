@@ -67,15 +67,19 @@ TState *TState_AudioBook::handle_card(RFIDCard *card) {
         }
     }
 
-#if 0
+
     /* do not handle empty cards */
     switch(card->card_mode) {
+#if 0
         case CARD_MODE_PLAYER:
             this->card = card;
             state = new_state_by_name(this, card->extdata[0]);
             break;
-    }
 #endif
+        case CARD_MODE_MODIFY:
+            apply_modificator(card);
+            break;
+    }
 
     if (state != this)
         delete this;

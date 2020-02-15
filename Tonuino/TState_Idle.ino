@@ -62,6 +62,8 @@ TState *TState_Idle::handle_card(RFIDCard *card) {
         case CARD_MODE_ADMIN:
             state = new_state_by_name(this, STATE_ADMIN);
             break;
+        case CARD_MODE_MODIFY:
+            break;
         default:
             state = new_state_by_name(this, STATE_NEW_CARD);
             break;
@@ -138,6 +140,7 @@ TState_Idle::TState_Idle(TonUINO *context, Player *player) {
     this->player = player;
     this->notify_led = new NotificationLED_3LEDs(LED_RED, LED_GREEN, LED_BLUE);
     this->notify_led->update_state(LED_STATE_IDLE);
+    delay(1000);
     player->playAdvertTrack(ADVERT_WELCOME);
 }
 

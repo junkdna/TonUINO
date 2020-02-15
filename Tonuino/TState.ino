@@ -69,6 +69,30 @@ void TState::from_last_state(TState *last_state) {
         this->player->set_current_folder(0);
 }
 
+void TState::apply_modificator(RFIDCard *card) {
+    int8_t i, n = -1;
+
+    for (i = 0; i < MAX_MODIFICATORS; i++) {
+        if (n < 0 && !mods[i])
+            n = i;
+        if (mods[i] && mods[i]->type == card->extdata[0]) {
+            delete mods[i];
+            mods[i] = nullptr;
+        }
+    }
+
+    if (n < 0)
+        return;
+
+    switch (card->extdata[0]) {
+        case MOD_LOCK_KEYS:
+            mods[i] = new Modificator_LockKeys(context, this);
+            break;
+        default:
+            break;
+    }
+}
+
 void TState::set_restore(bool r) {
     restore = r;
 }
