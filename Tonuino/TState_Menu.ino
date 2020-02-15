@@ -69,13 +69,15 @@ TState *TState_Menu::handle_buttons(uint32_t _map) {
         /* Volume max */
         if (button_released(_map, BUTTON_UP) || button_long_pressed(_map, BUTTON_UP)) {
             ++selected_value;
-            player->playMP3Track(selected_value);
             if (selected_value > 35)
                 selected_value = 1;
+            player->volume_set(selected_value);
+            player->playMP3Track(selected_value);
         } else if (button_released(_map, BUTTON_DOWN) || button_long_pressed(_map, BUTTON_DOWN)) {
             --selected_value;
             if (selected_value < 1)
                 selected_value = 1;
+            player->volume_set(selected_value);
             player->playMP3Track(selected_value);
         } else if (button_released(_map, BUTTON_PAUSE)) {
             context->get_config().step_volume = selected_value;
@@ -86,13 +88,15 @@ TState *TState_Menu::handle_buttons(uint32_t _map) {
         /* Volume min */
         if (button_released(_map, BUTTON_UP)) {
             ++selected_value;
-            player->playMP3Track(selected_value);
             if (selected_value > 35)
                 selected_value = 1;
+            player->volume_set(selected_value);
+            player->playMP3Track(selected_value);
         } else if (button_released(_map, BUTTON_DOWN)) {
             --selected_value;
             if (selected_value < 1)
                 selected_value = 1;
+            player->volume_set(selected_value);
             player->playMP3Track(selected_value);
         } else if (button_released(_map, BUTTON_PAUSE)) {
             context->get_config().step_volume = selected_value;
@@ -103,13 +107,15 @@ TState *TState_Menu::handle_buttons(uint32_t _map) {
         /* initial volume */
         if (button_released(_map, BUTTON_UP)) {
             ++selected_value;
-            player->playMP3Track(selected_value);
             if (selected_value > 35)
                 selected_value = 1;
+            player->volume_set(selected_value);
+            player->playMP3Track(selected_value);
         } else if (button_released(_map, BUTTON_DOWN)) {
             --selected_value;
             if (selected_value < 1)
                 selected_value = 1;
+            player->volume_set(selected_value);
             player->playMP3Track(selected_value);
         } else if (button_released(_map, BUTTON_PAUSE)) {
             context->get_config().init_volume = selected_value;
