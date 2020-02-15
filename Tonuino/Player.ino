@@ -73,12 +73,13 @@ void Player::playMP3Track(uint16_t track) {
     current_folder = 0;
     current_track = track;
     delay(200);
+    g_dfplayer.loop();
+    global_track = g_dfplayer.getCurrentTrack();
 }
 
 void Player::playAdvertTrack(uint16_t track) {
     g_dfplayer.playAdvertisement(track);
     last_command = MP3_CMD_ADVERT_TRACK;
-
     delay(200);
 
     if (state)
@@ -290,6 +291,10 @@ const uint16_t Player::get_current_folder() {
 
 const uint16_t Player::get_current_folder_track_num() {
     return current_folder_track_num;
+}
+
+const uint16_t Player::get_current_global_track() {
+    return global_track;
 }
 
 void Player::set_current_folder(uint16_t folder) {

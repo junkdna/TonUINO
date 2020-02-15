@@ -46,6 +46,7 @@ class Player {
         uint16_t current_folder_track_num = 0;
         uint16_t current_track = 0;
         uint16_t current_volume = 0;
+        uint16_t global_track = 0;
 
         uint8_t idx = 0;
         uint8_t random_queue[255] = {0};
@@ -60,6 +61,7 @@ class Player {
         const uint16_t get_current_track();
         const uint16_t get_current_folder();
         const uint16_t get_current_folder_track_num();
+        const uint16_t get_current_global_track();
         void set_current_folder(uint16_t folder);
 
         void playAdvertTrack(uint16_t track);
