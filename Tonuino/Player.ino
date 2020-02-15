@@ -216,8 +216,6 @@ TState *Player::redo_last_command()
             spk_disable();
             g_dfplayer.reset();
             delay(200);
-            /* fallthroug */
-        case MP3_CMD_NONE:
             state = new_state_by_name(state, STATE_IDLE);
             break;
         case MP3_CMD_SET_VOL:
@@ -273,11 +271,11 @@ TState *Player::handle_error(uint16_t code)
             /* fallthrough */
         case DfMp3_Error_FileIndexOut:
             /* fallthrough */
-        case DfMp3_Error_General:
-            /* fallthrough */
         case DfMp3_Error_FileMismatch:
-            state->set_error(true);
-            state = new_state_by_name(state, STATE_IDLE);
+            if (last_command != MP3_CMD_ADVERT_TRACK) {
+                state->set_error(true);
+                state = new_state_by_name(state, STATE_IDLE);
+            }
             break;
         case DfMp3_Error_RxTimeout:
             /* fallthrough */
