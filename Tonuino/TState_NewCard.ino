@@ -174,10 +174,9 @@ TState *TState_NewCard::handle_card(RFIDCard *new_card) {
 
     switch(card->card_mode) {
         case CARD_MODE_PLAYER:
-            state = new_state_by_name(this, STATE_NEW_CARD);
             player->playMP3Track(MESSAGE_RESET_TAG);
             delay(1000); /* TODO argh don't do this */
-            break;
+            /* fallthrough */
         default:
             /* TODO restart new card at this point? */
             state = new_state_by_name(this, STATE_NEW_CARD);
