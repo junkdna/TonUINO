@@ -49,6 +49,7 @@ class TState {
 
         void set_restore(bool r);
         void set_error(bool e);
+        void flash_notify_led(int8_t led);
 
         explicit TState(TonUINO *context);
         explicit TState(TState *last_state);

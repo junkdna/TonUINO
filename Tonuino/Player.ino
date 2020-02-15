@@ -58,6 +58,9 @@ void Player::volume_set(uint8_t vol) {
     g_dfplayer.setVolume(current_volume);
     last_command = MP3_CMD_SET_VOL;
     delay(200);
+
+    if (state)
+        state->flash_notify_led(2);
 }
 
 void Player::playMP3Track(uint16_t track) {
@@ -74,6 +77,9 @@ void Player::playAdvertTrack(uint16_t track) {
     current_folder = 0;
     current_track = track;
     delay(200);
+
+    if (state)
+        state->flash_notify_led(2);
 }
 
 bool Player::playFolderTrack(uint16_t folder, uint16_t track) {

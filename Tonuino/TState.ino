@@ -77,6 +77,10 @@ void TState::set_error(bool e) {
     error = e;
 }
 
+void TState::flash_notify_led(int8_t led) {
+    notify_led->flash(led);
+}
+
 TState::TState() {
 }
 

@@ -10,6 +10,9 @@ void NotificationLED_3LEDs::loop() {
     delta = millis() - ms;
     idx %= 3;
 
+    if (delta > 250 && flash_led >= 0)
+        digitalWrite(led_pins[flash_led], 1);
+
     switch (state) {
         case LED_STATE_IDLE:
             if (delta >= 500) {
@@ -63,6 +66,16 @@ void NotificationLED_3LEDs::update_state(notification_led_state _state) {
             digitalWrite(led_pins[0], 0);
             break;
     }
+}
+
+void NotificationLED_3LEDs::flash(int8_t led)
+{
+    if (led < 0 || led > 2)
+        return;
+
+    flash_led = led;
+    digitalWrite(led_pins[flash_led], 0);
+    ms = millis();
 }
 
 NotificationLED_3LEDs::NotificationLED_3LEDs(uint8_t led0, uint8_t led1, uint8_t led2) {

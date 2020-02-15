@@ -16,8 +16,10 @@ enum notification_led_state {
 class NotificationLED {
 protected:
     notification_led_state state = LED_STATE_IDLE;
+    int8_t flash_led = -1;
 
 public:
+    virtual void flash(int8_t led);
     virtual void loop();
     virtual void update_state(notification_led_state _state);
     NotificationLED();
@@ -31,6 +33,7 @@ protected:
     uint8_t idx;
 public:
     void loop() override;
+    void flash(int8_t led) override;
     void update_state(notification_led_state _state) override;
     explicit NotificationLED_3LEDs(uint8_t led0, uint8_t led1, uint8_t led2);
 };
