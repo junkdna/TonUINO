@@ -180,6 +180,10 @@ void Player::start() {
 }
 
 bool Player::next() {
+    /*
+     * do not use next() command of the DFPlayer because it has some very
+     * strange properties.
+     */
     if (current_folder_track_num < 1)
         current_folder_track_num = g_dfplayer.getFolderTrackCount(current_folder);
 
@@ -192,6 +196,10 @@ bool Player::next() {
 }
 
 bool Player::prev() {
+    /*
+     * do not use prev() command of the DFPlayer because it has some very
+     * strange properties.
+     */
     --current_track;
     if (current_track < 1)
         current_track = 1;
@@ -216,8 +224,10 @@ TState *Player::redo_last_command()
             volume_set(current_volume);
             break;
         case MP3_CMD_MP3_TRACK:
+            /* no redo here */
             break;
         case MP3_CMD_ADVERT_TRACK:
+            /* no redo here */
             break;
         case MP3_CMD_FOLDER_TRACK:
             r = playFolderTrack(current_folder, current_track);
@@ -277,6 +287,9 @@ TState *Player::handle_error(uint16_t code)
             /* fallthrough */
         case DfMp3_Error_PacketChecksum:
             state = redo_last_command();
+            break;
+        case DfMp3_Error_General:
+            /* ignored for now */
             break;
         case DfMp3_Error_Advertise:
             /* ignored for now */
