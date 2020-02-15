@@ -93,20 +93,44 @@ bool Player::playFolderTrack(uint16_t folder, uint16_t track) {
     if (!current_folder_track_num || track > current_folder_track_num)
         return false;
 
-    g_dfplayer.playFolderTrack(folder, track);
+    Serial.print(F("FolderTrack "));
+    Serial.print(folder);
+    Serial.print(F(" "));
+    Serial.println(track);
+
     last_command = MP3_CMD_FOLDER_TRACK;
     current_folder = folder;
     current_track = track;
-    delay(200);
 
-    return true;
+    /* request and wait */
+    g_dfplayer.playFolderTrack(folder, track);
+    for (int8_t i = 0; i < 20 && !is_playing(); i++) {
+        delay(100);
+        g_dfplayer.loop();
+    }
+
+    /* uhoh, for some reason this did not work lets retry */
+    if (!is_playing()) {
+        g_dfplayer.playFolderTrack(folder, track);
+        for (int8_t i = 0; i < 20 && !is_playing(); i++) {
+            delay(100);
+            g_dfplayer.loop();
+        }
+    }
+
+    if (is_playing()) {
+        global_track = g_dfplayer.getCurrentTrack();
+        if (!global_track)
+            global_track = g_dfplayer.getCurrentTrack();
+    }
+
+    return is_playing();
 }
 
 bool Player::playRandomTrack(uint16_t folder) {
     uint16_t track;
 
     if (!current_track || !current_folder || folder != current_folder) {
-        g_dfplayer.loop();
         current_folder_track_num = g_dfplayer.getFolderTrackCount(folder);
 
         /* init list to sorted */
@@ -269,6 +293,8 @@ TState *Player::loop() {
         spk_enable();
     else
         spk_disable();
+
+    g_dfplayer.loop();
 
     return state;
 }
