@@ -56,7 +56,7 @@ void TonUINO::setup() {
     uint32_t i, seed = 0;
 
     /* PIN A7 is open, the ADC should produce noise */
-    for (i = 0; i < 128; i++)
+    for (i = 0; i < 256; i++)
         seed ^= (analogRead(A7) & 0x1) << (i % 32);
     randomSeed(seed);
 
