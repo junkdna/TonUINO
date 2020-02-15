@@ -78,8 +78,7 @@ void Player::playMP3Track(uint16_t track) {
 void Player::playAdvertTrack(uint16_t track) {
     g_dfplayer.playAdvertisement(track);
     last_command = MP3_CMD_ADVERT_TRACK;
-    current_folder = 0;
-    current_track = track;
+
     delay(200);
 
     if (state)
