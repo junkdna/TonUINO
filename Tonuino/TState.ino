@@ -57,12 +57,12 @@ void TState::from_last_state(TState *last_state) {
         mods[i] = nullptr;
     }
 
-    this->card                     = last_state->card;
-    this->context                  = last_state->context;
-    this->restore                  = last_state->restore;
-    this->player                   = last_state->player;
-    this->error                    = last_state->error;
-    this->notify_led               = last_state->notify_led;
+    this->card       = last_state->card;
+    this->context    = last_state->context;
+    this->restore    = last_state->restore;
+    this->player     = last_state->player;
+    this->error      = last_state->error;
+    this->notify_led = last_state->notify_led;
 
     this->player->set_state(this);
     if (!this->restore)
