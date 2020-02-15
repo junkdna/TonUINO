@@ -17,6 +17,11 @@ EEPROM_Config &TonUINO::get_config()
     return this->config;
 }
 
+Player &TonUINO::get_player()
+{
+    return this->player;
+}
+
 void TonUINO::notify_mp3(mp3_notify_event event, uint16_t code) {
     state->handle_player_event(event, code);
 }

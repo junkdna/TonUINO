@@ -71,10 +71,33 @@ class Mp3Notify {
             tonuino.notify_mp3(MP3_NOTIFY_ERROR, errorCode);
         }
         static void OnPlayFinished(uint16_t track) {
-#if 0
+            static uint16_t last_track;
+
+#if 1
             Serial.print("Track beendet");
             Serial.println(track);
 #endif
+
+            /*
+             * we should always get two messages with the same track
+             * one for track finished and on for command finished
+             */
+            if (track != last_track) {
+                last_track = track;
+                return;
+            }
+
+            /*
+             * we either get the global track number
+             * or for some reason the folder track number
+             * allow both.
+             * This filter will prevent Advert tracks to trigger e.g. selection
+             * of the next track
+             */
+            if (tonuino.get_player().get_current_global_track() != track &&
+                tonuino.get_player().get_current_track() != track)
+                return;
+
             tonuino.notify_mp3(MP3_PLAY_FINISHED, track);
         }
         static void OnCardOnline(uint16_t code) {
@@ -114,7 +137,6 @@ class Mp3Notify {
             tonuino.notify_mp3(MP3_USB_REMOVED, code);
         }
 };
-
 
 #endif
 // vim: ts=4 sw=4 et cindent
