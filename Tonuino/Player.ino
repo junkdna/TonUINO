@@ -11,6 +11,68 @@
 #include <DFMiniMp3.h>
 #include <SoftwareSerial.h>
 
+extern TonUINO tonuino;
+
+class Mp3Notify {
+    public:
+        static void OnError(uint16_t errorCode) {
+#if 0
+            Serial.println();
+            Serial.print("Com Error ");
+            Serial.println(errorCode);
+#endif
+            tonuino.notify_mp3(MP3_NOTIFY_ERROR, errorCode);
+        }
+        static void OnPlayFinished(DfMp3_PlaySources src, uint16_t track) {
+            static uint16_t last_track;
+
+            if (src ^ DfMp3_PlaySources_Sd)
+                return;
+
+#if 1
+            Serial.print("Track beendet");
+            Serial.println(track);
+#endif
+
+            /*
+             * we should always get two messages with the same track
+             * one for track finished and on for command finished
+             */
+            if (track != last_track) {
+                last_track = track;
+                return;
+            }
+
+            /*
+             * we either get the global track number
+             * or for some reason the folder track number
+             * allow both.
+             * This filter will prevent Advert tracks to trigger e.g. selection
+             * of the next track
+             */
+            if (tonuino.get_player().get_current_global_track() != track &&
+                tonuino.get_player().get_current_track() != track)
+                return;
+
+            tonuino.notify_mp3(MP3_PLAY_FINISHED, track);
+        }
+
+        static void OnPlaySourceOnline(DfMp3_PlaySources src) {
+            if (src & DfMp3_PlaySources_Sd)
+                tonuino.notify_mp3(MP3_CARD_ONLINE, 0);
+        }
+
+        static void OnPlaySourceInserted(DfMp3_PlaySources src) {
+            if (src & DfMp3_PlaySources_Sd)
+                tonuino.notify_mp3(MP3_CARD_INSERTED, 0);
+        }
+
+        static void OnPlaySourceRemoved(DfMp3_PlaySources src) {
+            if (src & DfMp3_PlaySources_Sd)
+                tonuino.notify_mp3(MP3_CARD_REMOVED, 0);
+        }
+};
+
 static SoftwareSerial g_soft_uart(SOFT_UART_RX_PIN, SOFT_UART_TX_PIN);
 static DFMiniMp3<SoftwareSerial, Mp3Notify> g_dfplayer(g_soft_uart);
 
@@ -74,7 +136,7 @@ void Player::playMP3Track(uint16_t track) {
     current_track = track;
     delay(200);
     g_dfplayer.loop();
-    global_track = g_dfplayer.getCurrentTrack();
+    global_track = g_dfplayer.getCurrentTrack(DfMp3_PlaySource_Sd);
 }
 
 void Player::playAdvertTrack(uint16_t track) {
@@ -119,9 +181,9 @@ bool Player::playFolderTrack(uint16_t folder, uint16_t track) {
     }
 
     if (is_playing()) {
-        global_track = g_dfplayer.getCurrentTrack();
+        global_track = g_dfplayer.getCurrentTrack(DfMp3_PlaySource_Sd);
         if (!global_track)
-            global_track = g_dfplayer.getCurrentTrack();
+            global_track = g_dfplayer.getCurrentTrack(DfMp3_PlaySource_Sd);
     }
 
     return is_playing();

@@ -139,7 +139,7 @@ TState *TState_AlbumRandom::loop() {
     }
 
     if (!player->is_playing())
-        Mp3Notify::OnPlayFinished(player->get_current_track());
+        Mp3Notify::OnPlayFinished(DfMp3_PlaySources_Sd, player->get_current_track());
 
     return this;
 }
