@@ -17,6 +17,7 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
             /* select folder */
             if (button_released(_map, BUTTON_UP)) {
                 ++selected_value;
+                player->stop();
                 player->playMP3Track(selected_value);
                 preview = 1;
             } else if (button_released(_map, BUTTON_DOWN)) {
@@ -25,10 +26,12 @@ TState *TState_NewCard::handle_buttons(uint32_t _map) {
                 preview = 1;
             } else if (button_long_pressed(_map, BUTTON_UP)) {
                 selected_value += 10;
+                player->stop();
                 player->playMP3Track(selected_value);
                 preview = 1;
             } else if (button_long_pressed(_map, BUTTON_DOWN)) {
                 selected_value -= 10;
+                player->stop();
                 player->playMP3Track(selected_value);
                 preview = 1;
             } else if (button_released(_map, BUTTON_PAUSE)) {
