@@ -95,9 +95,6 @@ void Player::spk_disable() {
 
 void Player::volume_up() {
     volume_set(current_volume + context->get_config().step_volume);
-#if 0
-    playAdvertTrack(ADVERT_VOL_UP);
-#endif
 }
 
 void Player::volume_down() {
@@ -106,24 +103,28 @@ void Player::volume_down() {
         volume_set(0);
     else
         volume_set(current_volume - step);
-#if 0
-    playAdvertTrack(ADVERT_VOL_DOWN);
-#endif
 }
 
 void Player::volume_set(uint8_t vol) {
+    uint8_t cur_vol;
+
     if (vol > context->get_config().max_volume)
         vol = context->get_config().max_volume;
 
     if (vol < context->get_config().min_volume)
         vol = context->get_config().min_volume;
 
+    cur_vol = g_dfplayer.getVolume();
+    g_dfplayer.loop();
+
     Serial.print(F("Set volume "));
+    Serial.print(cur_vol);
+    Serial.print(F(" -> "));
     Serial.println(vol);
+
     current_volume = vol;
     g_dfplayer.setVolume(current_volume);
     last_command = MP3_CMD_SET_VOL;
-    delay(200);
 
     if (state)
         state->flash_notify_led(2);
@@ -134,15 +135,23 @@ void Player::playMP3Track(uint16_t track) {
     last_command = MP3_CMD_MP3_TRACK;
     current_folder = 0;
     current_track = track;
-    delay(200);
-    g_dfplayer.loop();
+
+    for (int8_t i = 0; i < 20 && !is_playing(); i++) {
+        delay(100);
+        g_dfplayer.loop();
+    }
+
     global_track = g_dfplayer.getCurrentTrack(DfMp3_PlaySource_Sd);
 }
 
 void Player::playAdvertTrack(uint16_t track) {
     g_dfplayer.playAdvertisement(track);
     last_command = MP3_CMD_ADVERT_TRACK;
-    delay(200);
+
+    for (int8_t i = 0; i < 20 && !is_playing(); i++) {
+        delay(100);
+        g_dfplayer.loop();
+    }
 
     if (state)
         state->flash_notify_led(2);
@@ -226,19 +235,31 @@ void Player::stop() {
     current_folder = 0;
     current_track = 0;
     current_folder_track_num = 0;
-    delay(200);
+
+    for (int8_t i = 0; i < 20 && is_playing(); i++) {
+        delay(100);
+        g_dfplayer.loop();
+    }
 }
 
 void Player::pause() {
     g_dfplayer.pause();
     last_command = MP3_CMD_PAUSE;
-    delay(200);
+
+    for (int8_t i = 0; i < 20 && is_playing(); i++) {
+        delay(100);
+        g_dfplayer.loop();
+    }
 }
 
 void Player::start() {
     g_dfplayer.start();
     last_command = MP3_CMD_START;
-    delay(200);
+
+    for (int8_t i = 0; i < 20 && !is_playing(); i++) {
+        delay(100);
+        g_dfplayer.loop();
+    }
 }
 
 bool Player::next() {
@@ -409,7 +430,7 @@ void Player::set_current_folder(uint16_t folder) {
 }
 
 void Player::setup() {
-    pinMode(BUSY_PIN, INPUT_PULLUP);
+    pinMode(BUSY_PIN, INPUT);
     pinMode(HPP_PIN, INPUT);
     pinMode(SPK_ENABLE_PIN, OUTPUT);
 

@@ -73,6 +73,8 @@ void TonUINO::setup() {
     player.set_state(state);
 
     player.volume_set(config.init_volume);
+    delay(20);
+    player.volume_set(config.init_volume);
 
     //if ((button_map & 0x7) == 0x7) {
     if (digitalRead(PAUSE_BUTTON_PIN) == LOW && digitalRead(UP_BUTTON_PIN) == LOW &&
