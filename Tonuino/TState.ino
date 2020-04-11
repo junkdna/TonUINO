@@ -73,12 +73,19 @@ void TState::apply_modificator(RFIDCard *card) {
     int8_t i, n = -1;
 
     for (i = 0; i < MAX_MODIFICATORS; i++) {
-        if (n < 0 && !mods[i])
-            n = i;
         if (mods[i] && mods[i]->type == card->extdata[0]) {
             delete mods[i];
             mods[i] = nullptr;
+            n = -2;
         }
+    }
+
+    if (n == -2)
+        return;
+
+    for (i = 0; i < MAX_MODIFICATORS || n < 0; i++) {
+        if (n < 0 && !mods[i])
+            n = i;
     }
 
     if (n < 0)
