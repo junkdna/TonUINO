@@ -55,11 +55,6 @@ void TonUINO::notify_rfid(RFIDCard *card)
 void TonUINO::setup() {
     uint32_t i, seed = 0;
 
-    /* PIN A7 is open, the ADC should produce noise */
-    for (i = 0; i < 256; i++)
-        seed ^= (analogRead(A7) & 0x1) << (i % 32);
-    randomSeed(seed);
-
     config.read();
     if (!config.check()) {
         config.init();
@@ -73,7 +68,10 @@ void TonUINO::setup() {
     player.set_state(state);
 
     player.volume_set(config.init_volume);
-    delay(20);
+    /* PIN A7 is open, the ADC should produce noise */
+    for (i = 0; i < 256; i++)
+        seed ^= (analogRead(A7) & 0x1) << (i % 32);
+    randomSeed(seed);
     player.volume_set(config.init_volume);
 
     //if ((button_map & 0x7) == 0x7) {
