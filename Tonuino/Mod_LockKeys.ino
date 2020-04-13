@@ -25,6 +25,7 @@ TState *Modificator_LockKeys::handle_player_event(mp3_notify_event &event, uint1
 }
 
 Modificator_LockKeys::Modificator_LockKeys(TonUINO *context, TState *state) {
+    this->type = MOD_LOCK_KEYS;
     this->context = context;
     this->state = state;
     context->get_player().playAdvertTrack(ADVERT_MOD_LOCK_ON);
