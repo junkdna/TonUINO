@@ -13,7 +13,4 @@ Modificator::Modificator(TonUINO *context, TState *state) {
 
 Modificator::Modificator() {
 }
-
-Modificator::~Modificator() {
-}
 // vim: ts=4 sw=4 et cindent

@@ -221,7 +221,7 @@ bool Player::playRandomTrack(uint16_t folder) {
 
     if (idx >= current_folder_track_num) {
         state = new_state_by_name(state, STATE_IDLE);
-        return;
+        return false;
     }
 
     track = random_queue[idx++];
@@ -333,6 +333,8 @@ TState *Player::redo_last_command()
             r = playFolderTrack(current_folder, current_track);
             if (!r)
                 state = new_state_by_name(state, STATE_IDLE);
+            break;
+        default:
             break;
     }
     return state;

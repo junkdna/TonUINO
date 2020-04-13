@@ -25,12 +25,12 @@ class RFIDCard;
 
 class RFIDReader {
     protected:
-        TonUINO *tonuino;
-        MFRC522 *mfrc522;
+        TonUINO *tonuino = nullptr;
+        MFRC522 *mfrc522 = nullptr;
         MFRC522::MIFARE_Key keyA;
         MFRC522::MIFARE_Key keyB;
 
-        RFIDCard *current_card;
+        RFIDCard *current_card = nullptr;
 
         byte sector;
         byte block_addr;

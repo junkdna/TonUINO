@@ -136,7 +136,9 @@ void RFIDReader::stop() {
     mfrc522->PCD_StopCrypto1();
 }
 
-RFIDReader::RFIDReader(MFRC522 *mfrc522) : mfrc522(mfrc522), block_addr(4), current_card(nullptr), tonuino(nullptr) {
+RFIDReader::RFIDReader(MFRC522 *mfrc522) {
+    this->mfrc522 = mfrc522;
+    block_addr = 4;
     sector = block_addr / 4;
     trailer_block = block_addr + 3;
 }

@@ -10,7 +10,7 @@
 #include "tonuino.h"
 #include "tstate.h"
 
-TState *new_state_by_name(TState *orig, uint8_t state_name, bool restore = false) {
+TState *new_state_by_name(TState *orig, uint8_t state_name, bool restore) {
     orig->set_restore(restore);
 
     switch (state_name) {
