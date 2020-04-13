@@ -156,17 +156,21 @@ TState_AudioBook::TState_AudioBook(TonUINO *context) {
 }
 
 TState_AudioBook::TState_AudioBook(TState *last_state) {
+
     from_last_state(last_state);
     notify_led->update_state(LED_STATE_PLAY);
     Serial.println(F("AudioBook(last)"));
-    if (player->get_current_track() > player->get_current_folder_track_num() || player->get_current_track() < 1) {
-        EEPROM.write(EEPROM_CFG_LEN + player->get_current_folder(), player->get_current_track());
-    }
+
     if (restore) {
         player->start();
         restore = false;
     } else {
-        player->playFolderTrack(player->get_current_folder(), player->get_current_track());
+        uint8_t ctrack = EEPROM.read(EEPROM_CFG_LEN + card->extdata[1]);
+        if (ctrack == 0xff) {
+            ctrack = 1;
+            EEPROM.write(EEPROM_CFG_LEN + card->extdata[1], 1);
+        }
+        player->playFolderTrack(card->extdata[1], ctrack);
     }
 }
 
