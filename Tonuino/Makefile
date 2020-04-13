@@ -90,7 +90,7 @@ tags: *.cpp *.h
 	@../Tools/gen_tags.sh
 
 check: *.cpp *.h
-	@cppcheck --enable=all --std=c++20 --language=c++ *.ino *.h
+	@cppcheck --enable=all --std=c++20 --language=c++ *.cpp *.h
 
 clean:
 	@rm -rf $(SKETCH).*.elf
