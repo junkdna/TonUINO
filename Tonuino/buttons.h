@@ -7,6 +7,7 @@
 
 #include <JC_Button.h>
 
+#define LONG_PRESS_TIMEOUT      1000
 #define LONG_PRESS_IS_VOLUME_KEY
 
 class TonUINO;

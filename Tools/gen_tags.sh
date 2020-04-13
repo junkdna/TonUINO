@@ -1,4 +1,4 @@
 #!/bin/bash
 
-ctags -R --c++-kinds=+p --fields=+iaS --extra=+q *.ino *.h
-cscope -Rb *.h *.ino
+ctags -R --c++-kinds=+p --fields=+iaS --extra=+q *.cpp *.h
+cscope -Rb *.h *.cpp

@@ -6,10 +6,12 @@
 #ifndef _MODIFICATOR_H_
 #define _MODIFICATOR_H_
 
+#include <stdint.h>
+
 #include "tonuino.h"
 #include "tstate.h"
 
-/* NOTE: the order has to be kept */
+/* NOTE: the order/numbers has/have to be kept */
 enum {
     MOD_BASE_CLASS = 0,
     MOD_LOCK_KEYS = 1,

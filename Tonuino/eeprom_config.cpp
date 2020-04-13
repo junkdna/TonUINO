@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: GPL-3.0-only
  * Copyright 2019 Tillmann Heidsieck <theidsieck@leenox.de>
  */
+
+#include <Arduino.h>
 #include <EEPROM.h>
 
 #include "eeprom_config.h"

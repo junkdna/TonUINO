@@ -5,6 +5,8 @@
 #ifndef _NOTIFICATION_LED_H_
 #define _NOTIFICATION_LED_H_
 
+#include <stdint.h>
+
 enum notification_led_state {
     LED_STATE_IDLE,
     LED_STATE_PLAY,

@@ -1,6 +1,8 @@
 tags
 cscope*
 ..*
+*.cpp.*.elf
+*.cpp.*.hex
 
 # pio generated folders are ignored
 lib

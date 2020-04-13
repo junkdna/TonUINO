@@ -10,7 +10,7 @@ MCU = arduino:avr:nano:cpu=atmega328old
 BOARD = arduino:avr
 SERIAL = /dev/ttyUSB0
 ## Main
-SKETCH = .
+SKETCH = ./tonuino.cpp
 ## Helper
 OS = $(shell uname)
 .PHONY: help install clean
@@ -74,7 +74,7 @@ init:
 	@$(PIO) lib install 77   # JC_Button
 	@$(PIO) lib install 63   # MFRC522
 
-compile: *.ino *.h
+compile: *.cpp *.h
 	@$(ACLI) compile --fqbn $(MCU) --warnings none "$(SKETCH)"
 
 find:
@@ -86,13 +86,14 @@ upload: compile
 test:
 	@$(ACLI) compile --fqbn $(MCU) --warnings more "$(SKETCH)"
 
-tags: *.ino *.h
+tags: *.cpp *.h
 	@../Tools/gen_tags.sh
 
-check: *.ino *.h
+check: *.cpp *.h
 	@cppcheck --enable=all --std=c++20 --language=c++ *.ino *.h
 
 clean:
-	@rm -rf ..arduino*
+	@rm -rf $(SKETCH).*.elf
+	@rm -rf $(SKETCH).*.hex
 	@rm -rf ".pio/build/"
 	@rm -rf tags cscope*

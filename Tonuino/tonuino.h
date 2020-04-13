@@ -7,6 +7,8 @@
 #ifndef _TONUINO_H_
 #define _TONUINO_H_
 
+#include <stdint.h>
+
 #include <MFRC522.h>
 #include <SPI.h>
 
@@ -25,6 +27,7 @@
 #define HPP_PIN                 6
 
 #define BUTTON_EXTERNAL_PULLUP  true
+
 #define PAUSE_BUTTON_PIN        A0
 #define UP_BUTTON_PIN           A1
 #define DOWN_BUTTON_PIN         A2

@@ -7,6 +7,8 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 
+#include <stdint.h>
+
 class TonUINO;
 class TState;
 
@@ -55,7 +57,7 @@ class Player {
         void spk_disable();
         bool hp_present();
 
-        TState *Player::redo_last_command();
+        TState *redo_last_command();
 
     public:
         const uint16_t get_current_track();

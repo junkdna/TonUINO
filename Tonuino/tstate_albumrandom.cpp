@@ -10,7 +10,7 @@
 #include "rfid.h"
 
 
-TState *TState_Album::handle_buttons(uint32_t _map) {
+TState *TState_AlbumRandom::handle_buttons(uint32_t _map) {
     TState *state = this;
 
     for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
@@ -24,9 +24,9 @@ TState *TState_Album::handle_buttons(uint32_t _map) {
     }
 
     if (button_next(_map)) {
-        player->next();
+        player->playRandomTrack(player->get_current_folder());
     } else if (button_prev(_map)) {
-        player->prev();
+        player->playFolderTrack(player->get_current_folder(), player->get_current_track());
     } else if (button_vol_up(_map)) {
         player->volume_up();
     } else if (button_vol_down(_map)) {
@@ -42,7 +42,7 @@ TState *TState_Album::handle_buttons(uint32_t _map) {
     return state;
 }
 
-TState *TState_Album::handle_card(RFIDCard *card) {
+TState *TState_AlbumRandom::handle_card(RFIDCard *card) {
     TState *state = this;
 
     for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
@@ -57,12 +57,12 @@ TState *TState_Album::handle_card(RFIDCard *card) {
 
     /* do not handle empty cards */
     switch(card->card_mode) {
-        case CARD_MODE_PLAYER:
 #if 0
+        case CARD_MODE_PLAYER:
             this->card = card;
             state = new_state_by_name(this, card->extdata[0]);
-#endif
             break;
+#endif
         case CARD_MODE_MODIFY:
             apply_modificator(card);
             break;
@@ -74,7 +74,7 @@ TState *TState_Album::handle_card(RFIDCard *card) {
     return state;
 }
 
-TState *TState_Album::handle_player_event(mp3_notify_event event, uint16_t code) {
+TState *TState_AlbumRandom::handle_player_event(mp3_notify_event event, uint16_t code) {
     TState *state = this;
 
     for (int8_t i = 0; i < MAX_MODIFICATORS; i++) {
@@ -117,7 +117,7 @@ TState *TState_Album::handle_player_event(mp3_notify_event event, uint16_t code)
     return state;
 }
 
-TState *TState_Album::loop() {
+TState *TState_AlbumRandom::loop() {
     TState *state = this;
 
     notify_led->loop();
@@ -138,28 +138,30 @@ TState *TState_Album::loop() {
         }
     }
 
+#if 0
     if (!player->is_playing())
         Mp3Notify::OnPlayFinished(DfMp3_PlaySources_Sd, player->get_current_track());
+#endif
 
     return this;
 }
 
-TState_Album::TState_Album(TonUINO *context) {
+TState_AlbumRandom::TState_AlbumRandom(TonUINO *context) {
     this->context = context;
 }
 
-TState_Album::TState_Album(TState *last_state) {
+TState_AlbumRandom::TState_AlbumRandom(TState *last_state) {
     from_last_state(last_state);
     notify_led->update_state(LED_STATE_PLAY);
-    Serial.println(F("Album(last)"));
+    Serial.println(F("AlbumRandom(last)"));
     if (restore) {
         player->start();
         restore = false;
     } else {
-        player->playFolderTrack(card->extdata[1], 1);
+        player->playRandomTrack(card->extdata[1]);
     }
 }
 
-TState_Album::~TState_Album() {
+TState_AlbumRandom::~TState_AlbumRandom() {
 }
 // vim: ts=4 sw=4 et cindent

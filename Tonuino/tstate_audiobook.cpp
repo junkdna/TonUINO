@@ -4,6 +4,8 @@
  * Copyright 2019-2020 Tillmann Heidsieck <theidsieck@leenox.de>
  */
 
+#include <EEPROM.h>
+
 #include "buttons.h"
 #include "tonuino.h"
 #include "tstate.h"
@@ -145,8 +147,10 @@ TState *TState_AudioBook::loop() {
         }
     }
 
+#if 0
     if (!player->is_playing())
         Mp3Notify::OnPlayFinished(DfMp3_PlaySources_Sd, player->get_current_track());
+#endif
 
     return this;
 }

@@ -4,6 +4,7 @@
  */
 
 #include "buttons.h"
+#include "tonuino.h"
 
 void Buttons::setup(TonUINO *tonuino) {
     this->tonuino = tonuino;

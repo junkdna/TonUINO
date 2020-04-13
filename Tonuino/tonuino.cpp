@@ -4,6 +4,8 @@
  * Copyright 2019-2020 Tillmann Heidsieck <theidsieck@leenox.de>
  */
 
+#include <Arduino.h>
+
 #include "buttons.h"
 #include "messages.h"
 #include "rfid.h"

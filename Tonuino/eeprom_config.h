@@ -10,7 +10,6 @@
 #define EEPROM_MAGIC       0x5a5f5059
 #define EEPROM_VERSION     2
 #define INITIAL_VOLUME     15
-#define LONG_PRESS_TIMEOUT 1000
 #define MAX_VOLUME         35
 #define MIN_VOLUME         1
 #define STEP_VOLUME        1

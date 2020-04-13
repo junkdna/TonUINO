@@ -7,8 +7,12 @@
 #ifndef _TSTATE_H_
 #define _TSTATE_H_
 
-#include "player.h"
+#include <stdio.h>
+
+#include "messages.h"
+#include "modificator.h"
 #include "notification_led.h"
+#include "player.h"
 #include "tonuino.h"
 
 class RFIDCard;

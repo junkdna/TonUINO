@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: GPL-3.0-only
  * Copyright 2020 Tillmann Heidsieck <theidsieck@leenox.de>
  */
+
+#include <Arduino.h>
 #include "notification_led.h"
 
 void NotificationLED_3LEDs::loop() {
