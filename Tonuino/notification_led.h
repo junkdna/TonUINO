@@ -40,4 +40,3 @@ public:
     explicit NotificationLED_3LEDs(uint8_t led0, uint8_t led1, uint8_t led2);
 };
 #endif
-// vim: ts=4 sw=4 et cindent

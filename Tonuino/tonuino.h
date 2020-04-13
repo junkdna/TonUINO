@@ -61,4 +61,3 @@ class TonUINO {
         void notify_mp3(mp3_notify_event event, uint16_t code);
 };
 #endif
-// vim: ts=4 sw=4 et cindent

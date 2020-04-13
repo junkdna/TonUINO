@@ -97,4 +97,3 @@ NotificationLED::NotificationLED() {
 
 NotificationLED::~NotificationLED() {
 }
-// vim: ts=4 sw=4 et cindent

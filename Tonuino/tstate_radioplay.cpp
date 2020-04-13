@@ -165,4 +165,3 @@ TState_RadioPlay::TState_RadioPlay(TState *last_state) {
 
 TState_RadioPlay::~TState_RadioPlay() {
 }
-// vim: ts=4 sw=4 et cindent

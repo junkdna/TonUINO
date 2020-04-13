@@ -40,4 +40,3 @@ void Buttons::loop() {
     if (button_map)
         tonuino->notify_buttons(button_map);
 }
-// vim: ts=4 sw=4 et cindent

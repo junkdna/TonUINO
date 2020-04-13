@@ -164,4 +164,3 @@ TState_Album::TState_Album(TState *last_state) {
 
 TState_Album::~TState_Album() {
 }
-// vim: ts=4 sw=4 et cindent

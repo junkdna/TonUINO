@@ -164,4 +164,3 @@ TState_Single::TState_Single(TState *last_state) {
 
 TState_Single::~TState_Single() {
 }
-// vim: ts=4 sw=4 et cindent

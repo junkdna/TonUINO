@@ -169,4 +169,3 @@ RFIDCard::RFIDCard(RFIDReader *r) : reader(r) {
     version = CARD_VERSION;
     card_mode = CARD_MODE_NONE;
 }
-// vim: ts=4 sw=4 et cindent

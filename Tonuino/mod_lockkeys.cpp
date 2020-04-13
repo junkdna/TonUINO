@@ -34,4 +34,3 @@ Modificator_LockKeys::Modificator_LockKeys(TonUINO *context, TState *state) {
 Modificator_LockKeys::~Modificator_LockKeys() {
     context->get_player().playAdvertTrack(ADVERT_MOD_LOCK_OFF);
 }
-// vim: ts=4 sw=4 et cindent

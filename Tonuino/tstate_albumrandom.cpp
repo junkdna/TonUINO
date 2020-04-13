@@ -164,4 +164,3 @@ TState_AlbumRandom::TState_AlbumRandom(TState *last_state) {
 
 TState_AlbumRandom::~TState_AlbumRandom() {
 }
-// vim: ts=4 sw=4 et cindent

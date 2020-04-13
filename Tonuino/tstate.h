@@ -185,4 +185,3 @@ class TState_Single : public TState {
 };
 
 #endif
-// vim: ts=4 sw=4 et cindent

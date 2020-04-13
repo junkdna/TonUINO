@@ -162,4 +162,3 @@ TState_Idle::TState_Idle(TState *last_state) {
 
 TState_Idle::~TState_Idle() {
 }
-// vim: ts=4 sw=4 et cindent

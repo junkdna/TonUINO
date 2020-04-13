@@ -82,4 +82,3 @@ static inline bool button_prev(uint32_t _map) {
 
 
 #endif
-// vim: ts=4 sw=4 et cindent

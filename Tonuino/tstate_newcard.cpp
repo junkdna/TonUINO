@@ -306,4 +306,3 @@ TState_NewCard::TState_NewCard(TState *last_state) {
 
 TState_NewCard::~TState_NewCard() {
 }
-// vim: ts=4 sw=4 et cindent

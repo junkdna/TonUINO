@@ -118,4 +118,3 @@ void loop() {
     rfid.loop();
     tonuino.loop();
 }
-// vim: ts=4 sw=4 et cindent

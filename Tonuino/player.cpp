@@ -450,4 +450,3 @@ Player::Player() {
 
 Player::~Player() {
 }
-// vim: ts=4 sw=4 et cindent

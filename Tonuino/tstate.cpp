@@ -125,4 +125,3 @@ TState::TState(TonUINO *context) {
 
 TState::~TState() {
 }
-// vim: ts=4 sw=4 et cindent

@@ -180,4 +180,3 @@ TState_AudioBook::TState_AudioBook(TState *last_state) {
 
 TState_AudioBook::~TState_AudioBook() {
 }
-// vim: ts=4 sw=4 et cindent
