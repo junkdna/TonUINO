@@ -73,14 +73,14 @@ TState *TState_AudioBook::handle_card(RFIDCard *card) {
     /* do not handle empty cards */
     switch(card->card_mode) {
 #if 0
-        case CARD_MODE_PLAYER:
-            this->card = card;
-            state = new_state_by_name(this, card->extdata[0]);
-            break;
+    case CARD_MODE_PLAYER:
+        this->card = card;
+        state = new_state_by_name(this, card->extdata[0]);
+        break;
 #endif
-        case CARD_MODE_MODIFY:
-            apply_modificator(card);
-            break;
+    case CARD_MODE_MODIFY:
+        apply_modificator(card);
+        break;
     }
 
     if (state != this)
@@ -103,27 +103,27 @@ TState *TState_AudioBook::handle_player_event(mp3_notify_event event, uint16_t c
     }
 
     switch (event) {
-        case MP3_NOTIFY_ERROR:
-            state = player->handle_error(code);
-            break;
-        case MP3_PLAY_FINISHED:
-            /* TODO in case we want to stop playing here we need something else */
-            if (!player->is_playing() && !next()) {
-                set_error(true);
-                state = new_state_by_name(this, STATE_IDLE);
-            }
-            break;
-        case MP3_CARD_ONLINE:
-            /* TODO should not happen */
-            break;
-        case MP3_CARD_INSERTED:
-            /* TODO should not happen */
-            break;
-        case MP3_CARD_REMOVED:
+    case MP3_NOTIFY_ERROR:
+        state = player->handle_error(code);
+        break;
+    case MP3_PLAY_FINISHED:
+        /* TODO in case we want to stop playing here we need something else */
+        if (!player->is_playing() && !next()) {
+            set_error(true);
             state = new_state_by_name(this, STATE_IDLE);
-            break;
-        default:
-            break;
+        }
+        break;
+    case MP3_CARD_ONLINE:
+        /* TODO should not happen */
+        break;
+    case MP3_CARD_INSERTED:
+        /* TODO should not happen */
+        break;
+    case MP3_CARD_REMOVED:
+        state = new_state_by_name(this, STATE_IDLE);
+        break;
+    default:
+        break;
     }
 
     if (this != state)

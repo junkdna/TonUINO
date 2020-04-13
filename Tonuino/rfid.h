@@ -24,28 +24,28 @@ enum Card_Mode {
 class RFIDCard;
 
 class RFIDReader {
-    protected:
-        TonUINO *tonuino = nullptr;
-        MFRC522 *mfrc522 = nullptr;
-        MFRC522::MIFARE_Key keyA;
-        MFRC522::MIFARE_Key keyB;
+protected:
+    TonUINO *tonuino = nullptr;
+    MFRC522 *mfrc522 = nullptr;
+    MFRC522::MIFARE_Key keyA;
+    MFRC522::MIFARE_Key keyB;
 
-        RFIDCard *current_card = nullptr;
+    RFIDCard *current_card = nullptr;
 
-        byte sector;
-        byte block_addr;
-        byte trailer_block;
+    byte sector;
+    byte block_addr;
+    byte trailer_block;
 
-    public:
-        int write(RFIDCard *card);
-        int read(RFIDCard *card);
-        void stop();
+public:
+    int write(RFIDCard *card);
+    int read(RFIDCard *card);
+    void stop();
 
-        void setup(TonUINO *tonuino);
-        void loop();
+    void setup(TonUINO *tonuino);
+    void loop();
 
-        explicit RFIDReader(MFRC522 *mfrc522);
-        void dump_byte_array(byte *buffer, byte bufferSize);
+    explicit RFIDReader(MFRC522 *mfrc522);
+    void dump_byte_array(byte *buffer, byte bufferSize);
 };
 
 class RFIDCard {

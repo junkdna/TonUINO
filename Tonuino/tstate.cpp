@@ -92,11 +92,11 @@ void TState::apply_modificator(RFIDCard *card) {
         return;
 
     switch (card->extdata[0]) {
-        case MOD_LOCK_KEYS:
-            mods[n] = new Modificator_LockKeys(context, this);
-            break;
-        default:
-            break;
+    case MOD_LOCK_KEYS:
+        mods[n] = new Modificator_LockKeys(context, this);
+        break;
+    default:
+        break;
     }
 }
 

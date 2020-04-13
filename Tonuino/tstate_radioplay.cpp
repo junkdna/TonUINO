@@ -58,14 +58,14 @@ TState *TState_RadioPlay::handle_card(RFIDCard *card) {
     /* do not handle empty cards */
     switch(card->card_mode) {
 #if 0
-        case CARD_MODE_PLAYER:
-            this->card = card;
-            state = new_state_by_name(this, card->extdata[0]);
-            break;
+    case CARD_MODE_PLAYER:
+        this->card = card;
+        state = new_state_by_name(this, card->extdata[0]);
+        break;
 #endif
-        case CARD_MODE_MODIFY:
-            apply_modificator(card);
-            break;
+    case CARD_MODE_MODIFY:
+        apply_modificator(card);
+        break;
     }
 
     if (state != this)
@@ -88,24 +88,24 @@ TState *TState_RadioPlay::handle_player_event(mp3_notify_event event, uint16_t c
     }
 
     switch (event) {
-        case MP3_NOTIFY_ERROR:
-            state = player->handle_error(code);
-            break;
-        case MP3_PLAY_FINISHED:
-            /* do not play another track, goto idle state instead */
-            state = new_state_by_name(this, STATE_IDLE);
-            break;
-        case MP3_CARD_ONLINE:
-            /* TODO should not happen */
-            break;
-        case MP3_CARD_INSERTED:
-            /* TODO should not happen */
-            break;
-        case MP3_CARD_REMOVED:
-            state = new_state_by_name(this, STATE_IDLE);
-            break;
-        default:
-            break;
+    case MP3_NOTIFY_ERROR:
+        state = player->handle_error(code);
+        break;
+    case MP3_PLAY_FINISHED:
+        /* do not play another track, goto idle state instead */
+        state = new_state_by_name(this, STATE_IDLE);
+        break;
+    case MP3_CARD_ONLINE:
+        /* TODO should not happen */
+        break;
+    case MP3_CARD_INSERTED:
+        /* TODO should not happen */
+        break;
+    case MP3_CARD_REMOVED:
+        state = new_state_by_name(this, STATE_IDLE);
+        break;
+    default:
+        break;
     }
 
     if (this != state)

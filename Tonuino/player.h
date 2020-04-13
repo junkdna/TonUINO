@@ -38,57 +38,57 @@ enum mp3_notify_event {
 };
 
 class Player {
-    protected:
-        TonUINO *context = nullptr;
-        TState  *state = nullptr;
+protected:
+    TonUINO *context = nullptr;
+    TState  *state = nullptr;
 
-        mp3_command last_command = MP3_CMD_NONE;
+    mp3_command last_command = MP3_CMD_NONE;
 
-        uint16_t current_folder = 0;
-        uint16_t current_folder_track_num = 0;
-        uint16_t current_track = 0;
-        uint16_t current_volume = 0;
-        uint16_t global_track = 0;
+    uint16_t current_folder = 0;
+    uint16_t current_folder_track_num = 0;
+    uint16_t current_track = 0;
+    uint16_t current_volume = 0;
+    uint16_t global_track = 0;
 
-        uint8_t idx = 0;
-        uint8_t random_queue[255] = {0};
+    uint8_t idx = 0;
+    uint8_t random_queue[255] = {0};
 
-        void spk_enable();
-        void spk_disable();
-        bool hp_present();
+    void spk_enable();
+    void spk_disable();
+    bool hp_present();
 
-        TState *redo_last_command();
+    TState *redo_last_command();
 
-    public:
-        const uint16_t get_current_track();
-        const uint16_t get_current_folder();
-        const uint16_t get_current_folder_track_num();
-        const uint16_t get_current_global_track();
-        void set_current_folder(uint16_t folder);
+public:
+    const uint16_t get_current_track();
+    const uint16_t get_current_folder();
+    const uint16_t get_current_folder_track_num();
+    const uint16_t get_current_global_track();
+    void set_current_folder(uint16_t folder);
 
-        void playAdvertTrack(uint16_t track);
-        void playMP3Track(uint16_t track);
-        bool playFolderTrack(uint16_t folder, uint16_t track);
-        bool playRandomTrack(uint16_t folder);
-        void pause();
-        void start();
-        void stop();
-        bool next();
-        bool prev();
-        void volume_up();
-        void volume_down();
-        void volume_set(uint8_t vol);
+    void playAdvertTrack(uint16_t track);
+    void playMP3Track(uint16_t track);
+    bool playFolderTrack(uint16_t folder, uint16_t track);
+    bool playRandomTrack(uint16_t folder);
+    void pause();
+    void start();
+    void stop();
+    bool next();
+    bool prev();
+    void volume_up();
+    void volume_down();
+    void volume_set(uint8_t vol);
 
-        bool is_playing();
+    bool is_playing();
 
-        TState *loop();
-        TState *handle_error(uint16_t code);
-        void setup();
-        void set_state(TState *_state);
-        void set_context(TonUINO *_tonuino);
+    TState *loop();
+    TState *handle_error(uint16_t code);
+    void setup();
+    void set_state(TState *_state);
+    void set_context(TonUINO *_tonuino);
 
-        Player();
-        ~Player();
+    Player();
+    ~Player();
 };
 
 #endif

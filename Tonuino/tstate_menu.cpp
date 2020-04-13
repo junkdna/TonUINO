@@ -138,15 +138,15 @@ TState *TState_Menu::handle_card(RFIDCard *new_card) {
 
 #if 0
     switch(card->card_mode) {
-        case CARD_MODE_PLAYER:
-            state = new_state_by_name(this, STATE_NEW_CARD);
-            player->playMP3Track(MESSAGE_RESET_TAG);
-            delay(1000); /* TODO argh don't do this */
-            break;
-        default:
-            /* TODO restart new card at this point? */
-            state = new_state_by_name(this, STATE_NEW_CARD);
-            break;
+    case CARD_MODE_PLAYER:
+        state = new_state_by_name(this, STATE_NEW_CARD);
+        player->playMP3Track(MESSAGE_RESET_TAG);
+        delay(1000); /* TODO argh don't do this */
+        break;
+    default:
+        /* TODO restart new card at this point? */
+        state = new_state_by_name(this, STATE_NEW_CARD);
+        break;
     }
 #endif
 
@@ -162,23 +162,23 @@ TState *TState_Menu::handle_player_event(mp3_notify_event event, uint16_t code) 
     (void)code;
 
     switch (event) {
-        case MP3_NOTIFY_ERROR:
-            /* TODO handle */
-            break;
-        case MP3_PLAY_FINISHED:
-            /* TODO handle */
-            break;
-        case MP3_CARD_ONLINE:
-            /* TODO should not happen */
-            break;
-        case MP3_CARD_INSERTED:
-            /* TODO should not happen */
-            break;
-        case MP3_CARD_REMOVED:
-            state = new_state_by_name(this, STATE_IDLE);
-            break;
-        default:
-            break;
+    case MP3_NOTIFY_ERROR:
+        /* TODO handle */
+        break;
+    case MP3_PLAY_FINISHED:
+        /* TODO handle */
+        break;
+    case MP3_CARD_ONLINE:
+        /* TODO should not happen */
+        break;
+    case MP3_CARD_INSERTED:
+        /* TODO should not happen */
+        break;
+    case MP3_CARD_REMOVED:
+        state = new_state_by_name(this, STATE_IDLE);
+        break;
+    default:
+        break;
     }
 
     if (this != state)

@@ -14,63 +14,63 @@
 extern TonUINO tonuino;
 
 class Mp3Notify {
-    public:
-        static void OnError(uint16_t errorCode) {
+public:
+    static void OnError(uint16_t errorCode) {
 #if 0
-            Serial.println();
-            Serial.print("Com Error ");
-            Serial.println(errorCode);
+        Serial.println();
+        Serial.print("Com Error ");
+        Serial.println(errorCode);
 #endif
-            tonuino.notify_mp3(MP3_NOTIFY_ERROR, errorCode);
-        }
-        static void OnPlayFinished(DfMp3_PlaySources src, uint16_t track) {
-            static uint16_t last_track;
+        tonuino.notify_mp3(MP3_NOTIFY_ERROR, errorCode);
+    }
+    static void OnPlayFinished(DfMp3_PlaySources src, uint16_t track) {
+        static uint16_t last_track;
 
-            if (src ^ DfMp3_PlaySources_Sd)
-                return;
+        if (src ^ DfMp3_PlaySources_Sd)
+            return;
 
 #if 1
-            Serial.print("Track beendet");
-            Serial.println(track);
+        Serial.print("Track beendet");
+        Serial.println(track);
 #endif
 
-            /*
-             * we should always get two messages with the same track
-             * one for track finished and on for command finished
-             */
-            if (track != last_track) {
-                last_track = track;
-                return;
-            }
-
-            /*
-             * we either get the global track number
-             * or for some reason the folder track number
-             * allow both.
-             * This filter will prevent Advert tracks to trigger e.g. selection
-             * of the next track
-             */
-            if (tonuino.get_player().get_current_global_track() != track &&
-                tonuino.get_player().get_current_track() != track)
-                return;
-
-            tonuino.notify_mp3(MP3_PLAY_FINISHED, track);
+        /*
+         * we should always get two messages with the same track
+         * one for track finished and on for command finished
+         */
+        if (track != last_track) {
+            last_track = track;
+            return;
         }
 
-        static void OnPlaySourceOnline(DfMp3_PlaySources src) {
-            if (src & DfMp3_PlaySources_Sd)
-                tonuino.notify_mp3(MP3_CARD_ONLINE, 0);
-        }
+        /*
+         * we either get the global track number
+         * or for some reason the folder track number
+         * allow both.
+         * This filter will prevent Advert tracks to trigger e.g. selection
+         * of the next track
+         */
+        if (tonuino.get_player().get_current_global_track() != track &&
+            tonuino.get_player().get_current_track() != track)
+            return;
 
-        static void OnPlaySourceInserted(DfMp3_PlaySources src) {
-            if (src & DfMp3_PlaySources_Sd)
-                tonuino.notify_mp3(MP3_CARD_INSERTED, 0);
-        }
+        tonuino.notify_mp3(MP3_PLAY_FINISHED, track);
+    }
 
-        static void OnPlaySourceRemoved(DfMp3_PlaySources src) {
-            if (src & DfMp3_PlaySources_Sd)
-                tonuino.notify_mp3(MP3_CARD_REMOVED, 0);
-        }
+    static void OnPlaySourceOnline(DfMp3_PlaySources src) {
+        if (src & DfMp3_PlaySources_Sd)
+            tonuino.notify_mp3(MP3_CARD_ONLINE, 0);
+    }
+
+    static void OnPlaySourceInserted(DfMp3_PlaySources src) {
+        if (src & DfMp3_PlaySources_Sd)
+            tonuino.notify_mp3(MP3_CARD_INSERTED, 0);
+    }
+
+    static void OnPlaySourceRemoved(DfMp3_PlaySources src) {
+        if (src & DfMp3_PlaySources_Sd)
+            tonuino.notify_mp3(MP3_CARD_REMOVED, 0);
+    }
 };
 
 static SoftwareSerial g_soft_uart(SOFT_UART_RX_PIN, SOFT_UART_TX_PIN);
@@ -295,47 +295,47 @@ TState *Player::redo_last_command()
     bool r;
 
     switch (last_command) {
-        case MP3_CMD_RESET:
-            spk_disable();
-            g_dfplayer.reset();
-            delay(200);
+    case MP3_CMD_RESET:
+        spk_disable();
+        g_dfplayer.reset();
+        delay(200);
+        state = new_state_by_name(state, STATE_IDLE);
+        break;
+    case MP3_CMD_SET_VOL:
+        volume_set(current_volume);
+        break;
+    case MP3_CMD_MP3_TRACK:
+        /* no redo here */
+        break;
+    case MP3_CMD_ADVERT_TRACK:
+        /* no redo here */
+        break;
+    case MP3_CMD_FOLDER_TRACK:
+        r = playFolderTrack(current_folder, current_track);
+        if (!r)
             state = new_state_by_name(state, STATE_IDLE);
-            break;
-        case MP3_CMD_SET_VOL:
-            volume_set(current_volume);
-            break;
-        case MP3_CMD_MP3_TRACK:
-            /* no redo here */
-            break;
-        case MP3_CMD_ADVERT_TRACK:
-            /* no redo here */
-            break;
-        case MP3_CMD_FOLDER_TRACK:
-            r = playFolderTrack(current_folder, current_track);
-            if (!r)
-                state = new_state_by_name(state, STATE_IDLE);
-            break;
-        case MP3_CMD_PAUSE:
-            pause();
-            break;
-        case MP3_CMD_START:
-            start();
-            break;
-        case MP3_CMD_STOP:
-            stop();
-            break;
-        case MP3_CMD_NEXT:
-            r = playFolderTrack(current_folder, current_track);
-            if (!r)
-                state = new_state_by_name(state, STATE_IDLE);
-            break;
-        case MP3_CMD_PREV:
-            r = playFolderTrack(current_folder, current_track);
-            if (!r)
-                state = new_state_by_name(state, STATE_IDLE);
-            break;
-        default:
-            break;
+        break;
+    case MP3_CMD_PAUSE:
+        pause();
+        break;
+    case MP3_CMD_START:
+        start();
+        break;
+    case MP3_CMD_STOP:
+        stop();
+        break;
+    case MP3_CMD_NEXT:
+        r = playFolderTrack(current_folder, current_track);
+        if (!r)
+            state = new_state_by_name(state, STATE_IDLE);
+        break;
+    case MP3_CMD_PREV:
+        r = playFolderTrack(current_folder, current_track);
+        if (!r)
+            state = new_state_by_name(state, STATE_IDLE);
+        break;
+    default:
+        break;
     }
     return state;
 }
@@ -343,42 +343,42 @@ TState *Player::redo_last_command()
 TState *Player::handle_error(uint16_t code)
 {
     switch (code) {
-        case DfMp3_Error_Sleeping:
-            spk_disable();
-            g_dfplayer.reset();
-            delay(200);
-            /* fallthrough */
-        case DfMp3_Error_Busy:
-            /* fallthrough */
-        case DfMp3_Error_SerialWrongStack:
-            /* fallthrough */
-        case DfMp3_Error_CheckSumNotMatch:
-            /* fallthrough */
-        case DfMp3_Error_FileIndexOut:
-            /* fallthrough */
-        case DfMp3_Error_FileMismatch:
-            if (last_command != MP3_CMD_ADVERT_TRACK) {
-                state->set_error(true);
-                state = new_state_by_name(state, STATE_IDLE);
-            }
-            break;
-        case DfMp3_Error_RxTimeout:
-            /* fallthrough */
-        case DfMp3_Error_PacketSize:
-            /* fallthrough */
-        case DfMp3_Error_PacketHeader:
-            /* fallthrough */
-        case DfMp3_Error_PacketChecksum:
-            state = redo_last_command();
-            break;
-        case DfMp3_Error_General:
-            /* ignored for now */
-            break;
-        case DfMp3_Error_Advertise:
-            /* ignored for now */
-            break;
-        default:
-            break;
+    case DfMp3_Error_Sleeping:
+        spk_disable();
+        g_dfplayer.reset();
+        delay(200);
+        /* fallthrough */
+    case DfMp3_Error_Busy:
+        /* fallthrough */
+    case DfMp3_Error_SerialWrongStack:
+        /* fallthrough */
+    case DfMp3_Error_CheckSumNotMatch:
+        /* fallthrough */
+    case DfMp3_Error_FileIndexOut:
+        /* fallthrough */
+    case DfMp3_Error_FileMismatch:
+        if (last_command != MP3_CMD_ADVERT_TRACK) {
+            state->set_error(true);
+            state = new_state_by_name(state, STATE_IDLE);
+        }
+        break;
+    case DfMp3_Error_RxTimeout:
+        /* fallthrough */
+    case DfMp3_Error_PacketSize:
+        /* fallthrough */
+    case DfMp3_Error_PacketHeader:
+        /* fallthrough */
+    case DfMp3_Error_PacketChecksum:
+        state = redo_last_command();
+        break;
+    case DfMp3_Error_General:
+        /* ignored for now */
+        break;
+    case DfMp3_Error_Advertise:
+        /* ignored for now */
+        break;
+    default:
+        break;
     }
 
     return state;

@@ -40,24 +40,24 @@ class RFIDReader;
 class TState;
 
 class TonUINO {
-    protected:
-        EEPROM_Config config;
-        RFIDCard *rfid_card;
-        Player player;
+protected:
+    EEPROM_Config config;
+    RFIDCard *rfid_card;
+    Player player;
 
-        TState *state;
+    TState *state;
 
-        uint32_t button_map = 0;
+    uint32_t button_map = 0;
 
-    public:
-        EEPROM_Config &get_config();
-        Player &get_player();
-        void setup();
-        void loop();
+public:
+    EEPROM_Config &get_config();
+    Player &get_player();
+    void setup();
+    void loop();
 
-        /* this goes into the state */
-        void notify_buttons(uint32_t _map);
-        void notify_rfid(RFIDCard *rfid_card);
-        void notify_mp3(mp3_notify_event event, uint16_t code);
+    /* this goes into the state */
+    void notify_buttons(uint32_t _map);
+    void notify_rfid(RFIDCard *rfid_card);
+    void notify_mp3(mp3_notify_event event, uint16_t code);
 };
 #endif

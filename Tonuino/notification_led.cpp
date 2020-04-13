@@ -16,27 +16,27 @@ void NotificationLED_3LEDs::loop() {
         digitalWrite(led_pins[flash_led], 1);
 
     switch (state) {
-        case LED_STATE_IDLE:
-            if (delta >= 500) {
-                digitalWrite(led_pins[idx], 1);
-                idx = (idx + 1) % 3;
-                digitalWrite(led_pins[idx], 0);
-                ms = millis();
-            }
-            break;
-        case LED_STATE_PLAY:
-            break;
-        case LED_STATE_PAUSE:
-            if (delta >= 500) {
-                digitalWrite(led_pins[1], idx);
-                idx = !idx;
-                ms = millis();
-            }
-            break;
-        case LED_STATE_MENU:
-            break;
-        case LED_STATE_ERROR:
-            break;
+    case LED_STATE_IDLE:
+        if (delta >= 500) {
+            digitalWrite(led_pins[idx], 1);
+            idx = (idx + 1) % 3;
+            digitalWrite(led_pins[idx], 0);
+            ms = millis();
+        }
+        break;
+    case LED_STATE_PLAY:
+        break;
+    case LED_STATE_PAUSE:
+        if (delta >= 500) {
+            digitalWrite(led_pins[1], idx);
+            idx = !idx;
+            ms = millis();
+        }
+        break;
+    case LED_STATE_MENU:
+        break;
+    case LED_STATE_ERROR:
+        break;
     }
 }
 
@@ -51,22 +51,22 @@ void NotificationLED_3LEDs::update_state(notification_led_state _state) {
     digitalWrite(led_pins[2], 1);
 
     switch (state) {
-        case LED_STATE_IDLE:
-            digitalWrite(led_pins[0], 0);
-            digitalWrite(led_pins[1], 0);
-            digitalWrite(led_pins[2], 0);
-            break;
-        case LED_STATE_PLAY:
-            digitalWrite(led_pins[1], 0);
-            break;
-        case LED_STATE_PAUSE:
-            break;
-        case LED_STATE_MENU:
-            digitalWrite(led_pins[2], 0);
-            break;
-        case LED_STATE_ERROR:
-            digitalWrite(led_pins[0], 0);
-            break;
+    case LED_STATE_IDLE:
+        digitalWrite(led_pins[0], 0);
+        digitalWrite(led_pins[1], 0);
+        digitalWrite(led_pins[2], 0);
+        break;
+    case LED_STATE_PLAY:
+        digitalWrite(led_pins[1], 0);
+        break;
+    case LED_STATE_PAUSE:
+        break;
+    case LED_STATE_MENU:
+        digitalWrite(led_pins[2], 0);
+        break;
+    case LED_STATE_ERROR:
+        digitalWrite(led_pins[0], 0);
+        break;
     }
 }
 

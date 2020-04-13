@@ -78,7 +78,7 @@ void TonUINO::setup() {
 
     //if ((button_map & 0x7) == 0x7) {
     if (digitalRead(PAUSE_BUTTON_PIN) == LOW && digitalRead(UP_BUTTON_PIN) == LOW &&
-            digitalRead(DOWN_BUTTON_PIN) == LOW) {
+        digitalRead(DOWN_BUTTON_PIN) == LOW) {
         /* reset config*/
         config.init();
         config.write();

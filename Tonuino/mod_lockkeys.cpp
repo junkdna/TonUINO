@@ -12,7 +12,7 @@ TState *Modificator_LockKeys::loop()  {
 }
 
 TState *Modificator_LockKeys::handle_buttons(uint32_t &_map)  {
-	_map = 0;
+    _map = 0;
     return state;
 }
 
