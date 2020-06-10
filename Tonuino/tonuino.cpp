@@ -25,7 +25,7 @@ Player &TonUINO::get_player()
 }
 
 void TonUINO::notify_mp3(mp3_notify_event event, uint16_t code) {
-    state->handle_player_event(event, code);
+    state = state->handle_player_event(event, code);
 }
 
 void TonUINO::notify_buttons(uint32_t _map)
