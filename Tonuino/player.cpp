@@ -136,7 +136,7 @@ void Player::playMP3Track(uint16_t track) {
     current_folder = 0;
     current_track = track;
 
-    for (int8_t i = 0; i < 20 && !is_playing(); i++) {
+    for (int8_t i = 0; i < 100 && !is_playing(); i++) {
         delay(100);
         g_dfplayer.loop();
     }
@@ -148,7 +148,7 @@ void Player::playAdvertTrack(uint16_t track) {
     g_dfplayer.playAdvertisement(track);
     last_command = MP3_CMD_ADVERT_TRACK;
 
-    for (int8_t i = 0; i < 20 && !is_playing(); i++) {
+    for (int8_t i = 0; i < 100 && !is_playing(); i++) {
         delay(100);
         g_dfplayer.loop();
     }
@@ -175,7 +175,7 @@ bool Player::playFolderTrack(uint16_t folder, uint16_t track) {
 
     /* request and wait */
     g_dfplayer.playFolderTrack(folder, track);
-    for (int8_t i = 0; i < 20 && !is_playing(); i++) {
+    for (int8_t i = 0; i < 100 && !is_playing(); i++) {
         delay(100);
         g_dfplayer.loop();
     }
@@ -183,7 +183,7 @@ bool Player::playFolderTrack(uint16_t folder, uint16_t track) {
     /* uhoh, for some reason this did not work lets retry */
     if (!is_playing()) {
         g_dfplayer.playFolderTrack(folder, track);
-        for (int8_t i = 0; i < 20 && !is_playing(); i++) {
+        for (int8_t i = 0; i < 100 && !is_playing(); i++) {
             delay(100);
             g_dfplayer.loop();
         }
@@ -236,7 +236,7 @@ void Player::stop() {
     current_track = 0;
     current_folder_track_num = 0;
 
-    for (int8_t i = 0; i < 20 && is_playing(); i++) {
+    for (int8_t i = 0; i < 100 && is_playing(); i++) {
         delay(100);
         g_dfplayer.loop();
     }
@@ -246,7 +246,7 @@ void Player::pause() {
     g_dfplayer.pause();
     last_command = MP3_CMD_PAUSE;
 
-    for (int8_t i = 0; i < 20 && is_playing(); i++) {
+    for (int8_t i = 0; i < 100 && is_playing(); i++) {
         delay(100);
         g_dfplayer.loop();
     }
@@ -256,7 +256,7 @@ void Player::start() {
     g_dfplayer.start();
     last_command = MP3_CMD_START;
 
-    for (int8_t i = 0; i < 20 && !is_playing(); i++) {
+    for (int8_t i = 0; i < 100 && !is_playing(); i++) {
         delay(100);
         g_dfplayer.loop();
     }
@@ -290,6 +290,7 @@ bool Player::prev() {
     return playFolderTrack(current_folder, current_track);
 }
 
+#if 0
 TState *Player::redo_last_command()
 {
     bool r;
@@ -339,9 +340,11 @@ TState *Player::redo_last_command()
     }
     return state;
 }
+#endif
 
 TState *Player::handle_error(uint16_t code)
 {
+#if 0
     switch (code) {
     case DfMp3_Error_Sleeping:
         spk_disable();
@@ -382,6 +385,9 @@ TState *Player::handle_error(uint16_t code)
     }
 
     return state;
+#endif
+
+    return new_state_by_name(state, STATE_IDLE);
 }
 
 TState *Player::loop() {
