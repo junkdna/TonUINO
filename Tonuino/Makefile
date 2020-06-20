@@ -63,28 +63,31 @@ endif
 endif
 
 init:
-	@$(ACLI) config init
-	@$(ACLI) core update-index
-	@$(ACLI) core install $(BOARD)
-	@$(ACLI) lib install "DFPlayer Mini Mp3 by Makuna"
-	@$(ACLI) lib install "MFRC522"
-	@$(ACLI) lib install "JC_Button"
+	#@$(ACLI) config init
+	#@$(ACLI) core update-index
+	#@$(ACLI) core install $(BOARD)
+	#@$(ACLI) lib install "DFPlayer Mini Mp3 by Makuna"
+	#@$(ACLI) lib install "MFRC522"
+	#@$(ACLI) lib install "JC_Button"
 	@$(PIO) lib install 1561 # DFPlayer Mini Mp3 by Makuna
 	@$(PIO) lib install 2284 # EEPROM
 	@$(PIO) lib install 77   # JC_Button
 	@$(PIO) lib install 63   # MFRC522
 
 compile: *.cpp *.h
-	@$(ACLI) compile --fqbn $(MCU) --warnings none "$(SKETCH)"
+	#@$(ACLI) compile --fqbn $(MCU) --warnings none "$(SKETCH)"
+	pio run
 
-find:
-	@$(ACLI) board list
+#find:
+#	@$(ACLI) board list
 
 upload: compile
-	@$(ACLI) upload -p $(SERIAL) --fqbn $(MCU) --verify "$(SKETCH)"
+	#@$(ACLI) upload -p $(SERIAL) --fqbn $(MCU) --verify "$(SKETCH)"
+	pio run --upload-port $(SERIAL) -t upload
 
 test:
-	@$(ACLI) compile --fqbn $(MCU) --warnings more "$(SKETCH)"
+	#@$(ACLI) compile --fqbn $(MCU) --warnings more "$(SKETCH)"
+	pio run
 
 tags: *.cpp *.h
 	@../Tools/gen_tags.sh
