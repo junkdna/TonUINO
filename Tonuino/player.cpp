@@ -137,8 +137,8 @@ void Player::playMP3Track(uint16_t track) {
     current_folder = 0;
     current_track = track;
 
-    for (int8_t i = 0; i < 100 && !is_playing(); i++) {
-        delay(100);
+    for (int16_t i = 0; i < 1000 && !is_playing(); i++) {
+        delay(10);
         g_dfplayer.loop();
     }
 
@@ -149,8 +149,8 @@ void Player::playAdvertTrack(uint16_t track) {
     g_dfplayer.playAdvertisement(track);
     last_command = MP3_CMD_ADVERT_TRACK;
 
-    for (int8_t i = 0; i < 100 && !is_playing(); i++) {
-        delay(100);
+    for (int16_t i = 0; i < 1000 && !is_playing(); i++) {
+        delay(10);
         g_dfplayer.loop();
     }
 
@@ -171,21 +171,21 @@ bool Player::playFolderTrack(uint16_t folder, uint16_t track) {
     Serial.println(track);
 
     last_command = MP3_CMD_FOLDER_TRACK;
-    current_folder = folder;
+    set_current_folder(folder);
     current_track = track;
 
     /* request and wait */
     g_dfplayer.playFolderTrack(folder, track);
-    for (int8_t i = 0; i < 100 && !is_playing(); i++) {
-        delay(100);
+    for (int16_t i = 0; i < 1000 && !is_playing(); i++) {
+        delay(10);
         g_dfplayer.loop();
     }
 
     /* uhoh, for some reason this did not work lets retry */
     if (!is_playing()) {
         g_dfplayer.playFolderTrack(folder, track);
-        for (int8_t i = 0; i < 100 && !is_playing(); i++) {
-            delay(100);
+        for (int16_t i = 0; i < 1000 && !is_playing(); i++) {
+            delay(10);
             g_dfplayer.loop();
         }
     }
@@ -237,8 +237,8 @@ void Player::stop() {
     current_track = 0;
     current_folder_track_num = 0;
 
-    for (int8_t i = 0; i < 100 && is_playing(); i++) {
-        delay(100);
+    for (int16_t i = 0; i < 1000 && is_playing(); i++) {
+        delay(10);
         g_dfplayer.loop();
     }
 }
@@ -247,8 +247,8 @@ void Player::pause() {
     g_dfplayer.pause();
     last_command = MP3_CMD_PAUSE;
 
-    for (int8_t i = 0; i < 100 && is_playing(); i++) {
-        delay(100);
+    for (int16_t i = 0; i < 1000 && is_playing(); i++) {
+        delay(10);
         g_dfplayer.loop();
     }
 }
@@ -257,8 +257,8 @@ void Player::start() {
     g_dfplayer.start();
     last_command = MP3_CMD_START;
 
-    for (int8_t i = 0; i < 100 && !is_playing(); i++) {
-        delay(100);
+    for (int16_t i = 0; i < 1000 && !is_playing(); i++) {
+        delay(10);
         g_dfplayer.loop();
     }
 }
