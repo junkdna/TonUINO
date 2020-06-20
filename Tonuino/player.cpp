@@ -392,7 +392,7 @@ TState *Player::handle_error(uint16_t code)
 
     return state;
 #endif
-
+    (void)code;
     return new_state_by_name(state, STATE_IDLE);
 }
 
