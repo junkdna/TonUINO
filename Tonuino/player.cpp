@@ -29,7 +29,7 @@ public:
         if (src ^ DfMp3_PlaySources_Sd)
             return;
 
-#if 1
+#if 0
         Serial.print("Track beendet");
         Serial.println(track);
 #endif
