@@ -54,6 +54,7 @@ public:
             tonuino.get_player().get_current_track() != track)
             return;
 
+        /* dispatch to state-machine */
         tonuino.notify_mp3(MP3_PLAY_FINISHED, track);
     }
 
