@@ -4,8 +4,10 @@
  * Copyright 2019-2020 Tillmann Heidsieck <theidsieck@leenox.de>
  */
 
+#include <Arduino.h>
 #include <EEPROM.h>
 
+#include "eeprom_config.h"
 #include "buttons.h"
 #include "tonuino.h"
 #include "tstate.h"
@@ -169,12 +171,13 @@ TState *TState_AudioBook::loop() {
     return this;
 }
 
-TState_AudioBook::TState_AudioBook(TonUINO *context) {
+TState_AudioBook::TState_AudioBook(TonUINO *context)
+{
     this->context = context;
 }
 
-TState_AudioBook::TState_AudioBook(TState *last_state) {
-
+TState_AudioBook::TState_AudioBook(TState *last_state)
+{
     from_last_state(last_state);
     notify_led->update_state(LED_STATE_PLAY);
     Serial.println(F("AudioBook(last)"));
@@ -184,13 +187,20 @@ TState_AudioBook::TState_AudioBook(TState *last_state) {
         restore = false;
     } else {
         uint8_t ctrack = EEPROM.read(EEPROM_CFG_LEN + card->extdata[1]);
+
         if (ctrack == 0xff) {
             ctrack = 1;
-            EEPROM.write(EEPROM_CFG_LEN + card->extdata[1], 1);
+            EEPROM.write(EEPROM_CFG_LEN + card->extdata[1], ctrack);
         }
-        player->playFolderTrack(card->extdata[1], ctrack);
+
+        if (!player->playFolderTrack(card->extdata[1], ctrack)) {
+            ctrack = 1;
+            EEPROM.write(EEPROM_CFG_LEN + card->extdata[1], ctrack);
+            player->playFolderTrack(card->extdata[1], ctrack);
+        }
     }
 }
 
-TState_AudioBook::~TState_AudioBook() {
+TState_AudioBook::~TState_AudioBook()
+{
 }
