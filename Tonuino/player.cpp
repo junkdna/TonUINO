@@ -87,10 +87,12 @@ bool Player::hp_present() {
 
 void Player::spk_enable() {
     digitalWrite(SPK_ENABLE_PIN, 0);
+    spk_enabled = 1;
 }
 
 void Player::spk_disable() {
     digitalWrite(SPK_ENABLE_PIN, 1);
+    spk_enabled = 0;
 }
 
 void Player::volume_up() {
@@ -395,10 +397,15 @@ TState *Player::handle_error(uint16_t code)
 }
 
 TState *Player::loop() {
-    if (!hp_present())
+    if (!hp_present()) {
+        if (!spk_enabled)
+            volume_set(context->get_config().init_volume);
         spk_enable();
-    else
+    } else {
         spk_disable();
+        if (spk_enabled)
+            volume_set(current_volume - (current_volume / 2));
+    }
 
     g_dfplayer.loop();
 

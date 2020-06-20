@@ -51,6 +51,7 @@ protected:
     uint16_t global_track = 0;
 
     uint8_t idx = 0;
+    uint8_t spk_enabled = 0;
     uint8_t random_queue[255] = {0};
 
     void spk_enable();
