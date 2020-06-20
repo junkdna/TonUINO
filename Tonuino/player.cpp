@@ -119,7 +119,6 @@ void Player::volume_set(uint8_t vol) {
         vol = context->get_config().min_volume;
 
     cur_vol = g_dfplayer.getVolume();
-    g_dfplayer.loop();
 
     Serial.print(F("Set volume "));
     Serial.print(cur_vol);
@@ -142,7 +141,6 @@ void Player::playMP3Track(uint16_t track) {
 
     for (int16_t i = 0; i < 1000 && !is_playing(); i++) {
         delay(10);
-        g_dfplayer.loop();
     }
 
     global_track = g_dfplayer.getCurrentTrack(DfMp3_PlaySource_Sd);
@@ -154,7 +152,6 @@ void Player::playAdvertTrack(uint16_t track) {
 
     for (int16_t i = 0; i < 1000 && !is_playing(); i++) {
         delay(10);
-        g_dfplayer.loop();
     }
 
     if (state)
@@ -181,7 +178,6 @@ bool Player::playFolderTrack(uint16_t folder, uint16_t track) {
     g_dfplayer.playFolderTrack(folder, track);
     for (int16_t i = 0; i < 1000 && !is_playing(); i++) {
         delay(10);
-        g_dfplayer.loop();
     }
 
     /* uhoh, for some reason this did not work lets retry */
@@ -189,7 +185,6 @@ bool Player::playFolderTrack(uint16_t folder, uint16_t track) {
         g_dfplayer.playFolderTrack(folder, track);
         for (int16_t i = 0; i < 1000 && !is_playing(); i++) {
             delay(10);
-            g_dfplayer.loop();
         }
     }
 
@@ -242,7 +237,6 @@ void Player::stop() {
 
     for (int16_t i = 0; i < 1000 && is_playing(); i++) {
         delay(10);
-        g_dfplayer.loop();
     }
 }
 
@@ -252,7 +246,6 @@ void Player::pause() {
 
     for (int16_t i = 0; i < 1000 && is_playing(); i++) {
         delay(10);
-        g_dfplayer.loop();
     }
 }
 
@@ -262,7 +255,6 @@ void Player::start() {
 
     for (int16_t i = 0; i < 1000 && !is_playing(); i++) {
         delay(10);
-        g_dfplayer.loop();
     }
 }
 
