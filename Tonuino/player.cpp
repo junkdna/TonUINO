@@ -409,19 +409,19 @@ void Player::set_context(TonUINO *_tonuino) {
     context = _tonuino;
 }
 
-const uint16_t Player::get_current_track() {
+uint16_t Player::get_current_track() {
     return current_track;
 }
 
-const uint16_t Player::get_current_folder() {
+uint16_t Player::get_current_folder() {
     return current_folder;
 }
 
-const uint16_t Player::get_current_folder_track_num() {
+uint16_t Player::get_current_folder_track_num() {
     return current_folder_track_num;
 }
 
-const uint16_t Player::get_current_global_track() {
+uint16_t Player::get_current_global_track() {
     return global_track;
 }
 

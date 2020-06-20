@@ -60,10 +60,10 @@ protected:
     TState *redo_last_command();
 
 public:
-    const uint16_t get_current_track();
-    const uint16_t get_current_folder();
-    const uint16_t get_current_folder_track_num();
-    const uint16_t get_current_global_track();
+    uint16_t get_current_track();
+    uint16_t get_current_folder();
+    uint16_t get_current_folder_track_num();
+    uint16_t get_current_global_track();
     void set_current_folder(uint16_t folder);
 
     void playAdvertTrack(uint16_t track);
