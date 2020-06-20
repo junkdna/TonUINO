@@ -442,11 +442,12 @@ void Player::set_current_folder(uint16_t folder) {
 }
 
 void Player::setup() {
+    Serial.println(F("DFPlayer setup"));
+    spk_disable();
+
     pinMode(BUSY_PIN, INPUT);
     pinMode(HPP_PIN, INPUT);
     pinMode(SPK_ENABLE_PIN, OUTPUT);
-
-    spk_disable();
 
     g_dfplayer.begin();
 #if 0
@@ -455,6 +456,8 @@ void Player::setup() {
     /* try to get firmware and dfplayer in a consistent state w/o reset */
     stop();
 #endif
+
+    volume_set(context->get_config().init_volume);
 }
 
 Player::Player() {

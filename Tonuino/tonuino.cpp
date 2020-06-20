@@ -65,16 +65,16 @@ void TonUINO::setup() {
 
     state = new TState_Idle(this, &player);
 
-    player.setup();
     player.set_context(this);
     player.set_state(state);
 
-    player.volume_set(config.init_volume);
+    player.setup();
+    player.loop();
+
     /* PIN A7 is open, the ADC should produce noise */
     for (i = 0; i < 256; i++)
         seed ^= (analogRead(A7) & 0x1) << (i % 32);
     randomSeed(seed);
-    player.volume_set(config.init_volume);
 
     //if ((button_map & 0x7) == 0x7) {
     if (digitalRead(PAUSE_BUTTON_PIN) == LOW && digitalRead(UP_BUTTON_PIN) == LOW &&
