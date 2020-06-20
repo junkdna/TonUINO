@@ -164,9 +164,9 @@ TState *TState_AudioBook::loop() {
 #if 0
     if (!player->is_playing())
         Mp3Notify::OnPlayFinished(DfMp3_PlaySources_Sd, player->get_current_track());
-#endif
     if (!player->is_playing())
         player->playFolderTrack(player->get_current_folder(), player->get_current_track());
+#endif
 
     return this;
 }
