@@ -80,7 +80,7 @@ TState *TState_Menu::handle_buttons(uint32_t _map) {
             player->volume_set(selected_value);
             player->playMP3Track(selected_value);
         } else if (button_released(_map, BUTTON_PAUSE)) {
-            context->get_config().step_volume = selected_value;
+            context->get_config().max_volume = selected_value;
             context->get_config().write();
             state = new_state_by_name(this, STATE_ADMIN);
         }
@@ -99,7 +99,7 @@ TState *TState_Menu::handle_buttons(uint32_t _map) {
             player->volume_set(selected_value);
             player->playMP3Track(selected_value);
         } else if (button_released(_map, BUTTON_PAUSE)) {
-            context->get_config().step_volume = selected_value;
+            context->get_config().min_volume = selected_value;
             context->get_config().write();
             state = new_state_by_name(this, STATE_ADMIN);
         }
