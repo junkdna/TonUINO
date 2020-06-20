@@ -12,15 +12,27 @@
 #include "rfid.h"
 
 
+/* TODO add option to save progress on RFID card */
+
 bool TState_AudioBook::next() {
-    /* TODO add option to save progress on RFID card */
-    EEPROM.write(EEPROM_CFG_LEN + player->get_current_folder(), player->get_current_track());
+    uint8_t t = player->get_current_track() + 1;
+
+    if (t > player->get_current_folder_track_num() || t < 1)
+        t = 1;
+
+    EEPROM.write(EEPROM_CFG_LEN + player->get_current_folder(), t);
+
     return player->next();
 }
 
 bool TState_AudioBook::prev() {
-    /* TODO add option to save progress on RFID card */
-    EEPROM.write(EEPROM_CFG_LEN + player->get_current_folder(), player->get_current_track());
+    uint8_t t = player->get_current_track() - 1;
+
+    if (t > player->get_current_folder_track_num() || t < 1)
+        t = 1;
+
+    EEPROM.write(EEPROM_CFG_LEN + player->get_current_folder(), t);
+
     return player->prev();
 }
 
@@ -151,6 +163,8 @@ TState *TState_AudioBook::loop() {
     if (!player->is_playing())
         Mp3Notify::OnPlayFinished(DfMp3_PlaySources_Sd, player->get_current_track());
 #endif
+    if (!player->is_playing())
+        player->playFolderTrack(player->get_current_folder(), player->get_current_track());
 
     return this;
 }
