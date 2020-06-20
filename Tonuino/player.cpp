@@ -449,10 +449,12 @@ void Player::setup() {
     spk_disable();
 
     g_dfplayer.begin();
-    g_dfplayer.loop();
-
+#if 0
     g_dfplayer.reset();
-    g_dfplayer.loop();
+#else
+    /* try to get firmware and dfplayer in a consistent state w/o reset */
+    stop();
+#endif
 }
 
 Player::Player() {
