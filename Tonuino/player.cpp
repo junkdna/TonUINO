@@ -273,7 +273,7 @@ bool Player::next() {
 
     ++current_track;
     /* TODO do we want wrap-around or end of playback here */
-    if (current_track > current_folder_track_num)
+    if (current_track > current_folder_track_num || current_track < 1)
         current_track = 1;
 
     return playFolderTrack(current_folder, current_track);
@@ -284,8 +284,11 @@ bool Player::prev() {
      * do not use prev() command of the DFPlayer because it has some very
      * strange properties.
      */
+    if (current_folder_track_num < 1)
+        current_folder_track_num = g_dfplayer.getFolderTrackCount(current_folder);
+
     --current_track;
-    if (current_track < 1)
+    if (current_track > current_folder_track_num || current_track < 1)
         current_track = 1;
 
     return playFolderTrack(current_folder, current_track);
