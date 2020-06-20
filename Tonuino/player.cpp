@@ -99,6 +99,7 @@ void Player::volume_up() {
 
 void Player::volume_down() {
     uint8_t step = context->get_config().step_volume;
+
     if (current_volume < step)
         volume_set(0);
     else
@@ -204,7 +205,7 @@ bool Player::playRandomTrack(uint16_t folder) {
     if (!current_track || !current_folder || folder != current_folder) {
         current_folder_track_num = g_dfplayer.getFolderTrackCount(folder);
 
-        /* init list to sorted */
+        /* init list to shuffle */
         for (track = 1; track <= current_folder_track_num; ++track)
             random_queue[track] = track;
 
