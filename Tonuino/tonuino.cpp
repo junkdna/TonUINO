@@ -76,9 +76,9 @@ void TonUINO::setup() {
         seed ^= (analogRead(A7) & 0x1) << (i % 32);
     randomSeed(seed);
 
-    //if ((button_map & 0x7) == 0x7) {
     if (digitalRead(PAUSE_BUTTON_PIN) == LOW && digitalRead(UP_BUTTON_PIN) == LOW &&
         digitalRead(DOWN_BUTTON_PIN) == LOW) {
+        Serial.println(F("reset config"));
         /* reset config*/
         config.init();
         config.write();
