@@ -395,9 +395,9 @@ TState *Player::loop() {
             volume_set(context->get_config().init_volume);
         spk_enable();
     } else {
-        spk_disable();
         if (spk_enabled)
             volume_set(current_volume - (current_volume / 2));
+        spk_disable();
     }
 
     g_dfplayer.loop();
