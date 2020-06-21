@@ -21,6 +21,7 @@ jobs:
         # parameter of type `arduino-platform`, in this case a
         # total of 2.
         arduino-platform: ["arduino:avr"]
+        python-version: [3.8]
         # This is usually optional but we need to statically define the
         # FQBN of the boards we want to test for each platform. In the
         # future the CLI might automatically detect and download the core
@@ -42,19 +43,21 @@ jobs:
         with:
               fetch-depth: 1
 
-      # We use the `arduino/setup-arduino-cli` action to install and
-      # configure the Arduino CLI on the system.
-      - name: Setup Arduino CLI
-        uses: arduino/setup-arduino-cli@v1.0.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
-      # We then install the platform, which one will be determined
-      # dynamically by the build matrix.
-      - name: Install platform
-        working-directory: Tonuino
-        run: make install init
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel platformio
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # Finally, we compile the sketch, using the FQBN that was set
-      # in the build matrix.
-      - name: Test Sketch
+      - name: Build firmware
         working-directory: Tonuino
-        run: make test
+        run: pio run
+
+        #- name: Test Firmware
+        #  working-directory: Tonuino
+        #  run: pio run -t test -e native
