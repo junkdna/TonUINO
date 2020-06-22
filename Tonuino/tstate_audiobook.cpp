@@ -122,7 +122,8 @@ TState *TState_AudioBook::handle_player_event(mp3_notify_event event, uint16_t c
         break;
     case MP3_PLAY_FINISHED:
         /* TODO in case we want to stop playing here we need something else */
-        if (!player->is_playing() && !next()) {
+        /* !player->is_playing() &&  */
+        if (!next()) {
             set_error(true);
             state = new_state_by_name(this, STATE_IDLE);
         }
